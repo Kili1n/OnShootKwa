@@ -1,0 +1,37 @@
+name: Mise à jour automatique des matchs
+
+on:
+  schedule:
+    # S'exécute à 00:00, le 1er jour de chaque mois
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # Permet de lancer le script manuellement pour tester
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Autorisation d'écrire et de sauvegarder le fichier JSON
+
+    steps:
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v3
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Installer les dépendances
+        run: npm install puppeteer
+
+      - name: Exécuter le script de scraping
+        run: node update_matchs.js
+
+      - name: Sauvegarder les modifications
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add matchs.json
+          git commit -m "Mise à jour mensuelle automatique des matchs" || echo "Aucune modification à commiter"
+          git push
