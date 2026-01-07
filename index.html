@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="mobile.css">
 
     <style>
         :root {
@@ -301,14 +302,22 @@
             let sportLabel = s.includes("basket") ? "BASKET" : (s.includes("foot") ? "FOOT" : "HAND");
             
             let level = "REG", age = "SENIOR";
-            if (name.includes("BETCLIC") || name.includes("STARLIGUE")) level = "L1";
+            if (name.includes("BETCLIC") || name.includes("STARLIGUE")) {level = "L1"}
             else if (name.includes("BUTAGAZ") || name.includes("LBWL")) { level = "L1"; age = "SENIOR F"; }
-            else if (name.includes("PROLIGUE")) level = "L2";
-            else if (name.includes("NATIONALE 1")) level = "N1";
+            else if (name.includes("ÉLIT2") || name.includes("PROLIGUE")) { level = "L2"; }
+            else if (name.includes("LF2")) { level = "L2"; age = "SENIOR F"; }
+            else if (name.includes("NF1")) { level = "N1"; age = "SENIOR F"; }
+            else if (name.includes("ESPOIRS")) { level = "L1"; age = "U21"; }
+            else if (name.includes("NATIONALE 1")) { level = "N1"; }
             else {
+                const isFeminine = name.includes("FÉMININ") || name.includes("FEMININ") || name.includes(" F ");
                 if (name.includes("N3")) level = "N3";
                 else if (name.includes("N2")) level = "N2";
-                else if (name.includes("NATIONAL")) level = "NAT";
+                else if (name.includes("D3") && (name.includes("FÉMININE") || name.includes("FEMININE"))) level = "L3";
+                else if (name.includes("NATIONAL") || name.includes("NAT")) level = "NAT";
+                if (name.includes("U19")) age = "U19";
+                else if (name.includes("U17")) age = "U17";
+                if (isFeminine && !age.includes("F")) age += " F";
             }
             return `${sportLabel} - ${level} - ${age}`;
         };
@@ -587,3 +596,4 @@
     </script>
 </body>
 </html>
+    

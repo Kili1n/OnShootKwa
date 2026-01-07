@@ -1,124 +1,192 @@
-/* mobile.css */
-
-/* Par défaut, on cache le bouton sur PC */
-.menu-toggle { display: none; }
+/* =========================================
+   Mobile CSS - Dashboard Presse
+   Breakpoints: < 1024px (Tablette & Mobile)
+   ========================================= */
 
 @media screen and (max-width: 1024px) {
-    body { 
-        min-width: 0 !important;
-        width: 100%;
-    }
 
-    header {
-        padding: 12px 15px !important;
+    /* --- 1. Reset Global & Container --- */
+    body {
+        min-width: auto; /* Annule le min-width: 1200px */
+        padding-bottom: 80px;
+        overflow-x: hidden; /* Évite le scroll horizontal involontaire */
     }
 
     .container {
-        padding: 0 15px !important; /* Réduit le padding de 40px à 15px */
-        margin: 20px auto;
+        max-width: 100%;
+        margin: 15px auto;
+        padding: 0 16px; /* Marges latérales plus fines sur mobile */
+    }
+
+    /* --- 2. Header & Navigation (Le Menu Hamburger) --- */
+    header {
+        padding: 12px 20px;
+        height: auto;
+        max-height: 60px; /* Hauteur fermée (juste la barre du haut) */
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, background 0.3s;
+        display: block; /* Remplace le flex du desktop pour gérer l'ouverture */
+    }
+
+    /* Classe ajoutée via JS (menu-open) pour déplier le menu */
+    header.menu-open {
+        max-height: 100vh; /* Permet d'afficher tout le contenu */
+        background: #FFFFFF; /* Fond blanc uni quand ouvert */
+        overflow-y: auto; /* Scroll si le menu est trop long */
+        box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+    }
+
+    /* La partie haute (Logo + Burger) */
+    .header-top {
+        flex-wrap: wrap;
+        gap: 0;
+        margin-bottom: 0;
     }
 
     .brand {
-        min-width: 0 !important; /* Permet au logo de prendre moins de place */
+        width: 100%;
+        justify-content: space-between; /* Logo à gauche, Burger à droite */
         font-size: 18px;
     }
 
-    /* Empêche les cartes de dépasser */
-    .card {
-        width: 100%;
-        margin: 0;
-    }
-
-    /* --- BOUTON TOGGLE --- */
+    /* Le bouton Burger (visible uniquement sur mobile) */
     .menu-toggle {
-        display: flex;
-        background: var(--accent);
-        color: white;
-        border: none;
-        width: 35px;
-        height: 35px;
-        border-radius: 8px;
+        display: flex; /* Active le bouton caché en desktop */
         align-items: center;
         justify-content: center;
-        font-size: 18px;
-        margin-left: auto; /* Pousse le bouton à droite */
-        cursor: pointer;
-    }
-
-    /* --- ÉTAT REPLIÉ (PAR DÉFAUT) --- */
-    /* On cache les contrôles et les filtres */
-    .nav-controls, 
-    .header-bottom {
-        display: none !important; 
-    }
-
-    /* --- ÉTAT DÉPLIÉ --- */
-    /* Quand on ajoute la classe .menu-open via JS */
-    header.menu-open .nav-controls,
-    header.menu-open .header-bottom {
-        display: flex !important;
-        flex-direction: column;
-    }
-
-    /* Ajustements visuels quand ouvert */
-    header.menu-open {
-        background: #FFFFFF !important;
-        height: auto;
-        padding-bottom: 20px !important;
-    }
-
-    /* Reste de la configuration mobile (déjà vue précédemment) */
-    .header-top, .header-bottom {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 12px !important;
-    }
-
-    .search-input, .loc-input {
-        width: 100% !important;
-        height: 44px !important;
-    }
-
-    .filters {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr); /* 2x2 pour plus de clarté */
-        gap: 6px !important;
-    }
-
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 10px !important;
-    }
-
-    #compFilter, #weekFilter, .ui-group {
-        width: 100% !important;
-        height: 40px !important;
-    }
-
-    .matches-grid {
-        grid-template-columns: 1fr !important;
-    }
-}
-@media screen and (max-width: 1024px) {
-    .menu-toggle {
-        display: flex !important; /* Force l'affichage sur mobile */
-        background: var(--accent) !important;
-        color: #FFFFFF !important; /* Force l'icône en blanc */
-        border: none;
         width: 40px;
         height: 40px;
         border-radius: 8px;
-        align-items: center;
-        justify-content: center;
+        background: transparent;
+        color: var(--text-primary);
         font-size: 20px;
-        cursor: pointer;
-        -webkit-appearance: none; /* Évite les styles par défaut iOS */
+        transition: background 0.2s;
     }
 
-    /* On s'assure que l'icône elle-même hérite de la couleur blanche */
-    .menu-toggle i {
-        color: #FFFFFF !important;
-        pointer-events: none; /* Évite que le clic soit bloqué par l'icône */
+    .menu-toggle:active {
+        background: rgba(0,0,0,0.05);
+    }
+
+    /* --- 3. Contenu du Menu (Caché par défaut) --- */
+    
+    /* Conteneurs principaux à masquer quand fermé */
+    .nav-controls, 
+    .header-bottom {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Affichage quand le menu est ouvert */
+    header.menu-open .nav-controls,
+    header.menu-open .header-bottom {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        display: flex; /* Force le flex pour l'alignement vertical */
+    }
+
+    /* --- 4. Adaptation des contrôles internes --- */
+
+    /* Groupe Recherche */
+    .search-group {
+        width: 100%;
+    }
+    
+    .search-input {
+        width: 100% !important; /* Force la largeur totale */
+        height: 44px; /* Plus haut pour le tactile */
+        font-size: 16px; /* Évite le zoom auto sur iOS */
+    }
+
+    /* Groupe Localisation (GPS + Calcul) */
+    .location-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 50px 1fr; /* Bouton GPS carré, Calcul prend le reste */
+        gap: 10px;
+    }
+
+    .icon-btn, .calc-btn {
+        height: 44px; /* Hauteur tactile */
+    }
+
+    .calc-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Filtres Sport (Boutons) */
+    .filters {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 boutons sur une ligne */
+        padding: 4px;
+        margin-bottom: 10px;
+    }
+
+    .filter-btn {
+        padding: 8px 0;
+        font-size: 11px;
+        text-align: center;
+    }
+
+    /* Groupe Filtres (Selects, Date, Toggle) */
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        width: 100%;
+        padding-bottom: 20px; /* Marge en bas du menu ouvert */
+    }
+
+    .control-input, 
+    .ui-group {
+        width: 100%;
+        height: 44px; /* Hauteur tactile */
+    }
+
+    .ui-group {
+        justify-content: space-between; /* Ecarte label et input */
+    }
+
+    /* --- 5. La Grille des Matchs --- */
+    .matches-grid {
+        grid-template-columns: 1fr; /* Une seule colonne */
+        gap: 16px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    /* Ajustement des équipes pour éviter les coupures */
+    .match-header {
+        align-items: flex-start;
+    }
+
+    .team-name {
+        font-size: 12px;
+        height: auto; /* Laisse le texte prendre sa place */
+        max-height: 40px;
+    }
+
+    .vs {
+        margin-top: 15px; /* Réalignement vertical */
+    }
+
+    .accred-footer {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .accred-email {
+        font-size: 12px;
+        max-width: 100%;
     }
 }
