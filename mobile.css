@@ -1,61 +1,74 @@
 /* --- Styles Mobile (max-width 768px) --- */
 @media screen and (max-width: 768px) {
 
-    /* 1. CORRECTION DU PROBLÈME DE ZOOM / SCROLL */
+    /* 1. Reset et Fond de page */
     html, body {
-        min-width: 0 !important; /* Écrase le 1200px du desktop */
+        min-width: 0 !important;
         width: 100% !important;
-        overflow-x: hidden !important; /* Empêche tout dépassement horizontal */
-        padding-bottom: 80px;
+        overflow-x: hidden !important;
     }
 
-    /* 2. Adaptation du Header */
+    /* 2. Header Style Image */
     header {
         position: sticky;
         top: 0;
-        padding: 10px 15px !important; /* Réduit les marges internes */
+        padding: 15px !important;
         height: auto;
-        min-height: 60px;
-        max-height: 60px; /* Fermé par défaut */
+        min-height: 70px;
+        max-height: 70px; /* Fermé par défaut */
+        background: #FFFFFF !important;
         overflow: hidden;
-        transition: max-height 0.3s ease-in-out;
-        width: 100%;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        border-bottom: 1px solid #E5E5E7;
     }
 
-    /* État OUVERT du menu (activé par JS) */
     header.menu-open {
-        max-height: 100vh; /* Prend tout l'écran */
+        max-height: 100vh;
         overflow-y: auto;
-        background: #FFFFFF;
     }
 
-    /* Ajustement du logo et du bouton hamburger */
+    /* Top Bar (Logo + Burger) */
+    .header-top {
+        display: flex;
+        flex-direction: column; /* On garde la structure pour le menu déroulant */
+    }
+
     .brand {
         width: 100%;
-        min-width: 0 !important; /* Enlève la largeur minimale du logo */
+        display: flex;
         justify-content: space-between;
-        font-size: 18px;
+        align-items: center;
+        font-size: 19px;
+        font-weight: 700;
+        min-width: 0 !important;
+        padding-bottom: 5px;
     }
 
     .menu-toggle {
-        display: block !important; /* Affiche le bouton hamburger */
-        font-size: 22px;
-        padding: 5px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 2px solid #1D1D1F;
+        border-radius: 8px;
         background: none;
-        border: none;
-        cursor: pointer;
+        font-size: 20px;
     }
 
-    /* 3. Masquer/Afficher le contenu du menu */
+    /* 3. Contenu du Menu (Nav + Bottom) */
     .nav-controls, 
     .header-bottom {
         display: flex;
-        flex-direction: column; /* Vertical */
-        gap: 15px;
-        margin-top: 20px;
-        opacity: 0; /* Caché par défaut */
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        opacity: 0;
         visibility: hidden;
-        transition: opacity 0.2s;
+        transition: opacity 0.3s;
     }
 
     header.menu-open .nav-controls,
@@ -64,64 +77,115 @@
         visibility: visible;
     }
 
-    /* Réorganisation des éléments internes du header */
-    .header-top {
-        flex-direction: column;
-        align-items: stretch;
+    /* Barre de recherche */
+    .search-group { width: 100%; }
+    .search-input { 
+        width: 100% !important; 
+        height: 44px !important;
+        background: #F5F5F7 !important;
+        border: 1px solid #E5E5E7 !important;
+        border-radius: 10px !important;
+    }
+
+    /* Groupe GPS + Calculer */
+    .location-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+
+    #gpsBtn {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        background: #FFF;
+        border: 1px solid #E5E5E7;
+        border-radius: 10px;
+    }
+
+    .calc-btn {
+        flex-grow: 1;
+        height: 44px;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 14px;
+        background-color: #0071E3 !important; /* Bleu intense de l'image */
+    }
+
+    /* Onglets (Tous, Foot, Basket...) */
+    .filters {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        background: #E8E8ED;
+        padding: 4px;
+        border-radius: 12px;
         gap: 0;
     }
 
-    .search-group { width: 100%; }
-    .search-input { width: 100% !important; }
+    .filter-btn {
+        padding: 8px 0;
+        font-size: 13px;
+        border-radius: 8px;
+    }
 
-    .location-group {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 50px 1fr; /* Bouton GPS petit, Calcul grand */
+    .filter-btn.active {
+        background: #FFFFFF;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Filtres Selects (Compétition, Semaine, Tri) */
+    .filter-group {
+        display: flex;
+        flex-direction: column;
         gap: 10px;
     }
 
-    .calc-btn { width: 100%; justify-content: center; }
-
-    .filters {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* 4 colonnes égales */
+    .control-input, .ui-group {
         width: 100%;
-        gap: 5px;
+        height: 44px !important;
+        background: #FFF;
+        border: 1px solid #E5E5E7 !important;
+        border-radius: 10px !important;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
     }
-    .filter-btn { padding: 8px 0; justify-content: center; }
 
-    .filter-group {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-    }
-
+    /* Pour aligner le label TRI et ACCRED à gauche comme sur l'image */
     .ui-group {
-        width: 100%;
         justify-content: space-between;
     }
 
-    /* 4. Conteneur principal et Cartes */
+    .filter-label {
+        font-size: 12px;
+        color: #86868B;
+        min-width: 60px;
+    }
+
+    select.control-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+    }
+
+    /* 4. Grille de matchs */
     .container {
-        padding: 15px !important; /* Marges réduites sur les côtés */
+        padding: 15px !important;
         margin: 0 !important;
-        width: 100%;
-        max-width: 100%;
     }
 
     .matches-grid {
-        display: flex; /* Passe en Flex colonne plutôt que Grid */
+        display: flex;
         flex-direction: column;
         gap: 15px;
     }
 
     .card {
-        width: 100%; /* La carte prend toute la largeur */
+        width: 100%;
         margin: 0;
+        border-radius: 16px; /* Arrondi plus doux */
     }
 
-    /* Ajustement interne des cartes pour éviter la coupure */
-    .team { width: 40%; } /* Réduit légèrement la largeur des équipes */
-    .team-name { font-size: 12px; } /* Police un peu plus petite */
+    .team-name { font-size: 12px; }
 }
