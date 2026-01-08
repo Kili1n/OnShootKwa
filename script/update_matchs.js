@@ -3,37 +3,37 @@ const fs = require('fs');
 
 // --- CONFIGURATION ---
 const FOOTBALL_URLS = [
-    'https://epreuves.fff.fr/competition/club/542781-a-f-c-compiegne/equipe/2025_22206_U17_5/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500695-aas-sarcelles-21/equipe/2025_670_U19_3/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/550141-afc-creil-21/equipe/2025_100490_U19_5/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/582560-c-chartres-football-23/equipe/2025_191772_U19_13/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500568-paris-fc-21/equipe/2025_616_U19_4/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain-fc/equipe/2025_364_U19_4/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain-fc/equipe/2025_364_U18F_2/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain-fc/equipe/2025_364_U17_6/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/539013-racing-club-de-france-football/equipe/2025_19429_U19_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/539013-racing-club-france/equipe/2025_19429_SEM_2/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/539013-racing-club-de-france-football/equipe/2025_19429_U17_3/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500164-st-quentin-o/equipe/2025_295_SEM_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/560836-le-pays-du-valois-us/equipe/2025_199020_SEM_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/523259-jeanne-d-arc-drancy/equipe/2025_8734_SEM_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/542397-stade-de-reims-2/equipe/2025_21944_SEM_10/resultat-calendrier',    
-    'https://epreuves.fff.fr/competition/club/508884-neuilly-marne-sfc/equipe/2025_3359_SEM_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500240-amiens-scf-2/equipe/2025_358_SEM_8/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500054-lille-losc-associati-2/equipe/2025_199_SEM_8/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500942-vimy-us/equipe/2025_773_SEM_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/582585-pays-de-cassel-us/equipe/2025_191820_SEM_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500650-versailles-78-f-c/equipe/2025_656_U17_4/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/516125-cs-mainvilliers/equipe/2025_4969_U17_12/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/544913-mantois-78-fc/equipe/2025_23013_U17_4/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500217-cs-bretigny-football/equipe/2025_343_U17_3/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/550679-montrouge-fc-92/equipe/2025_105489_U17_4/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500568-paris-fc/equipe/2025_616_U17_17/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/500695-aas-sarcelles/equipe/2025_670_SEF_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/531562-quevilly-rm/equipe/2025_14293_SEF_2/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/739890-vga-saint-maur/equipe/2025_32963_SEF_4/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/536214-saint-denis-rc/equipe/2025_17479_SEF_1/resultat-calendrier',
-    'https://epreuves.fff.fr/competition/club/504891-us-orleans-loiret/equipe/2025_2421_SEF_2/resultat-calendrier'    
+    'https://epreuves.fff.fr/competition/club/542781-a-f-c-compiegne/equipe/2025_22206_U17_5/saison',
+    'https://epreuves.fff.fr/competition/club/500695-aas-sarcelles-21/equipe/2025_670_U19_3/saison',
+    'https://epreuves.fff.fr/competition/club/550141-afc-creil-21/equipe/2025_100490_U19_5/saison',
+    'https://epreuves.fff.fr/competition/club/582560-c-chartres-football-23/equipe/2025_191772_U19_13/saison',
+    'https://epreuves.fff.fr/competition/club/500568-paris-fc-21/equipe/2025_616_U19_4/saison',
+    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain-fc/equipe/2025_364_U19_4/saison',
+    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain-fc/equipe/2025_364_U18F_2/saison',
+    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain-fc/equipe/2025_364_U17_6/saison',
+    'https://epreuves.fff.fr/competition/club/539013-racing-club-de-france-football/equipe/2025_19429_U19_1/saison',
+    'https://epreuves.fff.fr/competition/club/539013-racing-club-france/equipe/2025_19429_SEM_2/saison',
+    'https://epreuves.fff.fr/competition/club/539013-racing-club-de-france-football/equipe/2025_19429_U17_3/saison',
+    'https://epreuves.fff.fr/competition/club/500164-st-quentin-o/equipe/2025_295_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/560836-le-pays-du-valois-us/equipe/2025_199020_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/523259-jeanne-d-arc-drancy/equipe/2025_8734_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/542397-stade-de-reims-2/equipe/2025_21944_SEM_10/saison',    
+    'https://epreuves.fff.fr/competition/club/508884-neuilly-marne-sfc/equipe/2025_3359_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/500240-amiens-scf-2/equipe/2025_358_SEM_8/saison',
+    'https://epreuves.fff.fr/competition/club/500054-lille-losc-associati-2/equipe/2025_199_SEM_8/saison',
+    'https://epreuves.fff.fr/competition/club/500942-vimy-us/equipe/2025_773_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/582585-pays-de-cassel-us/equipe/2025_191820_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/500650-versailles-78-f-c/equipe/2025_656_U17_4/saison',
+    'https://epreuves.fff.fr/competition/club/516125-cs-mainvilliers/equipe/2025_4969_U17_12/saison',
+    'https://epreuves.fff.fr/competition/club/544913-mantois-78-fc/equipe/2025_23013_U17_4/saison',
+    'https://epreuves.fff.fr/competition/club/500217-cs-bretigny-football/equipe/2025_343_U17_3/saison',
+    'https://epreuves.fff.fr/competition/club/550679-montrouge-fc-92/equipe/2025_105489_U17_4/saison',
+    'https://epreuves.fff.fr/competition/club/500568-paris-fc/equipe/2025_616_U17_17/saison',
+    'https://epreuves.fff.fr/competition/club/500695-aas-sarcelles/equipe/2025_670_SEF_1/saison',
+    'https://epreuves.fff.fr/competition/club/531562-quevilly-rm/equipe/2025_14293_SEF_2/saison',
+    'https://epreuves.fff.fr/competition/club/739890-vga-saint-maur/equipe/2025_32963_SEF_4/saison',
+    'https://epreuves.fff.fr/competition/club/536214-saint-denis-rc/equipe/2025_17479_SEF_1/saison',
+    'https://epreuves.fff.fr/competition/club/504891-us-orleans-loiret/equipe/2025_2421_SEF_2/saison'    
 ];
 
 const BASKET_URLS = [
@@ -125,68 +125,99 @@ async function scrapeFootball(page) {
     console.log("\n⚽ DEBUT SCRAPING FOOTBALL");
     let futureMatchesMap = new Map();
     const now = new Date();
-    now.setHours(0,0,0,0);
+    now.setHours(0, 0, 0, 0);
+
+    const limitDate = new Date();
+    limitDate.setMonth(now.getMonth() + 2); // Filtre à 2 mois
 
     for (let url of FOOTBALL_URLS) {
-        const urlParts = url.split('/');
-        const clubSlug = urlParts[5].split('-').slice(1).join(' ').toUpperCase();
-        const targetSearch = normalize(clubSlug);
-        let teamMatchCount = 0;
-
         try {
-            await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-            try { 
+            await page.goto(url, { waitUntil: 'networkidle2', timeout: 45000 });
+
+            // 1. Gestion des cookies
+            try {
                 await page.waitForSelector('#didomi-notice-agree-button', { timeout: 2000 });
-                await page.click('#didomi-notice-agree-button'); 
+                await page.click('#didomi-notice-agree-button');
             } catch (e) {}
 
-            for (let i = 0; i < 3; i++) {
-                await new Promise(r => setTimeout(r, 500));
-                const monthMatches = await page.evaluate((target) => {
-                    const cards = document.querySelectorAll('app-match-score');
-                    return Array.from(cards).map(card => {
-                        const home = card.querySelector('.recevant .equipe-name')?.innerText.trim() || "";
-                        const normHome = home.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/FC$|SFC$|21$|23$|78FC$|92$|SC$/, '');
-                        if (!normHome.includes(target) && !target.includes(normHome)) return null;
-
-                        const scoreLink = card.querySelector('a.score')?.getAttribute('href') || "";
-                        const matchId = scoreLink.split('-').pop() || Math.random().toString();
-
-                        return {
-                            id: matchId,
-                            dateRaw: card.querySelector('.schedule-match')?.innerText.trim(),
-                            competition: card.querySelector('.match-score-competition a')?.childNodes[0]?.textContent.trim(),
-                            round: card.querySelector('.match-score-competition .text-xs')?.innerText.trim(),
-                            home: home,
-                            away: card.querySelector('.visiteur .equipe-name')?.innerText.trim()
-                        };
-                    }).filter(m => m !== null);
-                }, targetSearch);
-
-                monthMatches.forEach(m => {
-                    const matchDate = parseFFFDate(m.dateRaw);
-                    if (matchDate && matchDate >= now && !futureMatchesMap.has(m.id)) {
-                        futureMatchesMap.set(m.id, {
-                            sport: "football",
-                            isoDate: matchDate.toISOString(), 
-                            date: matchDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                            home: m.home,
-                            away: m.away,
-                            competition: m.competition,
-                            round: m.round,
-                            location: "N/A",
-                            timestamp: matchDate.getTime()
-                        });
-                        teamMatchCount++;
-                    }
+            // 2. Défilement automatique pour charger la liste complète (Saison)
+            await page.evaluate(async () => {
+                await new Promise((resolve) => {
+                    let totalHeight = 0;
+                    let distance = 100;
+                    let timer = setInterval(() => {
+                        let scrollHeight = document.body.scrollHeight;
+                        window.scrollBy(0, distance);
+                        totalHeight += distance;
+                        if(totalHeight >= scrollHeight) {
+                            clearInterval(timer);
+                            resolve();
+                        }
+                    }, 100);
                 });
+            });
+            await new Promise(r => setTimeout(r, 1000));
 
-                const nextBtn = await page.$('button.next-button');
-                if (nextBtn) await nextBtn.click(); else break;
-            }
-            console.log(`✅ ${clubSlug} : ${teamMatchCount} matchs trouvés.`);
-        } catch (error) { 
-            console.log(`❌ Erreur FFF sur ${clubSlug}`); 
+            // 3. Identification automatique du club
+            const targetTeam = await page.evaluate(() => {
+                const blocks = Array.from(document.querySelectorAll('app-match-score'));
+                if (blocks.length < 2) return null;
+                const getTeams = (b) => [
+                    b.querySelector('.recevant .equipe-name')?.innerText.trim(),
+                    b.querySelector('.visiteur .equipe-name')?.innerText.trim()
+                ];
+                const m1 = getTeams(blocks[0]);
+                const m2 = getTeams(blocks[1]);
+                return m1.find(t => t && m2.includes(t));
+            });
+
+            if (!targetTeam) continue;
+
+            const targetNorm = normalize(targetTeam);
+
+            // 4. Extraction et filtrage silencieux
+            const data = await page.evaluate(() => {
+                return Array.from(document.querySelectorAll('app-match-score')).map(block => {
+                    const compLink = block.querySelector('.match-score-competition a');
+                    const scoreLink = block.querySelector('a.score')?.getAttribute('href') || "";
+                    return {
+                        dateRaw: block.querySelector('.schedule-match')?.innerText.trim() || "",
+                        home: block.querySelector('.recevant .equipe-name')?.innerText.trim() || "N/A",
+                        away: block.querySelector('.visiteur .equipe-name')?.innerText.trim() || "N/A",
+                        competition: compLink?.childNodes[0]?.textContent.trim() || "Football",
+                        round: compLink?.querySelector('.text-xs')?.innerText.trim() || "N/A",
+                        id: scoreLink.split('/').pop() || Math.random().toString()
+                    };
+                });
+            });
+
+            const filteredCount = data.filter(m => {
+                const matchDate = parseFFFDate(m.dateRaw);
+                const isHome = normalize(m.home) === targetNorm;
+                const isWithinRange = matchDate && matchDate >= now && matchDate <= limitDate;
+
+                if (isHome && isWithinRange && !futureMatchesMap.has(m.id)) {
+                    futureMatchesMap.set(m.id, {
+                        sport: "football",
+                        isoDate: matchDate.toISOString(),
+                        date: matchDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+                        home: m.home,
+                        away: m.away,
+                        competition: m.competition,
+                        round: m.round,
+                        location: "N/A",
+                        timestamp: matchDate.getTime()
+                    });
+                    return true;
+                }
+                return false;
+            }).length;
+
+            // 5. Print identique au mode Basketball
+            console.log(`✅ ${targetTeam} : ${filteredCount} matchs trouvés.`);
+
+        } catch (error) {
+            console.error(`❌ Erreur Football sur ${url} :`, error.message);
         }
     }
     return Array.from(futureMatchesMap.values());
@@ -337,22 +368,27 @@ async function run() {
     await page.setViewport({ width: 1400, height: 1000 });
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-    const footballMatches = await scrapeFootball(page);
-    const basketMatches = await scrapeBasketball(page);
-    const handballMatches = await scrapeHandball(page);
+    // Exécution dans l'ordre demandé
 
-    const allMatches = [...footballMatches, ...basketMatches, ...handballMatches]
+    const footballMatches = await scrapeFootball(page);
+    const handballMatches = await scrapeHandball(page);
+    const basketMatches = await scrapeBasketball(page);
+
+    // Fusion et tri par date
+    const allMatches = [...footballMatches, ...handballMatches, ...basketMatches]
         .sort((a, b) => a.timestamp - b.timestamp)
         .map(({ timestamp, ...rest }) => rest);
 
+    // Sauvegarde
+    if (!fs.existsSync('data')) fs.mkdirSync('data');
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(allMatches, null, 4));
     
     console.log(`\n====================================`);
     console.log(`✨ FIN DU SCRAPING GLOBAL`);
     console.log(`⚽ Football : ${footballMatches.length}`);
-    console.log(`🏀 Basketball : ${basketMatches.length}`);
     console.log(`🤾 Handball : ${handballMatches.length}`);
-    console.log(`📂 Fichier ${OUTPUT_FILE} mis à jour (${allMatches.length} matchs au total).`);
+    console.log(`🏀 Basketball : ${basketMatches.length}`);
+    console.log(`📂 Fichier ${OUTPUT_FILE} mis à jour (${allMatches.length} matchs).`);
     console.log(`====================================`);
 
     await browser.close();

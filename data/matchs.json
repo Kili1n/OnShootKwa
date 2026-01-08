@@ -30,6 +30,26 @@
         "location": "N/A"
     },
     {
+        "sport": "football",
+        "isoDate": "2026-01-10T13:30:00.000Z",
+        "date": "samedi 10 janvier 2026",
+        "home": "VIMY US",
+        "away": "PAYS DE CASSEL US",
+        "competition": "N3 - Senior",
+        "round": "Journée 12",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-10T13:30:00.000Z",
+        "date": "samedi 10 janvier 2026",
+        "home": "AAS SARCELLES",
+        "away": "MHSC FEMININES",
+        "competition": "COUPE DE FRANCE FÉMININE - Senior F",
+        "round": "16èmes de finale",
+        "location": "N/A"
+    },
+    {
         "sport": "basketball",
         "isoDate": "2026-01-10T13:30:00.000Z",
         "date": "samedi 10 janvier 2026",
@@ -47,6 +67,26 @@
         "away": "AULNOYE",
         "competition": "LF2",
         "round": "J14",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-10T16:00:00.000Z",
+        "date": "samedi 10 janvier 2026",
+        "home": "STADE DE REIMS 2",
+        "away": "ST QUENTIN O.",
+        "competition": "N3 - Senior",
+        "round": "Journée 12",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-10T17:00:00.000Z",
+        "date": "samedi 10 janvier 2026",
+        "home": "JA DRANCY",
+        "away": "LILLE LOSC ASSOCIATI 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 12",
         "location": "N/A"
     },
     {
@@ -90,6 +130,36 @@
         "location": "N/A"
     },
     {
+        "sport": "football",
+        "isoDate": "2026-01-17T13:30:00.000Z",
+        "date": "samedi 17 janvier 2026",
+        "home": "PARIS SAINT-GERMAIN",
+        "away": "MANTOIS 78 FC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 16",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-17T13:30:00.000Z",
+        "date": "samedi 17 janvier 2026",
+        "home": "VIMY US",
+        "away": "ST QUENTIN O.",
+        "competition": "N3 - Senior",
+        "round": "Journée 13",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-17T13:30:00.000Z",
+        "date": "samedi 17 janvier 2026",
+        "home": "PARIS FC",
+        "away": "LE MANS FC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 16",
+        "location": "N/A"
+    },
+    {
         "sport": "basketball",
         "isoDate": "2026-01-17T14:00:00.000Z",
         "date": "samedi 17 janvier 2026",
@@ -103,8 +173,8 @@
         "sport": "basketball",
         "isoDate": "2026-01-17T16:00:00.000Z",
         "date": "samedi 17 janvier 2026",
-        "home": "PARIS BASKETBALL ASSOCIATION",
-        "away": "LE MANS SCM",
+        "home": "PARIS BASKETBALL",
+        "away": "LE MANS SARTHE BASKET",
         "competition": "ESPOIRS",
         "round": "J14",
         "location": "N/A"
@@ -115,6 +185,36 @@
         "date": "samedi 17 janvier 2026",
         "home": "RACING CLUB FRANCE",
         "away": "SC.BASTIA 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 13",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-17T17:00:00.000Z",
+        "date": "samedi 17 janvier 2026",
+        "home": "LILLE LOSC ASSOCIATI 2",
+        "away": "NEUILLY MARNE SFC",
+        "competition": "N3 - Senior",
+        "round": "Journée 13",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-17T17:00:00.000Z",
+        "date": "samedi 17 janvier 2026",
+        "home": "PAYS DE CASSEL US",
+        "away": "JA DRANCY",
+        "competition": "N3 - Senior",
+        "round": "Journée 13",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-17T17:30:00.000Z",
+        "date": "samedi 17 janvier 2026",
+        "home": "LE PAYS DU VALOIS US",
+        "away": "AMIENS SCF 2",
         "competition": "N3 - Senior",
         "round": "Journée 13",
         "location": "N/A"
@@ -203,6 +303,26 @@
         "sport": "football",
         "isoDate": "2026-01-18T13:30:00.000Z",
         "date": "dimanche 18 janvier 2026",
+        "home": "RACING CLUB FRANCE 21",
+        "away": "HAVRE AC 21",
+        "competition": "CHAMPIONNAT NATIONAL U19 - U19 - U18",
+        "round": "Journée 16",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-18T13:30:00.000Z",
+        "date": "dimanche 18 janvier 2026",
+        "home": "MONTROUGE FC 92",
+        "away": "CS MAINVILLIERS",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 16",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-18T13:30:00.000Z",
+        "date": "dimanche 18 janvier 2026",
         "home": "AAS SARCELLES",
         "away": "FC LORIENT",
         "competition": "D3 FÉMININE - Senior F",
@@ -217,6 +337,26 @@
         "away": "ESOF VENDEE LA ROCHE",
         "competition": "D3 FÉMININE - Senior F",
         "round": "Journée 13",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-23T19:00:00.000Z",
+        "date": "vendredi 23 janvier 2026",
+        "home": "STADE DE REIMS 2",
+        "away": "GAZELEC FC AJACCIO",
+        "competition": "N3 - Senior",
+        "round": "Journée 14",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-24T13:30:00.000Z",
+        "date": "samedi 24 janvier 2026",
+        "home": "AMIENS SCF 2",
+        "away": "CROIX FIC",
+        "competition": "N3 - Senior",
+        "round": "Journée 14",
         "location": "N/A"
     },
     {
@@ -283,10 +423,70 @@
         "sport": "football",
         "isoDate": "2026-01-25T13:30:00.000Z",
         "date": "dimanche 25 janvier 2026",
+        "home": "PARIS SAINT-GERMAIN 21",
+        "away": "US ORLEANS LOIRET 23",
+        "competition": "CHAMPIONNAT NATIONAL U19 - U19 - U18",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-25T13:30:00.000Z",
+        "date": "dimanche 25 janvier 2026",
+        "home": "RACING CLUB FRANCE",
+        "away": "MONTROUGE FC 92",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-25T13:30:00.000Z",
+        "date": "dimanche 25 janvier 2026",
         "home": "NEUILLY MARNE SFC",
         "away": "VIMY US",
         "competition": "N3 - Senior",
         "round": "Journée 14",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-25T13:30:00.000Z",
+        "date": "dimanche 25 janvier 2026",
+        "home": "VERSAILLES 78 FC",
+        "away": "STADE LAVALLOIS MFC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-25T13:30:00.000Z",
+        "date": "dimanche 25 janvier 2026",
+        "home": "CS MAINVILLIERS",
+        "away": "HAVRE AC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-25T13:30:00.000Z",
+        "date": "dimanche 25 janvier 2026",
+        "home": "MANTOIS 78 FC",
+        "away": "QUEVILLY RM",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-01-25T13:30:00.000Z",
+        "date": "dimanche 25 janvier 2026",
+        "home": "CS BRETIGNY FOOTBALL",
+        "away": "PARIS SAINT-GERMAIN",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 17",
         "location": "N/A"
     },
     {
@@ -333,8 +533,8 @@
         "sport": "basketball",
         "isoDate": "2026-01-31T14:00:00.000Z",
         "date": "samedi 31 janvier 2026",
-        "home": "PARIS BASKETBALL ASSOCIATION",
-        "away": "BOULAZAC BASKET DORDOGNE",
+        "home": "PARIS BASKETBALL",
+        "away": "BOULAZAC BASKET DORDOGNE PRO",
         "competition": "ESPOIRS",
         "round": "J16",
         "location": "N/A"
@@ -364,7 +564,7 @@
         "isoDate": "2026-01-31T19:00:00.000Z",
         "date": "samedi 31 janvier 2026",
         "home": "STADE FRANCAIS BASKET",
-        "away": "ESB VILLENEUVE D'ASCQ LILLE METROPOLE - ESPOIR",
+        "away": "VILLENEUVE D'ASCQ ESB - ESPOIR",
         "competition": "NF1",
         "round": "J13",
         "location": "N/A"
@@ -375,6 +575,16 @@
         "date": "dimanche 1 février 2026",
         "home": "QUEVILLY RM",
         "away": "VGA SAINT MAUR",
+        "competition": "D3 FÉMININE - Senior F",
+        "round": "Journée 14",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-01T13:30:00.000Z",
+        "date": "dimanche 1 février 2026",
+        "home": "SAINT DENIS RC",
+        "away": "AAS SARCELLES",
         "competition": "D3 FÉMININE - Senior F",
         "round": "Journée 14",
         "location": "N/A"
@@ -420,6 +630,16 @@
         "location": "N/A"
     },
     {
+        "sport": "football",
+        "isoDate": "2026-02-07T13:30:00.000Z",
+        "date": "samedi 7 février 2026",
+        "home": "PARIS SAINT-GERMAIN",
+        "away": "PARIS FC",
+        "competition": "CHAMPIONNAT NATIONAL FÉMININ U19 - U18 F - U17 F - U16 F",
+        "round": "Journée 3",
+        "location": "N/A"
+    },
+    {
         "sport": "basketball",
         "isoDate": "2026-02-07T15:30:00.000Z",
         "date": "samedi 7 février 2026",
@@ -433,10 +653,50 @@
         "sport": "basketball",
         "isoDate": "2026-02-07T16:00:00.000Z",
         "date": "samedi 7 février 2026",
-        "home": "PARIS BASKETBALL ASSOCIATION",
+        "home": "PARIS BASKETBALL",
         "away": "SASP SLUC NANCY BASKET",
         "competition": "ESPOIRS",
         "round": "J17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-07T17:00:00.000Z",
+        "date": "samedi 7 février 2026",
+        "home": "RACING CLUB FRANCE",
+        "away": "AUBERVILLIERS FCM",
+        "competition": "N3 - Senior",
+        "round": "Journée 15",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-07T17:00:00.000Z",
+        "date": "samedi 7 février 2026",
+        "home": "JA DRANCY",
+        "away": "NEUILLY MARNE SFC",
+        "competition": "N3 - Senior",
+        "round": "Journée 15",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-07T17:00:00.000Z",
+        "date": "samedi 7 février 2026",
+        "home": "LILLE LOSC ASSOCIATI 2",
+        "away": "AMIENS SCF 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 15",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-07T17:00:00.000Z",
+        "date": "samedi 7 février 2026",
+        "home": "PAYS DE CASSEL US",
+        "away": "CHARLEVILLE PRIX OAM",
+        "competition": "N3 - Senior",
+        "round": "Journée 15",
         "location": "N/A"
     },
     {
@@ -467,6 +727,16 @@
         "away": "SASP JDA DIJON BASKET",
         "competition": "BETCLICE",
         "round": "J19",
+        "location": "N/A"
+    },
+    {
+        "sport": "handball",
+        "isoDate": "2026-02-07T19:00:00.000Z",
+        "date": "samedi 7 février 2026",
+        "home": "US CRETEIL HANDBALL",
+        "away": "CERNAY/WATTWILLER HANDBALL",
+        "competition": "NATIONALE 1 MASCULINE 2025-26",
+        "round": "JOURNÉE 12",
         "location": "N/A"
     },
     {
@@ -501,16 +771,6 @@
     },
     {
         "sport": "handball",
-        "isoDate": "2026-02-07T19:00:00.000Z",
-        "date": "samedi 7 février 2026",
-        "home": "US CRETEIL HANDBALL",
-        "away": "CERNAY/WATTWILLER HANDBALL",
-        "competition": "NATIONALE 1 MASCULINE 2025-26",
-        "round": "JOURNÉE 12",
-        "location": "N/A"
-    },
-    {
-        "sport": "handball",
         "isoDate": "2026-02-07T19:15:00.000Z",
         "date": "samedi 7 février 2026",
         "home": "ELITE VAL-D'OISE",
@@ -537,6 +797,86 @@
         "away": "SM CAEN 21",
         "competition": "CHAMPIONNAT NATIONAL U19 - U19 - U18",
         "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "AFC CREIL 21",
+        "away": "LOSC LILLE 21",
+        "competition": "CHAMPIONNAT NATIONAL U19 - U19 - U18",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "RACING CLUB FRANCE 21",
+        "away": "C CHARTRES FOOTBALL 23",
+        "competition": "CHAMPIONNAT NATIONAL U19 - U19 - U18",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "VIMY US",
+        "away": "F.C.BALAGNE",
+        "competition": "N3 - Senior",
+        "round": "Journée 15",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "CS MAINVILLIERS",
+        "away": "RACING CLUB FRANCE",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "MONTROUGE FC 92",
+        "away": "VERSAILLES 78 FC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "PARIS FC",
+        "away": "MANTOIS 78 FC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "AAS SARCELLES",
+        "away": "QUEVILLY RM",
+        "competition": "D3 FÉMININE - Senior F",
+        "round": "Journée 15",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-08T13:30:00.000Z",
+        "date": "dimanche 8 février 2026",
+        "home": "VGA SAINT MAUR",
+        "away": "ORVAULT SF",
+        "competition": "D3 FÉMININE - Senior F",
+        "round": "Journée 15",
         "location": "N/A"
     },
     {
@@ -574,7 +914,7 @@
         "isoDate": "2026-02-13T19:00:00.000Z",
         "date": "vendredi 13 février 2026",
         "home": "ALM EVREUX BASKET",
-        "away": "JEANNE D'ARC DE VICHY",
+        "away": "JEANNE D’ARC DE VICHY",
         "competition": "ÉLIT2",
         "round": "J23",
         "location": "N/A"
@@ -590,6 +930,16 @@
         "location": "N/A"
     },
     {
+        "sport": "football",
+        "isoDate": "2026-02-14T16:00:00.000Z",
+        "date": "samedi 14 février 2026",
+        "home": "STADE DE REIMS 2",
+        "away": "LILLE LOSC ASSOCIATI 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 16",
+        "location": "N/A"
+    },
+    {
         "sport": "basketball",
         "isoDate": "2026-02-14T16:00:00.000Z",
         "date": "samedi 14 février 2026",
@@ -597,6 +947,16 @@
         "away": "AS MONACO BASKET-BALL S.A.",
         "competition": "ESPOIRS",
         "round": "J18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-14T17:00:00.000Z",
+        "date": "samedi 14 février 2026",
+        "home": "ST QUENTIN O.",
+        "away": "NEUILLY MARNE SFC",
+        "competition": "N3 - Senior",
+        "round": "Journée 16",
         "location": "N/A"
     },
     {
@@ -643,9 +1003,79 @@
         "sport": "football",
         "isoDate": "2026-02-15T13:30:00.000Z",
         "date": "dimanche 15 février 2026",
+        "home": "PARIS SAINT-GERMAIN 21",
+        "away": "VALENCIENNES FC 21",
+        "competition": "CHAMPIONNAT NATIONAL U19 - U19 - U18",
+        "round": "Journée 19",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
+        "home": "PARIS SAINT-GERMAIN",
+        "away": "QUEVILLY RM",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 19",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
+        "home": "RACING CLUB FRANCE",
+        "away": "HAVRE AC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 19",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
         "home": "AMIENS SCF 2",
         "away": "PAYS DE CASSEL US",
         "competition": "N3 - Senior",
+        "round": "Journée 16",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
+        "home": "VERSAILLES 78 FC",
+        "away": "CS MAINVILLIERS",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 19",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
+        "home": "MANTOIS 78 FC",
+        "away": "SM CAEN",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 19",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
+        "home": "CS BRETIGNY FOOTBALL",
+        "away": "PARIS FC",
+        "competition": "CHAMPIONNAT NATIONAL U17 - U17 - U16",
+        "round": "Journée 19",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-15T13:30:00.000Z",
+        "date": "dimanche 15 février 2026",
+        "home": "SAINT DENIS RC",
+        "away": "US ORLEANS LOIRET",
+        "competition": "D3 FÉMININE - Senior F",
         "round": "Journée 16",
         "location": "N/A"
     },
@@ -684,7 +1114,7 @@
         "isoDate": "2026-02-21T14:30:00.000Z",
         "date": "samedi 21 février 2026",
         "home": "SASP - SAINT QUENTIN BASKET BALL",
-        "away": "PARIS BASKETBALL ASSOCIATION",
+        "away": "PARIS BASKETBALL",
         "competition": "ESPOIRS",
         "round": "J18",
         "location": "N/A"
@@ -700,13 +1130,23 @@
         "location": "N/A"
     },
     {
-        "sport": "basketball",
+        "sport": "football",
         "isoDate": "2026-02-21T17:00:00.000Z",
         "date": "samedi 21 février 2026",
-        "home": "POLE FRANCE",
-        "away": "CHAMPAGNE BASKET FEMININ",
-        "competition": "LF2",
-        "round": "J20",
+        "home": "JA DRANCY",
+        "away": "CHARLEVILLE PRIX OAM",
+        "competition": "N3 - Senior",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-21T17:00:00.000Z",
+        "date": "samedi 21 février 2026",
+        "home": "LILLE LOSC ASSOCIATI 2",
+        "away": "METZ FC 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 17",
         "location": "N/A"
     },
     {
@@ -721,12 +1161,12 @@
     },
     {
         "sport": "basketball",
-        "isoDate": "2026-02-21T19:00:00.000Z",
+        "isoDate": "2026-02-21T17:00:00.000Z",
         "date": "samedi 21 février 2026",
-        "home": "STADE FRANCAIS BASKET",
-        "away": "BASKET FEMININ ESCAUDAIN PORTE DU HAINAUT - 1",
-        "competition": "NF1",
-        "round": "J15",
+        "home": "POLE FRANCE",
+        "away": "CHAMPAGNE BASKET FEMININ",
+        "competition": "LF2",
+        "round": "J20",
         "location": "N/A"
     },
     {
@@ -737,6 +1177,16 @@
         "away": "COURNON D'AUVERGNE",
         "competition": "PROLIGUE 2025-26",
         "round": "JOURNÉE 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "basketball",
+        "isoDate": "2026-02-21T19:00:00.000Z",
+        "date": "samedi 21 février 2026",
+        "home": "STADE FRANCAIS BASKET",
+        "away": "BASKET FEMININ ESCAUDAIN PORTE DU HAINAUT - 1",
+        "competition": "NF1",
+        "round": "J15",
         "location": "N/A"
     },
     {
@@ -766,6 +1216,26 @@
         "home": "NEUILLY MARNE SFC",
         "away": "F.C.BALAGNE",
         "competition": "N3 - Senior",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-22T13:30:00.000Z",
+        "date": "dimanche 22 février 2026",
+        "home": "VIMY US",
+        "away": "AMIENS SCF 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 17",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-02-22T13:30:00.000Z",
+        "date": "dimanche 22 février 2026",
+        "home": "AAS SARCELLES",
+        "away": "SM CAEN",
+        "competition": "D3 FÉMININE - Senior F",
         "round": "Journée 17",
         "location": "N/A"
     },
@@ -843,7 +1313,7 @@
         "sport": "basketball",
         "isoDate": "2026-02-28T16:00:00.000Z",
         "date": "samedi 28 février 2026",
-        "home": "PARIS BASKETBALL ASSOCIATION",
+        "home": "PARIS BASKETBALL",
         "away": "SIG STRASBOURG",
         "competition": "ESPOIRS",
         "round": "J19",
@@ -937,6 +1407,36 @@
         "away": "MONTBRISON",
         "competition": "LF2",
         "round": "J22",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-03-07T16:00:00.000Z",
+        "date": "samedi 7 mars 2026",
+        "home": "STADE DE REIMS 2",
+        "away": "VIMY US",
+        "competition": "N3 - Senior",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-03-07T17:00:00.000Z",
+        "date": "samedi 7 mars 2026",
+        "home": "ST QUENTIN O.",
+        "away": "F.C.BALAGNE",
+        "competition": "N3 - Senior",
+        "round": "Journée 18",
+        "location": "N/A"
+    },
+    {
+        "sport": "football",
+        "isoDate": "2026-03-07T17:30:00.000Z",
+        "date": "samedi 7 mars 2026",
+        "home": "LE PAYS DU VALOIS US",
+        "away": "LILLE LOSC ASSOCIATI 2",
+        "competition": "N3 - Senior",
+        "round": "Journée 18",
         "location": "N/A"
     },
     {
