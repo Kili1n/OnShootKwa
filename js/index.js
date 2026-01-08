@@ -399,6 +399,17 @@ function renderMatches(data) {
         // Affichage propre de la distance (pas de 0km)
         const distText = m.isCalculating ? '<i class="fa-solid fa-spinner fa-spin"></i>' : (m.distance > 0 ? `${m.distance} km` : '-- km');
 
+       let mapsUrl = "#";
+        if (m.locationCoords) {
+            if (userPosition) {
+                // Itinéraire de l'utilisateur vers le stade
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userPosition.lat},${userPosition.lon}&destination=${m.locationCoords.lat},${m.locationCoords.lon}&travelmode=driving`;
+            } else {
+                // Simple recherche du lieu si le GPS n'est pas activé
+                mapsUrl = `https://www.google.com/maps/search/?api=1&query=${m.locationCoords.lat},${m.locationCoords.lon}`;
+            }
+        }
+
         card.innerHTML = `
             <div class="match-header">
                 <div class="team">
@@ -419,11 +430,16 @@ function renderMatches(data) {
                 <span class="date-time">${m.dateDisplay}</span>
             </div>
             <div class="transport-block">
-                <div class="distance">${distText}</div>
-                <div class="modes">
-                    <div class="mode"><i class="fa-solid fa-car"></i> ${m.times.car || '--'}'</div>
-                    <div class="mode"><i class="fa-solid fa-train-subway"></i> ${m.times.public || '--'}'</div>
+                <div class="transport-info">
+                    <div class="distance">${distText}</div>
+                    <div class="modes">
+                        <div class="mode"><i class="fa-solid fa-car"></i> ${m.times.car || '--'}'</div>
+                        <div class="mode"><i class="fa-solid fa-train-subway"></i> ${m.times.public || '--'}'</div>
+                    </div>
                 </div>
+                <a href="${mapsUrl}" target="_blank" class="maps-arrow ${!m.locationCoords ? 'disabled' : ''}" title="Voir l'itinéraire">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
             </div>
             <div class="accred-footer">${getAccreditationHTML(m)}</div>
         `;
