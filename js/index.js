@@ -33,7 +33,7 @@ const formatCompetition = (rawName, sport) => {
     const s = (sport).toLowerCase();
     let sportLabel = s.includes("basket") ? "BASKET" : (s.includes("foot") ? "FOOT" : "HAND");
     
-    let level = "REG", age = "SENIOR";
+    let level = "AUTRE", age = "SENIOR";
     if (name.includes("BETCLIC") || name.includes("STARLIGUE")) {level = "L1"}
     else if (name.includes("BUTAGAZ") || name.includes("LBWL")) { level = "L1"; age = "SENIOR F"; }
     else if (name.includes("ÉLIT2") || name.includes("PROLIGUE")) { level = "L2"; }
