@@ -17,7 +17,8 @@ const ACCRED_LIST = {
     "SAINT QUENTIN" : "https://www.linkedin.com/in/camille-christiaens-6a1839227/",
     "CHAMBRAY" : "antoine.recher@cthb.fr",
     "EVREUX" : "secretariat@almevreuxbasket.com",
-    "VIMY" : "contact@usvimy.fr"
+    "VIMY" : "contact@usvimy.fr",
+    "PARIS FC" : "https://parisfc.fr/presse/"
 };
 
 const CUSTOM_LOGOS = {
