@@ -1,82 +1,102 @@
-# Dashboard_presse
+# Dashboard Presse
 
-Un **tableau de bord intelligent** conçu pour centraliser et visualiser les **prochains matchs de football** de plusieurs clubs (données issues de la **FFF**).  
-Il permet aux utilisateurs de voir **en un clin d'œil** les rencontres à venir, avec des fonctionnalités avancées de **filtrage** et de **géolocalisation**.
+Un **outil de planification tout-en-un** conçu spécifiquement pour les **photographes de sport**.
 
----
-
-## ✨ Fonctionnalités clés
-
-- **Scraping automatisé**  
-  Un script **Node.js** utilisant **Puppeteer** récupère automatiquement les données les plus récentes depuis les sites officiels, évitant toute saisie manuelle.
-
-- **Calcul de distance & GPS**  
-  Intégration d’une API de géolocalisation permettant de calculer la distance entre l’utilisateur et le lieu du match (ou via la saisie manuelle d’une ville).
-
-- **Interface moderne & responsive**  
-  Design épuré inspiré des interfaces **iOS / Apple**, optimisé pour une lecture rapide sur **mobile** et **ordinateur**.
-
-- **Filtres intelligents**  
-  Tri des matchs par :
-  - compétition (U17, U19, etc.)
-  - période (semaine en cours ou calendrier complet)
-
-- **Mode hors-ligne**  
-  Une fois les données chargées, le dashboard reste fluide grâce à l’utilisation d’un **fichier JSON local** performant.
+Ce dashboard centralise les calendriers de plusieurs sports (Football, Basket, Handball) et offre une suite d'outils pour gérer la **logistique**, les **accréditations** et le **suivi** des rencontres, le tout dans une interface moderne et responsive.
 
 ---
 
-## 🛠️ Stack technique
+## ✨ Fonctionnalités Clés
 
-- **Frontend** :  
-  - HTML5  
-  - CSS3 (variables modernes, Flexbox / Grid)  
-  - JavaScript Vanilla
+### 📅 Planification & Filtres
+- **Multi-Sports** : Support du Football ⚽, Basketball 🏀 et Handball 🤾.
+- **Filtres Avancés** : Tri par compétition (L1, L2, N1, U19...), par semaine, ou par club via la barre de recherche.
+- **Google Agenda** : Export en un clic de l'événement avec remplissage automatique (Lieu, équipes, heure).
 
-- **Backend / Automation** :  
-  - Node.js  
-  - Puppeteer (extraction et mise à jour des données)
+### 📍 Logistique & Déplacements
+- **Géolocalisation Intelligente** : 
+  - Utilisation du GPS ou recherche manuelle par Ville.
+  - Calcul automatique des distances et temps de trajet.
+- **Comparateur de Transport** : Estimation du temps de trajet en **Voiture** 🚗 vs **Transports en commun** 🚆.
+- **Intégration Météo** 🌤️ : Affichage des prévisions météo locales pour le jour du match (via Open-Meteo).
+- **Navigation** : Liens directs vers Google Maps pour l'itinéraire.
 
-- **Stockage des données** :  
-  - JSON
+### 💼 Gestion des Accréditations (Mini-CRM)
+- **Système de Statuts (Cycle de vie)** :
+  - Cliquez sur l'étoile pour changer le statut du match :
+  - ⬜ **Neutre**
+  - ⭐ **Envie** (Jaune)
+  - 📨 **Accréditation Demandée** (Orange)
+  - ✅ **Accréditation Reçue** (Vert)
+- **Tri Intelligent** : Possibilité de trier la grille pour voir les priorités (Accréditations reçues/demandées) en premier.
+- **Automatisation des Mails** : 
+  - Génération de mails de demande d'accréditation pré-remplis (Objet, Corps avec date/match, Destinataire) ouvrant directement Gmail.
+  - Copie rapide des adresses emails.
 
-- **Icônes & typographie** :  
-  - FontAwesome  
-  - Google Fonts (Inter)
+### 🎨 Interface & UX
+- **Design Responsive** : Optimisé pour Desktop, Tablette et Mobile.
+- **Dark Mode** 🌙 : Thème sombre automatique (selon système) ou manuel via un toggle, persistant au rechargement.
+- **Persistance des données** : Sauvegarde locale (`localStorage`) de la position GPS, du thème et des statuts favoris.
 
 ---
 
-## 🚀 Comment ça marche ?
+## 🛠️ Stack Technique
 
-1. **Récupération**  
-   Le script `update_matchs.js` parcourt une liste d’URLs de la FFF définie dans le code.
-
-2. **Traitement**  
-   Les données sont nettoyées, normalisées, triées par date, puis sauvegardées dans `matchs.json`.
-
-3. **Affichage**  
-   Le fichier `sport.html` (page d’accueil) lit ce JSON et génère dynamiquement des **cartes de matchs élégantes et interactives**.
+- **Frontend** : 
+  - HTML5, CSS3 (Flexbox/Grid, Variables CSS).
+  - JavaScript Vanilla (ES6+).
+- **APIs Externes** :
+  - **Geoapify** : Géocodage (Recherche ville) et Routing (Calcul distance/temps).
+  - **Open-Meteo** : Prévisions météorologiques.
+- **Backend / Data** :
+  - Node.js + Puppeteer (Scraping des données des fédérations).
+  - Fichier `matchs.json` comme base de données.
+- **Icônes & Fonts** : FontAwesome 6, Google Fonts (Inter).
 
 ---
 
-## 📁 Structure du projet (exemple)
+## 🚀 Installation & Utilisation
 
+1. **Cloner le projet**
+  ```bash
+   git clone https://github.com/Kili1n/Dashboard_presse.git
+  ```
+
+2. **Mise à jour des données (Scraping) Nécessite Node.js installé.**
+
+  ```bash
+  node update_matchs.js
+  ```
+  *Cela génère le fichier data/matchs.json.*
+
+  3. **Lancer le Dashboard** Ouvrez simplement index.html dans votre navigateur. (Pour une expérience optimale avec les APIs, l'utilisation d'un serveur local type Live Server est recommandée).
+
+## 📁 Structure du Projet
 ```
 Dashboard_presse/
-├── update_matchs.js
-├── matchs.json
-├── sport.html
 ├── css/
-│ └── style.css
+│   ├── index.css       # Styles principaux et Dark Mode
+│   └── mobile.css      # Adaptations responsive
 ├── js/
-│ └── app.js
+│   ├── config.js       # Clés API et configurations
+│   └── index.js        # Logique applicative (Filtres, API, Favoris)
+├── data/
+│   └── matchs.json     # Données scrapées
+├── index.html          # Point d'entrée
+├── update_matchs.js    # Script de scraping
 └── README.md
 ```
----
 
-## 📌 Objectif
+## 🤝 Contribution & Contact
 
-Faciliter la **veille sportive** et la **planification des déplacements** en offrant une vue centralisée, claire et intelligente des matchs à venir.
+Le projet inclut un footer interactif permettant aux utilisateurs de :
+- Suggérer l'ajout de nouveaux clubs.
+- Signaler des bugs.
+- Contacter le développeur.
+
+**Auteur** : Kilian Lentz
+
+**Instagram** : [@kiksf4](https://instagram.com/kiksf4)
 
 ---
 
