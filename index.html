@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OnShootKwa</title>
+    <title>Fokal Press - Dashboard Photographes & Accréditations</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,16 +11,63 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/mobile.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z' fill='%23007BFF'/><path transform='translate(0, -2)' d='M14.8333 9H13.6667L12.9375 8.25H11.0625L10.3333 9H9.16667C8.525 9 8 9.525 8 10.1667V13.6667C8 14.3083 8.525 14.8333 9.16667 14.8333H14.8333C15.475 14.8333 16 14.3083 16 13.6667V10.1667C16 9.525 15.475 9 14.8333 9ZM12 13.9583C10.8708 13.9583 9.95833 13.0458 9.95833 11.9167C9.95833 10.7875 10.8708 9.875 12 9.875C13.1292 9.875 14.0417 10.7875 14.0417 11.9167C14.0417 13.0458 13.1292 13.9583 12 13.9583Z' fill='white'/></svg>">
 </head>
 <body>  
     <header id="mainHeader">
         <div class="header-top">
-            <div class="brand" id="siteLogo">
-                <i class="fa-solid fa-map-location-dot"></i>
-                OnShootKwa
-                <button id="menuToggle" class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="brand" id="siteLogo">
+            <div style="
+                    position: relative;
+                    width: 28px; height: 38px;
+                    background: #ffffff;
+                    border-radius: 4px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+                    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+                    margin-right: 16px;
+                    overflow: hidden;
+                    transform: rotate(-8deg);
+                    transition: transform 0.3s ease;
+                "
+                onmouseover="this.style.transform='rotate(0deg) scale(1.1)'" 
+                onmouseout="this.style.transform='rotate(-8deg)'">
+                
+                <div style="
+                    width: 8px; height: 3px;
+                    background: #e0e0e0;
+                    border-radius: 2px;
+                    margin-top: 3px;
+                "></div>
+
+                <div style="
+                    width: 100%; height: 6px;
+                    background: var(--accent);
+                    margin-top: 3px;
+                "></div>
+
+                <div style="
+                    position: relative;
+                    flex-grow: 1;
+                    display: flex; align-items: center; justify-content: center;
+                    padding-bottom: 2px;
+                    width: 100%;
+                ">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 16.5L8 14.5L14 16.5L21 13.5V20.5L14 23.5L8 21.5L3 23.5V16.5Z" fill="#e0e0e0"/>
+                        <path d="M8 14.5V21.5M14 16.5V23.5" stroke="white" stroke-width="0.5"/>
+
+                        <g transform="translate(3, 0) scale(0.75)">
+                            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="var(--accent)"/>
+                            <path transform="translate(0, -2)" d="M14.8333 9H13.6667L12.9375 8.25H11.0625L10.3333 9H9.16667C8.525 9 8 9.525 8 10.1667V13.6667C8 14.3083 8.525 14.8333 9.16667 14.8333H14.8333C15.475 14.8333 16 14.3083 16 13.6667V10.1667C16 9.525 15.475 9 14.8333 9ZM12 13.9583C10.8708 13.9583 9.95833 13.0458 9.95833 11.9167C9.95833 10.7875 10.8708 9.875 12 9.875C13.1292 9.875 14.0417 10.7875 14.0417 11.9167C14.0417 13.0458 13.1292 13.9583 12 13.9583Z" fill="white"/>
+                        </g>
+                    </svg>
+                </div>
             </div>
 
+            <span>Fokal<span style="font-weight: 400; opacity: 0.8;">Press</span></span>
+            
+            <button id="menuToggle" class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
             <div class="nav-controls">
                 <div class="search-group">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -87,14 +134,51 @@
     <footer id="mainFooter">
         <div class="footer-content">
             
-            <div class="footer-col">
-                <div class="footer-brand">
-                    <i class="fa-solid fa-map-location-dot"></i>OnShootKwa
+        <div class="footer-col">
+            <div class="footer-brand" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                
+                <div style="
+                    position: relative;
+                    width: 28px; height: 38px;
+                    background: #ffffff;
+                    border-radius: 4px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+                    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+                    overflow: hidden;
+                    transform: rotate(-8deg);
+                    transition: transform 0.3s ease;
+                    flex-shrink: 0;
+                "
+                onmouseover="this.style.transform='rotate(0deg) scale(1.1)'" 
+                onmouseout="this.style.transform='rotate(-8deg)'">
+                
+                    <div style="width: 8px; height: 3px; background: #e0e0e0; border-radius: 2px; margin-top: 3px;"></div>
+                    <div style="width: 100%; height: 6px; background: var(--accent); margin-top: 3px;"></div>
+
+                    <div style="position: relative; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 4px; width: 100%;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 16.5L8 14.5L14 16.5L21 13.5V20.5L14 23.5L8 21.5L3 23.5V16.5Z" fill="var(--accent)"/>
+                            <path d="M8 14.5V21.5M14 16.5V23.5" stroke="white" stroke-opacity="0.3" stroke-width="0.7"/>
+                            <g transform="translate(3, 0) scale(0.75)">
+                                <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="var(--accent)" stroke="white" stroke-width="1.5"/>
+                                <path transform="translate(0, -2)" d="M14.8333 9H13.6667L12.9375 8.25H11.0625L10.3333 9H9.16667C8.525 9 8 9.525 8 10.1667V13.6667C8 14.3083 8.525 14.8333 9.16667 14.8333H14.8333C15.475 14.8333 16 14.3083 16 13.6667V10.1667C16 9.525 15.475 9 14.8333 9ZM12 13.9583C10.8708 13.9583 9.95833 13.0458 9.95833 11.9167C9.95833 10.7875 10.8708 9.875 12 9.875C13.1292 9.875 14.0417 10.7875 14.0417 11.9167C14.0417 13.0458 13.1292 13.9583 12 13.9583Z" fill="white"/>
+                            </g>
+                        </svg>
+                    </div>
                 </div>
-                <p class="footer-desc">
-                    L'outil de planification indispensable pour les photographes de sport. Trouvez vos matchs, gérez vos accréditations et simplifiez vos déplacements.
-                </p>
+
+                <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-weight: 700; font-size: 1.4rem; white-space: nowrap;">Fokal<span style="font-weight: 400; opacity: 0.8;">Press</span></span>
+                    <span style="font-size: 0.9rem; opacity: 0.7; font-weight: 400; border-left: 1px solid rgba(0,0,0,0.1); padding-left: 10px;">
+                        Dashboard Photographes & Accréditations
+                    </span>
+                </div>
             </div>
+            
+            <p class="footer-desc" style="max-width: 600px;">
+                L'outil de planification indispensable pour les photographes de sport. Trouvez vos matchs, gérez vos accréditations et simplifiez vos déplacements.
+            </p>
+        </div>
 
             <div class="footer-col">
                 <h4>Contribuer</h4>

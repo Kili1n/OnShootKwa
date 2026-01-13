@@ -21,6 +21,7 @@ const getLogoUrl = (name) => {
         finalUrl = CUSTOM_LOGOS[customKey];
     } else {
         finalUrl = ''; 
+        console.warn(`⚠️ Aucun logo trouvé pour le club : "${name}"`);
     }
 
     logoCache.set(name, finalUrl);
@@ -414,7 +415,7 @@ async function loadMatches() {
                             
         return {
                 sport: m.sport,
-                sourceUrl: url,
+                sourceUrl: m.url || m.sourceUrl || "#",
                 competition: m.competition || "N/A",
                 compFormatted: formatCompetition(m.competition, m.sport),
                 home: { name: m.home }, 
@@ -522,6 +523,7 @@ function resetFilters() {
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
     
+    updateFilterSlider();
     applyFilters();
 }
 
@@ -716,7 +718,7 @@ function exportToGoogleCalendar(home, away, dateObj, comp, sport, coords) {
     const endTime = formatDate(new Date(dateObj.getTime() + 2 * 60 * 60 * 1000));
 
     const title = encodeURIComponent(`${home} vs ${away}`);
-    const details = encodeURIComponent(`Accréditation photographe sur le match ${home} vs ${away} en ${comp} - Généré via OnShootKwa`);
+    const details = encodeURIComponent(`Accréditation photographe sur le match ${home} vs ${away} en ${comp} - Généré via Fokal Press`);
     
     // Modification ici : si coords existe, on met "lat,lon", sinon le nom du club
     const locationValue = coords ? `${coords.lat},${coords.lon}` : home;
