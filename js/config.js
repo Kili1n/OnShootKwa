@@ -22,7 +22,7 @@ const ACCRED_LIST = {
     "RACING CLUB FRANCE" : "https://www.instagram.com/racing_cff/",
     "LE MANS" : "communication@msb.fr",
     "BRETIGNY" : "csbfootball@orange.fr",
-    "LE MANS" : "https://www.instagram.com/parisbasketball.asso/"
+    "PARIS BASKETBALL" : "https://www.instagram.com/parisbasketball.asso/"
 };
 
 const CUSTOM_LOGOS = {
