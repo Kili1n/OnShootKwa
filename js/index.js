@@ -584,7 +584,7 @@ function applyFilters() {
     filtered.sort((a, b) => {
         if (currentFilters.sortBy === "favorite") {
             // On donne un poids à chaque statut pour le tri
-            const weights = { 'received': 3, 'asked': 2, 'envie': 1, 'refused': -1 };
+            const weights = { 'received': 3, 'asked': 2, 'envie': 1, 'refused': -1, null : 0 };
             
             const statusA = matchStatuses[getMatchId(a)];
             const statusB = matchStatuses[getMatchId(b)];
