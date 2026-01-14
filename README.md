@@ -28,6 +28,7 @@ Ce dashboard centralise les calendriers de plusieurs sports (Football, Basket, H
   - ⭐ **Envie** (Jaune)
   - 📨 **Accréditation Demandée** (Orange)
   - ✅ **Accréditation Reçue** (Vert)
+  - ❌ **Accréditation réfusée** (Rouge)
 - **Tri Intelligent** : Possibilité de trier la grille pour voir les priorités (Accréditations reçues/demandées) en premier.
 - **Automatisation des Mails** : 
   - Génération de mails de demande d'accréditation pré-remplis (Objet, Corps avec date/match, Destinataire) ouvrant directement Gmail.
