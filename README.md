@@ -8,16 +8,24 @@ Ce dashboard centralise les calendriers de plusieurs sports (Football, Basket, H
 
 ## ✨ Fonctionnalités Clés
 
-### 📅 Planification & Filtres
+### 📅 Planification & Filtres Avancés
 - **Multi-Sports** : Support du Football ⚽, Basketball 🏀 et Handball 🤾.
-- **Filtres Avancés** : Tri par compétition (L1, L2, N1, U19...), par semaine, ou par club via la barre de recherche.
+- **Filtres Précis** : Tri par compétition (L1, L2, N1, U19...), par semaine, ou par club via la barre de recherche.
+- **Panneau de Contrôle Avancé** :
+  - **Slider de Distance** 📏 : Ajustez le rayon de recherche (de 10 à 300km) en temps réel.
+  - **Tris Dynamiques** : Organisez les résultats par Date, Distance, Niveau de compétition ou Priorité (Favoris).
 - **Google Agenda** : Export en un clic de l'événement avec remplissage automatique (Lieu, équipes, heure).
 
+### 🗺️ Cartographie & Visualisation
+- **Carte Interactive (Leaflet)** : Visualisez l'ensemble des matchs filtrés sur une carte dynamique directement depuis l'application.
+- **Clustering Intelligent** : Gestion avancée des points superposés. Si plusieurs matchs ont lieu au même endroit (même stade), une popup avec liste déroulante permet de naviguer entre les rencontres.
+- **Navigation Fluide** : Un clic sur un match depuis la carte vous renvoie directement vers sa fiche détaillée dans la grille.
+
 ### 📍 Logistique & Déplacements
-- **Géolocalisation Intelligente** : 
-  - Utilisation du GPS ou recherche manuelle par Ville.
-  - Calcul automatique des distances et temps de trajet.
-- **Comparateur de Transport** : Estimation du temps de trajet en **Voiture** 🚗 vs **Transports en commun** 🚆.
+- **Géolocalisation Flexible** : 
+  - **GPS** : Position automatique.
+  - **Recherche Ville** : Champ de recherche avec autocomplétion pour simuler un départ depuis n'importe quelle ville (via API Geoapify).
+- **Calcul d'Itinéraire** : Affichage automatique des distances et temps de trajet (Voiture 🚗 vs Transports 🚆).
 - **Intégration Météo** 🌤️ : Affichage des prévisions météo locales pour le jour du match (via Open-Meteo).
 - **Navigation** : Liens directs vers Google Maps pour l'itinéraire.
 
@@ -35,9 +43,12 @@ Ce dashboard centralise les calendriers de plusieurs sports (Football, Basket, H
   - Copie rapide des adresses emails.
 
 ### 🎨 Interface & UX
+- **Modes d'Affichage** :
+  - **Vue Grille** : Cartes détaillées, idéal pour la découverte.
+  - **Vue Liste** : Affichage condensé et compact, idéal pour scanner rapidement un grand nombre de matchs.
 - **Design Responsive** : Optimisé pour Desktop, Tablette et Mobile.
 - **Dark Mode** 🌙 : Thème sombre automatique (selon système) ou manuel via un toggle, persistant au rechargement.
-- **Persistance des données** : Sauvegarde locale (`localStorage`) de la position GPS, du thème et des statuts favoris.
+- **Persistance des données** : Sauvegarde locale (`localStorage`) de la position GPS, du thème, des préférences d'affichage et des statuts favoris.
 
 ---
 
@@ -46,6 +57,7 @@ Ce dashboard centralise les calendriers de plusieurs sports (Football, Basket, H
 - **Frontend** : 
   - HTML5, CSS3 (Flexbox/Grid, Variables CSS).
   - JavaScript Vanilla (ES6+).
+  - **Leaflet.js** : Librairie open-source pour la carte interactive.
 - **APIs Externes** :
   - **Geoapify** : Géocodage (Recherche ville) et Routing (Calcul distance/temps).
   - **Open-Meteo** : Prévisions météorologiques.
