@@ -345,6 +345,15 @@ body.dark-mode .search-input {
     background: #2C2C2E !important;
 }
 
+body.dark-mode select.control-input option {
+    background-color: #2C2C2E; /* Utilise la même couleur que tes autres badges */
+    color: #FFFFFF;           /* Assure que le texte reste blanc sur le fond sombre */
+}
+
+body.dark-mode .control-input:focus {
+    background-color: var(--tag-bg) !important;
+}
+
 body.dark-mode .control-input, 
 body.dark-mode .loc-input,
 body.dark-mode .icon-btn,
