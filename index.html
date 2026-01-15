@@ -6,6 +6,22 @@
     <title>Fokal Press - Dashboard pour Photographes de Sport</title>
     <meta name="description" content="L'outil ultime pour planifier votre saison. Calendriers, Carte interactive, Logistique et Gestion des accréditations. Couverture H/F, U17, U19.">
     
+   <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Fokal Press",
+      "operatingSystem": "Web",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "description": "Dashboard de planification logistique pour les photographes de sport incluant calendriers multi-sports et gestion d'accréditations."
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -447,8 +463,8 @@
             
             <p>
                 Fini la chasse aux matchs, la recherche laborieuse de contacts et les oublis de relance. 
-                Visualisez les calendriers (Foot, Basket, Hand), calculez vos trajets et pilotez tout votre suivi d'accréditation depuis une interface unique. 
-                L'outil pro pour votre logistique, <strong>100% gratuit</strong>.
+                Visualisez les calendriers (Foot, Basket, Hand), calculez vos trajets et accédez à une base d'accréditations <strong>enrichie par la communauté</strong>. 
+                L'outil pro, collaboratif et <strong>100% gratuit</strong>.
             </p>
 
             <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
@@ -712,9 +728,54 @@
         }
     }
 
+    .faq-section { padding: 100px 0; background: #080808; }
+        .faq-grid { max-width: 850px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: 0.3s;
+        }
+        .faq-item:hover { border-color: rgba(255,255,255,0.2); }
+        .faq-question { font-weight: 700; font-size: 1.15rem; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+        .faq-question i { color: var(--accent); font-size: 0.9rem; }
+        .faq-answer { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+
+        .final-cta { padding: 100px 0; text-align: center; }
+        .cta-card {
+            background: linear-gradient(135deg, #0071E3 0%, #0056b3 100%);
+            padding: 60px 40px; border-radius: 30px;
+        }
+
     /* --- FINAL CTA STYLES --- */
 
 </style>
+        <section class="faq-section">
+            <div class="container">
+                <h2 class="text-gradient" style="text-align: center; font-size: 2.5rem; margin-bottom: 50px;">Questions fréquentes</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question"><i class="fa-solid fa-database"></i> D'où proviennent les calendriers ?</div>
+                        <div class="faq-answer">Les données sont extraites des sites officiels des fédérations via un script automatisé (Node.js/Puppeteer). Elles sont centralisées et mises à jour chaque mois pour garantir une visibilité à 60 jours.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question"><i class="fa-solid fa-euro-sign"></i> Pourquoi est-ce gratuit ?</div>
+                        <div class="faq-answer">C'est un projet Open Source et bénévole créé par un photographe pour les photographes. L'outil ne nécessite aucune inscription, aucun abonnement et ne collecte aucune donnée personnelle.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question"><i class="fa-solid fa-trophy"></i> Quelles divisions sont couvertes ?</div>
+                        <div class="faq-answer">Nous couvrons le Foot, le Basket et le Hand, des ligues professionnelles (L1, L2) aux championnats nationaux et catégories de jeunes (U19/U17).</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question"><i class="fa-solid fa-circle-plus"></i> Un club ou un lien manque à l'appel ?</div>
+                        <div class="faq-answer">
+                            Le projet est <b>collaboratif</b> et repose sur l'entraide. Si vous possédez des liens d'accréditation que vous souhaitez partager ou si vous constatez une absence, contactez-moi par email (lien en pied de page) pour suggérer un ajout et en faire profiter toute la communauté.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     <section class="final-cta">
         <div class="container">
             <div class="cta-card">
