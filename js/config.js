@@ -1,21 +1,20 @@
 // config.js
 
 const ACCRED_LIST = {
-    "AFC COMPIEGNE": "https://www.instagram.com/999constantpl/",
-    "COMPIEGNE": "https://www.instagram.com/999constantpl/",
-    "FC VERSAILLES": "louis.desloge@fcversailles.com",
+    "AFC COMPIEGNE": "https://www.instagram.com/afccompiegneofficiel/",
+    "FC VERSAILLES": "louis.desloge@fcversailles.com",  // mail présent sur https://fcversailles.com/contact-national/
     "US CHANTILLY": "https://www.instagram.com/uschantilly/",
     "US ORLEANS": "https://orleansloiretfoot.com/contact/",
     "NANTERRE": "https://www.nanterre92.com/club/acces/accreditations-journalistes/",
-    "C'CHARTRES MHB": "manon.bougard@ccmhb.fr",
+    "C'CHARTRES MHB": "manon.bougard@ccmhb.fr",     // mail présent sur https://pro.ccmhb.fr/pages/presse-medias-photographes-42.html
     "CHARTRES FOOTBALL" : "https://cchartresfootball.com/about-us/contact/",
     "CHARTRES": "https://tally.so/r/obRDgO",
     "PARIS 92": "contact@paris92.fr",
     "CRETEIL US": "https://uschb.fr/infos-pratiques/presse/",
     "IVRY": "5800000@ffhandball.net",
     "FRANCAIS VOLANTS": "contact.hockey@francais-volants.org",
-    "SASP - SAINT QUENTIN BASKET BALL_U21" : "https://www.linkedin.com/in/camille-christiaens-6a1839227/",
-    "CHAMBRAY" : "antoine.recher@cthb.fr",
+    "SASP - SAINT QUENTIN BASKET BALL_U21" : "https://www.instagram.com/sqbbjsc/",
+    "CHAMBRAY" : "antoine.recher@cthb.fr",      // mail présent sur https://www.cthb.fr/infos_pratiques/contact
     "EVREUX" : "secretariat@almevreuxbasket.com",
     "VIMY" : "contact@usvimy.fr",
     "PARIS FC" : "https://parisfc.fr/presse/",
