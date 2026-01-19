@@ -275,6 +275,9 @@ input:checked + .slider:before { transform: translateX(14px); }
     color: #34C759 !important; /* Vert Apple/Succès */
 }
 .accred-unavailable { color: var(--text-secondary); opacity: 0.7; }
+.accred-email-text{
+    color: var(--text-primary);
+}
 .accred-email { color: var(--text-primary); text-decoration: none; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
 
 .error-msg { grid-column: 1 / -1; text-align: center; color: #ef4444; background: #fee2e2; padding: 20px; border-radius: 12px; }
@@ -845,6 +848,7 @@ body.dark-mode .source-link:hover {
     border: none;
     cursor: pointer;
 }
+
 .map-popup-btn:hover {
     background: #005bb7;
 }
@@ -957,4 +961,202 @@ body.dark-mode .map-list-item {
 }
 body.dark-mode .map-scroll-container::-webkit-scrollbar-thumb {
     background: #48484A;
+}
+
+/* --- STYLE MODALE LOGIN --- */
+.login-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 380px;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.login-header { margin-bottom: 25px; }
+.login-header h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+.login-header p { color: var(--text-secondary); font-size: 14px; }
+
+.login-icon-circle {
+    width: 60px; height: 60px;
+    background: var(--tag-bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 24px; color: var(--accent);
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: #FAFAFA;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+    color: var(--text-primary);
+}
+
+.input-group input:focus {
+    border-color: var(--accent);
+    background: #FFF;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+.login-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.login-submit-btn:hover { background: #005bb7; }
+
+.login-footer-text { margin-top: 20px; font-size: 12px; color: var(--text-secondary); }
+.login-footer-text a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+/* Dark Mode pour Login */
+body.dark-mode .input-group input { background: #2C2C2E; border-color: rgba(255,255,255,0.1); color: white; }
+body.dark-mode .input-group input:focus { background: #3A3A3C; }
+
+/* Gestion de l'affichage Desktop/Mobile des boutons */
+#loginBtnMobile { display: none; } /* Caché par défaut sur PC */
+
+/* Style état connecté */
+.logged-in-icon {
+    color: #34C759 !important; /* Vert */
+    position: relative;
+}
+.logged-in-icon::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 8px; height: 8px;
+    background: #34C759;
+    border: 1px solid var(--card-bg);
+    border-radius: 50%;
+}
+
+/* Animation douce entre les vues */
+#loginView, #signupView {
+    animation: fadeInView 0.3s ease-in-out;
+}
+
+@keyframes fadeInView {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style spécifique pour le bouton vert de l'inscription au survol */
+#signupForm .login-submit-btn:hover {
+    background: #2da84a !important; /* Vert un peu plus foncé */
+}
+
+/* Style spécifique Bouton Google */
+.google-btn {
+    background-color: #ffffff !important;
+    color: #1f1f1f !important;
+    border: 1px solid #dadce0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 500 !important;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.google-btn:hover {
+    background-color: #f8f9fa !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+
+/* Ajustement Dark Mode pour le bouton Google */
+body.dark-mode .google-btn {
+    background-color: #4285F4 !important; /* Bleu Google en mode sombre */
+    color: #ffffff !important;
+    border: none !important;
+}
+body.dark-mode .google-btn:hover {
+    background-color: #3367D6 !important;
+}
+/* On met un fond blanc derrière le logo SVG en mode sombre pour qu'il ressorte */
+body.dark-mode .google-btn img {
+    background: white;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+/* Animation de vibration en cas d'erreur */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+.shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Bouton suppression de compte */
+.delete-btn {
+    background: #FFF !important;
+    color: #FF3B30 !important;
+    border: 1px solid #FF3B30 !important;
+    transition: all 0.2s;
+}
+.delete-btn:hover {
+    background: #FF3B30 !important;
+    color: white !important;
+}
+/* Mode sombre */
+body.dark-mode .delete-btn {
+    background: transparent !important;
+}
+body.dark-mode .delete-btn:hover {
+    background: #FF3B30 !important;
+}
+
+/* Cette classe remplace le style="background..." */
+.bg-secondary-adaptive {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Ajustement spécifique pour l'icône ronde */
+.login-icon-circle.bg-secondary-adaptive {
+    border: none !important; /* Pas de bordure pour le rond */
 }

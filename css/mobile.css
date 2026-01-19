@@ -438,5 +438,27 @@
         justify-content: center;
     }
 
-/* Fin du @media query */
+    /* ... Dans @media (max-width: 768px) ... */
+
+    /* On cache le bouton desktop car il est dans .nav-controls qui est caché/déplacé */
+    #loginBtnDesktop { display: none !important; }
+
+    /* On affiche le bouton mobile */
+    #loginBtnMobile { 
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--accent); /* Couleur bleue pour se distinguer du burger */
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 5px;
+    }
+
+    /* Ajustement Dark Mode Mobile */
+    body.dark-mode #loginBtnMobile {
+        color: var(--accent);
+    }
 }

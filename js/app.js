@@ -106,16 +106,40 @@ const isMobile = () => {
 };
 
 function openGmailCompose(email, homeTeam, awayTeam, matchDate, sport, compet) {
+    // 1. Récupération des infos
+    const user = firebase.auth().currentUser;
+    const storedInsta = localStorage.getItem('userInsta');
+    const storedPortfolio = localStorage.getItem('userPortfolio');
+
+    const userName = (user && user.displayName) ? user.displayName : "[VOTRE NOM ET PRÉNOM]";
+
+    // 2. Construction de la phrase de présentation du travail
+    let workSentence = "";
+
+    if (storedInsta && storedPortfolio) {
+        // Cas : Les deux existent
+        workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon portfolio : ${storedPortfolio} ainsi que sur mon compte Instagram : ${storedInsta}`;
+    } else if (storedInsta) {
+        // Cas : Uniquement Instagram
+        workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon compte Instagram : @${storedInsta}`;
+    } else if (storedPortfolio) {
+        // Cas : Uniquement Portfolio
+        workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon portfolio : ${storedPortfolio}`;
+    } else {
+        // Cas : Aucun (Placeholder par défaut)
+        workSentence = `Vous pouvez avoir un aperçu de mon travail ici : [LIEN VERS VOTRE PORTFOLIO / INSTAGRAM]`;
+    }
+
     const subject = `Demande d'accréditation : ${homeTeam} vs ${awayTeam} (${matchDate})`;
     
+    // 3. Corps du mail
     const body = `Bonjour,\n\n` +
         `Je me permets de vous contacter en tant que photographe afin de solliciter une accréditation pour le match ${homeTeam} vs ${awayTeam} (${compet}) prévu le ${matchDate}.\n\n` +
         `Passionné par le ${sport}, cette rencontre serait pour moi l'opportunité d'enrichir mon portfolio. En contrepartie, je pourrais, si vous le souhaitez, mettre à votre disposition les clichés réalisés pour vos supports de communication.\n\n` +
-        `Vous pouvez avoir un aperçu de mon travail ici : [LIEN VERS VOTRE PORTFOLIO / INSTAGRAM]\n\n` +
+        `${workSentence}\n\n` +
         `Je reste à votre entière disposition pour toute information complémentaire.\n\n` +
         `Cordialement,\n\n` +
-        `[VOTRE NOM ET PRÉNOM]\n` +
-        `[VOTRE NUMÉRO DE TÉLÉPHONE]\n` +
+        `${userName}\n` +
         `---\n` +
         `Demande préparée via fokalpress.fr - Outil de planification pour photographes de sport.`;
     
@@ -212,6 +236,30 @@ const getMatchId = (m) => {
     return `${h}_${a}_${d}`;
 };
 
+// Fonction pour envoyer un changement unique à Firebase
+async function syncFavoriteToFirebase(matchId, status) {
+    const user = auth.currentUser;
+    if (!user) return; // Si pas connecté, on ne fait rien (reste en local)
+
+    try {
+        // On prépare la mise à jour
+        // Si status est null, on supprime le champ de la base avec FieldValue.delete()
+        const updateData = {};
+        updateData[`favorites.${matchId}`] = status ? status : firebase.firestore.FieldValue.delete();
+
+        // On met à jour uniquement ce champ dans le document user
+        await db.collection('users').doc(user.uid).update(updateData);
+    } catch (e) {
+        console.error("Erreur sync favoris :", e);
+        // Si le document n'existe pas encore (cas rare), on le crée
+        if (e.code === 'not-found') {
+             await db.collection('users').doc(user.uid).set({
+                 favorites: { [matchId]: status }
+             }, { merge: true });
+        }
+    }
+}
+
 // 2. Fonction de cycle appelée au clic
 function cycleStatus(event, matchId) {
     event.stopPropagation();
@@ -224,22 +272,28 @@ function cycleStatus(event, matchId) {
     const nextIndex = (currentIndex + 1) % STATUS_CYCLE.length;
     const nextStatus = STATUS_CYCLE[nextIndex];
 
-    // Mise à jour des données
+    // 1. Mise à jour de la variable globale (Mémoire vive)
     if (nextStatus) {
         matchStatuses[matchId] = nextStatus;
     } else {
-        delete matchStatuses[matchId]; // Si on revient à null, on supprime
+        delete matchStatuses[matchId];
     }
+
+    // 2. Mise à jour du Cache Local (Pour que ça reste fluide au rechargement de page)
+    // C'est nécessaire même connecté, sinon l'étoile disparaît au F5 avant que Firebase ne réponde
     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
 
-    // Mise à jour visuelle immédiate (Classes)
+    // 3. Mise à jour Cloud (Si connecté)
+    if (auth.currentUser) {
+        syncFavoriteToFirebase(matchId, nextStatus);
+    }
+
+    // 4. Mise à jour Visuelle
     btn.classList.remove('status-envie', 'status-asked', 'status-received', 'status-refused');
     if (nextStatus) btn.classList.add(`status-${nextStatus}`);
-
-    // Mise à jour de l'icône
     icon.className = getStatusIcon(nextStatus);
     
-    // Mise à jour du titre pour l'accessibilité
+    // Titres (Accessibilité)
     const titles = {
         envie: "Envie d'y aller",
         asked: "Accréditation demandée",
@@ -1335,6 +1389,7 @@ function updateFilterSlider() {
         document.body.classList.add('loaded');
     }); 
 
+
 });
 
 
@@ -1399,4 +1454,476 @@ function sendFooterMail(type) {
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${adminEmail}&su=${encodedSubject}&body=${encodedBody}`;
     
     window.open(gmailUrl, '_blank');
+}
+// --- CONFIGURATION FIREBASE ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDgTd3xeQpnlnr4YqTX2B9qwtAnzhQefDY",
+  authDomain: "fokalpress.firebaseapp.com",
+  projectId: "fokalpress",
+  storageBucket: "fokalpress.firebasestorage.app",
+  messagingSenderId: "646309909772",
+  appId: "1:646309909772:web:ab3102c4e3351bf823e529",
+  measurementId: "G-LYH1P3NB5L"
+};
+
+// Initialisation de Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+// Initialisation des services
+const auth = firebase.auth();
+const db = firebase.firestore();
+const analytics = firebase.analytics();
+
+// --- LOGIQUE GLOBALE (Connexion, Profil, Paramètres) ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Éléments UI LOGIN
+    const loginModal = document.getElementById('loginModal');
+    const closeLoginBtn = document.getElementById('closeLoginBtn');
+    const googleBtn = document.getElementById('googleLoginBtn');
+    const loginView = document.getElementById('loginView');
+    const profileView = document.getElementById('completeProfileView');
+    const profileForm = document.getElementById('profileForm');
+
+    // Éléments UI SETTINGS
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const settingsForm = document.getElementById('settingsForm');
+    const settingsLogoutBtn = document.getElementById('settingsLogoutBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+
+    // --- 1. ÉCOUTEUR D'ÉTAT AUTHENTIFICATION (Chargement initial) ---
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            console.log("Utilisateur connecté :", user.email);
+            
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    // A. Sync Favoris (Priorité Cloud)
+                    matchStatuses = userData.favorites || {};
+                    localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
+                    renderMatches(currentlyFiltered);
+
+                    // B. Cache Profil
+                    if (userData.instagram) localStorage.setItem('userInsta', userData.instagram);
+                    if (userData.portfolio) localStorage.setItem('userPortfolio', userData.portfolio);
+
+                    // C. Update UI
+                    updateLoginUI(true, userData.photoURL || user.photoURL);
+                    loginModal.classList.add('hidden');
+
+                } else {
+                    // Nouveau compte (Pas encore en base)
+                    matchStatuses = {};
+                    localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
+                    renderMatches(currentlyFiltered);
+
+                    // Ouvrir modale profil pour finir l'inscription
+                    loginModal.classList.remove('hidden'); 
+                    loginView.style.display = 'none';
+                    profileView.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Erreur chargement données:", error);
+            }
+        } else {
+            // Déconnexion
+            console.log("Utilisateur déconnecté");
+            updateLoginUI(false);
+            
+            // Nettoyage
+            matchStatuses = {}; 
+            localStorage.removeItem('matchStatuses');
+            localStorage.removeItem('userInsta');
+            localStorage.removeItem('userPortfolio');
+            
+            renderMatches(currentlyFiltered);
+        }
+    });
+
+    // --- 2. GESTION DU CLIC SUR L'ICÔNE UTILISATEUR ---
+    document.querySelectorAll('.login-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            const currentUser = auth.currentUser;
+
+            if (currentUser) {
+                // CAS A : CONNECTÉ -> On ouvre les PARAMÈTRES
+                openSettingsModal();
+            } else {
+                // CAS B : DÉCONNECTÉ -> On ouvre le LOGIN
+                loginModal.classList.remove('hidden');
+                loginView.style.display = 'block';
+                profileView.style.display = 'none';
+            }
+        });
+    });
+
+    // --- 3. FONCTIONS MODALE PARAMÈTRES ---
+    
+    // Ouvrir et charger les données
+    async function openSettingsModal() {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        settingsModal.classList.remove('hidden');
+
+        // Pré-remplissage des champs
+        try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                if(document.getElementById('settingsInsta')) document.getElementById('settingsInsta').value = data.instagram || '';
+                if(document.getElementById('settingsPortfolio')) document.getElementById('settingsPortfolio').value = data.portfolio || '';
+            }
+        } catch (e) {
+            console.error("Erreur chargement profil", e);
+        }
+    }
+
+    // Sauvegarder modifications
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            const btn = settingsForm.querySelector('button');
+            const originalText = "Enregistrer les modifications";
+            
+            const newInsta = document.getElementById('settingsInsta').value.trim();
+            const newPortfolio = document.getElementById('settingsPortfolio').value.trim();
+
+            // 1. État de chargement
+            btn.disabled = true;
+            btn.innerText = "Enregistrement...";
+
+            try {
+                await db.collection('users').doc(user.uid).update({
+                    instagram: newInsta,
+                    portfolio: newPortfolio
+                });
+
+                // 2. SUCCÈS : Bouton Vert + Message
+                btn.style.backgroundColor = "#34C759";
+                btn.style.borderColor = "#34C759";
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Enregistré !';
+
+                // 3. Fermeture après délai (1.5s)
+                setTimeout(() => {
+                    settingsModal.classList.add('hidden');
+                    
+                    // Reset du bouton pour la prochaine fois
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "";
+                    btn.style.borderColor = "";
+                    btn.disabled = false;
+                }, 1500);
+
+            } catch (error) {
+                console.error(error);
+                alert("Erreur : " + error.message);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // Déconnexion via le bouton gris
+// Déconnexion via le bouton gris
+    if (settingsLogoutBtn) {
+        settingsLogoutBtn.addEventListener('click', async () => {
+            const originalText = '<i class="fa-solid fa-right-from-bracket"></i> Se déconnecter';
+            
+            // 1. État de chargement
+            settingsLogoutBtn.disabled = true;
+            settingsLogoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Déconnexion...';
+
+            try {
+                await auth.signOut();
+
+                // 2. SUCCÈS : Bouton Vert
+                settingsLogoutBtn.style.backgroundColor = "#34C759";
+                settingsLogoutBtn.style.borderColor = "#34C759";
+                settingsLogoutBtn.style.color = "#ffffff"; // Force le texte en blanc
+                settingsLogoutBtn.innerHTML = '<i class="fa-solid fa-check"></i> Déconnecté !';
+
+                console.log("Déconnexion réussie"); 
+                resetFilters(); 
+
+                // 3. Fermeture après délai (1.5s)
+                setTimeout(() => {
+                    settingsModal.classList.add('hidden');
+                    
+                    // Reset du bouton (invisible, mais propre pour la prochaine fois)
+                    settingsLogoutBtn.style.backgroundColor = "";
+                    settingsLogoutBtn.style.borderColor = "";
+                    settingsLogoutBtn.style.color = ""; // Retour couleur css
+                    settingsLogoutBtn.innerHTML = originalText;
+                    settingsLogoutBtn.disabled = false;
+                }, 1000);
+
+            } catch (error) {
+                console.error(error);
+                settingsLogoutBtn.innerHTML = originalText;
+                settingsLogoutBtn.disabled = false;
+            }
+        });
+    }
+
+    // Suppression de compte via le bouton rouge
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', async () => {
+            const confirmation = prompt("Pour confirmer la suppression définitive, tapez 'SUPPRIMER' ci-dessous :");
+            if (confirmation === "SUPPRIMER") {
+                const user = auth.currentUser;
+                const uid = user.uid;
+                try {
+                    await db.collection('users').doc(uid).delete();
+                    await user.delete();
+                    alert("Votre compte a été supprimé.");
+                    settingsModal.classList.add('hidden');
+                    resetFilters();
+                } catch (error) {
+                    if (error.code === 'auth/requires-recent-login') {
+                        alert("Par sécurité, veuillez vous déconnecter et vous reconnecter avant de supprimer votre compte.");
+                    } else {
+                        alert("Erreur : " + error.message);
+                    }
+                }
+            }
+        });
+    }
+
+    // Fermeture Settings
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+    }
+    settingsModal.addEventListener('click', (e) => {
+        if(e.target === settingsModal) settingsModal.classList.add('hidden');
+    });
+
+
+    // --- 4. FONCTIONS MODALE LOGIN (Google & Inscription) ---
+
+    // Connexion Google
+    if(googleBtn) {
+        googleBtn.addEventListener('click', async () => {
+            // On stocke le contenu HTML original pour pouvoir le remettre plus tard
+            const originalContent = `
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" width="18" height="18">
+                <span>Continuer avec Google</span>
+            `;
+            
+            // 1. État de chargement
+            googleBtn.disabled = true;
+            googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connexion...';
+            
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            try {
+                await auth.signInWithPopup(provider);
+                
+                // 2. SUCCÈS : Bouton Vert
+                googleBtn.classList.remove('google-btn'); // Enlève le style blanc
+                googleBtn.style.backgroundColor = "#34C759";
+                googleBtn.style.borderColor = "#34C759";
+                googleBtn.style.color = "white";
+                googleBtn.innerHTML = '<i class="fa-solid fa-check"></i> Connecté !';
+
+                // 3. RESET AUTOMATIQUE après 1.5 seconde (pour la prochaine fois)
+                setTimeout(() => {
+                    googleBtn.disabled = false;
+                    googleBtn.classList.add('google-btn'); // Remet le style blanc
+                    googleBtn.style.backgroundColor = "";
+                    googleBtn.style.borderColor = "";
+                    googleBtn.style.color = "";
+                    googleBtn.innerHTML = originalContent;
+                }, 1500);
+
+            } catch (error) {
+                console.error("Erreur login Google:", error);
+                alert("Erreur de connexion : " + error.message);
+                
+                // Reset immédiat en cas d'erreur
+                googleBtn.disabled = false;
+                googleBtn.classList.add('google-btn');
+                googleBtn.style.backgroundColor = "";
+                googleBtn.style.borderColor = "";
+                googleBtn.style.color = "";
+                googleBtn.innerHTML = originalContent;
+            }
+        });
+    }
+
+    // Enregistrement Profil (Premier login)
+    if(profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            if(!user) return;
+
+            const insta = document.getElementById('profileInsta').value.trim();
+            const portfolio = document.getElementById('profilePortfolio').value.trim();
+            const errorMsg = document.getElementById('formError');
+            const submitBtn = profileForm.querySelector('button');
+            const originalText = "Valider mon profil";
+
+            if (!insta && !portfolio) {
+                errorMsg.style.display = 'block';
+                return; 
+            } else {
+                errorMsg.style.display = 'none';
+            }
+
+            // 1. État de chargement
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Enregistrement...";
+
+            try {
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    instagram: insta,
+                    portfolio: portfolio,
+                    favorites: {},
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // 2. SUCCÈS : Bouton Vert
+                submitBtn.style.backgroundColor = "#34C759";
+                submitBtn.style.borderColor = "#34C759";
+                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Profil créé !';
+
+                updateLoginUI(true, user.photoURL);
+
+                // 3. Fermeture après délai
+                setTimeout(() => {
+                    loginModal.classList.add('hidden');
+                    // Reset
+                    submitBtn.innerText = originalText;
+                    submitBtn.style.backgroundColor = "";
+                    submitBtn.style.borderColor = "";
+                    submitBtn.disabled = false;
+                }, 1500);
+
+            } catch (error) {
+                alert("Erreur : " + error.message);
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+    // Fonction pour remettre les boutons à zéro quand on ferme les modales
+    function resetAllButtons() {
+        // Reset Google
+        if (googleBtn) {
+            googleBtn.disabled = false;
+            googleBtn.classList.add('google-btn');
+            googleBtn.style = ""; // Enlève tous les styles inline (vert/bordures)
+            googleBtn.innerHTML = `
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" width="18" height="18">
+                <span>Continuer avec Google</span>
+            `;
+        }
+        // Reset Logout
+        if (settingsLogoutBtn) {
+            settingsLogoutBtn.disabled = false;
+            settingsLogoutBtn.style = "";
+            settingsLogoutBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Se déconnecter';
+        }
+    }
+
+    // Fermeture Login
+// Fermeture Login (Bouton Croix)
+    if(closeLoginBtn) {
+        closeLoginBtn.addEventListener('click', () => {
+            const user = auth.currentUser;
+            if (user && profileView.style.display === 'block') {
+                auth.signOut(); 
+            }
+            loginModal.classList.add('hidden');
+            resetAllButtons(); // <--- AJOUT ICI
+        });
+    }
+    // Fermeture Login (Clic extérieur)
+    loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            const user = auth.currentUser;
+            if (user && profileView.style.display === 'block') {
+                auth.signOut();
+            }
+            loginModal.classList.add('hidden');
+            resetAllButtons(); // <--- AJOUT ICI
+        }
+    });
+
+    // Fermeture Settings (Bouton Croix)
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+            resetAllButtons(); // <--- AJOUT ICI
+        });
+    }
+    // Fermeture Settings (Clic extérieur)
+    settingsModal.addEventListener('click', (e) => {
+        if(e.target === settingsModal) {
+            settingsModal.classList.add('hidden');
+            resetAllButtons(); // <--- AJOUT ICI
+        }
+    });
+    
+    loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            const user = auth.currentUser;
+            if (user && profileView.style.display === 'block') {
+                auth.signOut();
+            }
+            loginModal.classList.add('hidden');
+        }
+    });
+
+    // --- 5. LOGIQUE BASCULE VUES LOGIN (Optionnel si usage Google unique) ---
+    const showSignupLink = document.getElementById('showSignupLink');
+    const showLoginLink = document.getElementById('showLoginLink');
+    
+    if(showSignupLink) {
+        showSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginView.style.display = 'none';
+            document.getElementById('signupView').style.display = 'block';
+        });
+    }
+    if(showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('signupView').style.display = 'none';
+            loginView.style.display = 'block';
+        });
+    }
+});
+
+// --- FONCTIONS UI ---
+
+function updateLoginUI(isLogged, photoURL) {
+    document.querySelectorAll('.login-trigger').forEach(btn => {
+        if (isLogged) {
+            btn.title = "Mon Compte";
+            if (photoURL) {
+                btn.innerHTML = `<img src="${photoURL}" style="width:28px; height:28px; border-radius:50%; border: 2px solid #34C759; object-fit: cover;">`;
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-user-astronaut logged-in-icon"></i>';
+            }
+        } else {
+            btn.title = "Se connecter";
+            btn.innerHTML = '<i class="fa-regular fa-user"></i>'; 
+        }
+    });
 }
