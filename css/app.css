@@ -1160,3 +1160,21 @@ body.dark-mode .delete-btn:hover {
 .login-icon-circle.bg-secondary-adaptive {
     border: none !important; /* Pas de bordure pour le rond */
 }
+/* --- OPTIMISATION VUE LISTE (Cacher textes accréditation) --- */
+
+/* Cible tous les textes d'accréditation (Email ET "Plateforme") 
+   UNIQUEMENT quand la grille est en mode 'list-view' */
+.matches-grid.list-view .card .accred-text {
+    display: none !important;
+}
+
+/* Ajustement optionnel : Agrandir légèrement les icônes en mode liste 
+   pour qu'elles soient plus faciles à cliquer maintenant qu'elles sont seules */
+.matches-grid.list-view .card .accred-status i {
+    font-size: 1.1rem;
+}
+
+/* Gère l'espacement entre les icônes (Copie / Mail / Lien) */
+.matches-grid.list-view .card .accred-status {
+    gap: 12px; /* Espace confortable entre les icônes */
+}
