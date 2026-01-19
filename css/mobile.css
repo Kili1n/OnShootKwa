@@ -382,7 +382,7 @@
         align-items: center;
     }   
 
-    
+
 
     /* --- AUTRES ELEMENTS --- */
     .matches-grid.list-view .transport-block { display: none !important; }
@@ -395,4 +395,48 @@
         background: none !important;
         border: none !important;
     }
+
+    body.dark-mode .matches-grid.list-view .match-time {
+        background: var(--tag-bg) !important; /* Devient gris foncé (#2C2C2E) */
+        color: var(--text-primary) !important; /* Devient blanc */
+    }
+
+    /* ... À insérer AVANT l'accolade fermante du @media (max-width: 768px) ... */
+
+    /* --- FOOTER MOBILE --- */
+    
+    /* 1. Ajustement du conteneur principal (padding réduit) */
+    footer {
+        padding: 30px 20px !important;
+        margin-top: 30px !important;
+    }
+
+    /* 2. Passage en colonne unique verticalement */
+    .footer-content {
+        grid-template-columns: 1fr !important; /* Force une seule colonne */
+        gap: 40px !important;
+        text-align: center; /* Centre le texte pour un meilleur rendu mobile */
+    }
+
+    /* 3. Centrage du logo et de la marque */
+    .footer-brand {
+        justify-content: center !important;
+    }
+
+    /* 4. Centrage de la description */
+    .footer-desc {
+        margin: 0 auto !important; /* Centre le bloc de texte */
+    }
+
+    /* 5. Centrage des liens (qui sont en flex-column dans app.css) */
+    .footer-links {
+        align-items: center !important; 
+    }
+    
+    /* 6. Centrage des éléments à l'intérieur des liens */
+    .footer-links a {
+        justify-content: center;
+    }
+
+/* Fin du @media query */
 }
