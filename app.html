@@ -21,6 +21,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z' fill='%23007BFF'/><path transform='translate(0, -2)' d='M14.8333 9H13.6667L12.9375 8.25H11.0625L10.3333 9H9.16667C8.525 9 8 9.525 8 10.1667V13.6667C8 14.3083 8.525 14.8333 9.16667 14.8333H14.8333C15.475 14.8333 16 14.3083 16 13.6667V10.1667C16 9.525 15.475 9 14.8333 9ZM12 13.9583C10.8708 13.9583 9.95833 13.0458 9.95833 11.9167C9.95833 10.7875 10.8708 9.875 12 9.875C13.1292 9.875 14.0417 10.7875 14.0417 11.9167C14.0417 13.0458 13.1292 13.9583 12 13.9583Z' fill='white'/></svg>">
 </head>
 <body>  
@@ -301,6 +302,10 @@
                 </button>
             </form>
 
+            <button id="openStatsBtn" class="login-submit-btn" style="margin-top: 10px; background: #6366F1; color: white;">
+                <i class="fa-solid fa-chart-pie"></i> Voir mes statistiques
+            </button>
+
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -428,6 +433,101 @@
             <p>&copy; 2026 Kilian LENTZ</p>
         </div>
     </footer>
+    <div id="statsModal" class="map-modal hidden">
+        <div class="login-card" style="max-width: 700px; width: 95%; padding: 0; overflow: hidden; background: var(--card-bg);">
+            <button class="close-map" id="closeStatsBtn" style="top: 15px; right: 15px; z-index: 10;"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div style="background: linear-gradient(135deg, #6366F1, #8B5CF6); padding: 20px; text-align: center; color: white; display: flex; align-items: center; gap: 20px; text-align: left;">
+                <div id="statsUserInitial" style="width: 50px; height: 50px; background: white; color: #6366F1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">U</div>
+                <div>
+                    <h2 id="statsUserName" style="margin: 0; font-size: 18px;">Photographe</h2>
+                    <div id="statsSocials" style="font-size: 12px; opacity: 0.9; margin-top: 4px; display: flex; gap: 10px;"></div>
+                </div>
+            </div>
+
+            <div style="padding: 20px;">
+                <div class="stats-grid" style="margin-bottom: 0;">
+                    <div class="stat-item">
+                        <span class="stat-val" id="statRequests">0</span>
+                        <span class="stat-label">Demandes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val" id="statAccreds" style="color: #34C759;">0</span>
+                        <span class="stat-label">Validées</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val" id="statRate">0%</span>
+                        <span class="stat-label">Réussite</span>
+                    </div>
+                </div>
+
+                <div class="stats-content-row">
+                    <div class="stats-left-col">
+                        <div class="stat-section-title" style="margin-top: 0; margin-bottom: 10px;">Diversité</div>
+                        <div class="pie-container" style="padding: 10px; width: 100%; justify-content: center;">
+                            <div class="pie-chart" id="sportPieChart" style="width: 70px; height: 70px;"></div>
+                            <div class="pie-legend" id="pieLegend"></div>
+                        </div>
+                    </div>
+
+                    <div class="stats-right-col">
+                        <div class="stat-section-title" style="margin-top: 0; margin-bottom: 5px;">Records</div>
+                        
+                        <div class="stat-badge-row">
+                            <div class="stat-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                            <div class="stat-info" style="overflow: hidden;">
+                                <span class="stat-title">Top Match</span>
+                                <span class="stat-data" id="statBestMatch" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px;">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-badge-row">
+                            <div class="stat-icon" style="color: #FF9500; background: #FFF4E5;"><i class="fa-solid fa-calendar-day"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-title">Mois record</span>
+                                <span class="stat-data" id="statBestMonth" style="font-size: 13px;">--</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-badge-row">
+                            <div class="stat-icon" style="color: #34C759; background: #E8F5E9;"><i class="fa-solid fa-handshake"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-title">Club le plus visité</span>
+                                <span class="stat-data" id="statFavClub" style="font-size: 13px;">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div id="statsButtonsWrapper">
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="saveStatsBtn" class="login-submit-btn" style="flex: 1; background: var(--text-primary); color: var(--bg-color); border: 1px solid var(--text-primary);">
+                        <i class="fa-solid fa-download"></i> Enregistrer
+                    </button>
+                    <button id="shareStatsBtn" class="login-submit-btn" style="flex: 1; background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-share-nodes"></i> Copier
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.8;">
+                    <div style="width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                             <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="#0071E3"/>
+                             <path transform="translate(0, -2)" d="M14.8333 9H13.6667L12.9375 8.25H11.0625L10.3333 9H9.16667C8.525 9 8 9.525 8 10.1667V13.6667C8 14.3083 8.525 14.8333 9.16667 14.8333H14.8333C15.475 14.8333 16 14.3083 16 13.6667V10.1667C16 9.525 15.475 9 14.8333 9ZM12 13.9583C10.8708 13.9583 9.95833 13.0458 9.95833 11.9167C9.95833 10.7875 10.8708 9.875 12 9.875C13.1292 9.875 14.0417 10.7875 14.0417 11.9167C14.0417 13.0458 13.1292 13.9583 12 13.9583Z" fill="white"/>
+                        </svg>
+                    </div>
+                    
+                    <span style="font-size: 13px; font-weight: 700; color: var(--text-primary);">
+                        Fokal<span style="font-weight: 400; opacity: 0.7;">Press</span>
+                    </span>
+                    <span style="font-size: 11px; color: var(--text-secondary); margin-left: 4px; padding-left: 8px; border-left: 1px solid var(--border-color);">
+                        Dashboard
+                    </span>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
     <script src="js/config.js"></script> 
     <script src="js/app.js"></script> 
 </body>

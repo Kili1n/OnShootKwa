@@ -224,6 +224,8 @@ const getAccreditationHTML = (match) => {
 // 1. Chargement : On récupère un objet { "matchID": "status", ... }
 let matchStatuses = JSON.parse(localStorage.getItem('matchStatuses') || '{}');
 
+let matchArchives = JSON.parse(localStorage.getItem('matchArchives') || '{}');
+
 // Ordre du cycle des statuts
 const STATUS_CYCLE = [null, 'envie', 'asked', 'received', 'refused'];
 
@@ -246,25 +248,31 @@ const getMatchId = (m) => {
 };
 
 // Fonction pour envoyer un changement unique à Firebase
-async function syncFavoriteToFirebase(matchId, status) {
+async function syncFavoriteToFirebase(matchId, status, snapshotData) {
     const user = auth.currentUser;
-    if (!user) return; // Si pas connecté, on ne fait rien (reste en local)
+    if (!user) return; 
 
     try {
-        // On prépare la mise à jour
-        // Si status est null, on supprime le champ de la base avec FieldValue.delete()
         const updateData = {};
+        
+        // 1. Mise à jour du statut (existant)
         updateData[`favorites.${matchId}`] = status ? status : firebase.firestore.FieldValue.delete();
 
-        // On met à jour uniquement ce champ dans le document user
+        // 2. Mise à jour de l'archive (NOUVEAU)
+        // Si snapshotData existe (donc status == 'received'), on l'écrit.
+        // Sinon, on SUPPRIME le champ archive correspondant.
+        updateData[`archives.${matchId}`] = snapshotData ? snapshotData : firebase.firestore.FieldValue.delete();
+
         await db.collection('users').doc(user.uid).update(updateData);
     } catch (e) {
         console.error("Erreur sync favoris :", e);
-        // Si le document n'existe pas encore (cas rare), on le crée
         if (e.code === 'not-found') {
-             await db.collection('users').doc(user.uid).set({
-                 favorites: { [matchId]: status }
-             }, { merge: true });
+             // Création initiale du document si inexistant
+             const initialData = { favorites: { [matchId]: status } };
+             if (snapshotData) {
+                 initialData.archives = { [matchId]: snapshotData };
+             }
+             await db.collection('users').doc(user.uid).set(initialData, { merge: true });
         }
     }
 }
@@ -281,7 +289,32 @@ function cycleStatus(event, matchId) {
     const nextIndex = (currentIndex + 1) % STATUS_CYCLE.length;
     const nextStatus = STATUS_CYCLE[nextIndex];
 
-    // 1. Mise à jour de la variable globale (Mémoire vive)
+    // --- LOGIQUE D'ARCHIVAGE STRICTE ---
+    // On nettoie l'ID pour la recherche
+    const cleanId = matchId.replace(/\s+/g, '');
+    const matchDataObj = allMatches.find(m => getMatchId(m) === cleanId);
+    
+    let snapshot = null;
+
+    // RÈGLE : On archive UNIQUEMENT si le statut devient 'received'
+    if (nextStatus === 'received' && matchDataObj) {
+        snapshot = {
+            sport: matchDataObj.sport,
+            home: { name: matchDataObj.home.name },
+            away: { name: matchDataObj.away.name },
+            compFormatted: matchDataObj.compFormatted,
+            dateObj: matchDataObj.dateObj.toISOString()
+        };
+        // On sauvegarde en local
+        matchArchives[matchId] = snapshot;
+    } else {
+        // Pour tout autre statut (asked, envie, refused, null), on SUPPRIME l'archive
+        delete matchArchives[matchId];
+        snapshot = null; // Cela signalera à Firebase de supprimer le champ
+    }
+    // -----------------------------------
+
+    // 1. Mise à jour des variables globales
     if (nextStatus) {
         matchStatuses[matchId] = nextStatus;
     } else {
@@ -290,19 +323,15 @@ function cycleStatus(event, matchId) {
 
     // 2. Mise à jour du Cache Local
     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
+    localStorage.setItem('matchArchives', JSON.stringify(matchArchives)); // <--- Sauvegarde locale
 
     // 3. LOGIQUE CONNEXION & CLOUD
     if (auth.currentUser) {
-        // A. Si connecté : On synchronise avec Firebase
-        syncFavoriteToFirebase(matchId, nextStatus);
+        // On envoie le snapshot (qui est null si pas 'received', donc ça supprimera)
+        syncFavoriteToFirebase(matchId, nextStatus, snapshot);
     } else {
-        // B. Si PAS connecté : On ouvre notre belle popup HTML (Une seule fois)
         if (nextStatus && !localStorage.getItem('hasShownLoginHint')) {
-            
-            // On marque qu'on a affiché le message pour ne plus le spammer
             localStorage.setItem('hasShownLoginHint', 'true');
-
-            // On affiche la modale HTML au lieu du confirm() moche
             const hintModal = document.getElementById('favHintModal');
             if (hintModal) hintModal.classList.remove('hidden');
         }
@@ -322,6 +351,7 @@ function cycleStatus(event, matchId) {
     };
     btn.title = titles[nextStatus] || titles.null;
 }
+
 const getTeamCoords = (name) => {
     const upperName = name.toUpperCase();
     const key = Object.keys(STADIUM_COORDS).find(k => upperName.includes(k));
@@ -1413,8 +1443,427 @@ function updateFilterSlider() {
     requestAnimationFrame(() => {
         document.body.classList.add('loaded');
     }); 
+// --- GESTION STATISTIQUES ---
+// --- GESTION STATISTIQUES ---
+    const statsModal = document.getElementById('statsModal');
+    const openStatsBtn = document.getElementById('openStatsBtn');
+    const closeStatsBtn = document.getElementById('closeStatsBtn');
+    const shareStatsBtn = document.getElementById('shareStatsBtn');
+    const saveStatsBtn = document.getElementById('saveStatsBtn'); // Nouveau bouton
 
+    // Configuration des couleurs par Sport pour le camembert
+    const SPORT_COLORS = {
+        'football': '#34C759',   // Vert
+        'basketball': '#FF9500', // Orange
+        'handball': '#0071E3'    // Bleu
+    };
 
+    const LEVEL_RANK = {
+        'L1': 10, 'L2': 9, 'N1': 8, 'N2': 7, 'N3': 6, 
+        'D1': 10, 'PRO A': 10, 'PRO B': 9, 'ELITE': 10,
+        'NAT': 8, 'REG': 5, 'AUTRE': 0
+    };
+
+    // Fonction utilitaire pour générer le SVG du camembert
+// --- NOUVELLE FONCTION DOUBLE DONUT (SUNBURST) ---
+// --- NOUVELLE FONCTION DOUBLE DONUT (SUNBURST) CORRIGÉE ---
+    function getPieChartSVG(data, colors) {
+        const size = 100; 
+        const center = size / 2;
+        
+        // Configuration des rayons
+        const r1_in = 20; // Trou central
+        const r1_out = 35; // Fin étage 1 (Sport)
+        const gap = 2;     // Espace blanc
+        const r2_in = r1_out + gap; // Début étage 2 (Niveaux)
+        const r2_out = 50; // Fin étage 2
+
+        let total = 0;
+        ['football', 'basketball', 'handball'].forEach(sport => {
+            if(data[sport]) Object.values(data[sport]).forEach(val => total += val);
+        });
+
+        if (total === 0) {
+            return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                        <circle cx="${center}" cy="${center}" r="${r2_out}" fill="#F2F2F7" />
+                        <circle cx="${center}" cy="${center}" r="${r1_in}" fill="var(--card-bg)" />
+                    </svg>`;
+        }
+
+        let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg);">`;
+        
+        // Helper amélioré pour gérer le 360° (Cercle complet)
+        const createArc = (startA, endA, rIn, rOut, color, opacity = 1) => {
+            // FIX : Si l'angle est un tour complet (2*PI), on le réduit infimement 
+            // pour éviter que point de départ == point d'arrivée (sinon le SVG ne s'affiche pas)
+            if (endA - startA >= 2 * Math.PI) {
+                endA -= 0.0001;
+            }
+
+            const x1_out = center + rOut * Math.cos(startA);
+            const y1_out = center + rOut * Math.sin(startA);
+            const x2_out = center + rOut * Math.cos(endA);
+            const y2_out = center + rOut * Math.sin(endA);
+
+            const x1_in = center + rIn * Math.cos(startA);
+            const y1_in = center + rIn * Math.sin(startA);
+            const x2_in = center + rIn * Math.cos(endA);
+            const y2_in = center + rIn * Math.sin(endA);
+
+            // Large Arc Flag : 1 si l'angle est > 180 degrés
+            const largeArc = (endA - startA) > Math.PI ? 1 : 0;
+
+            const d = [
+                `M ${x1_out} ${y1_out}`,
+                `A ${rOut} ${rOut} 0 ${largeArc} 1 ${x2_out} ${y2_out}`,
+                `L ${x2_in} ${y2_in}`,
+                `A ${rIn} ${rIn} 0 ${largeArc} 0 ${x1_in} ${y1_in}`,
+                `Z`
+            ].join(' ');
+
+            return `<path d="${d}" fill="${color}" fill-opacity="${opacity}" stroke="var(--card-bg)" stroke-width="1" />`;
+        };
+
+        let currentAngle = 0;
+
+        ['football', 'basketball', 'handball'].forEach(sport => {
+            const comps = data[sport];
+            if (!comps || Object.keys(comps).length === 0) return;
+
+            const baseColor = colors[sport];
+            
+            let sportTotal = 0;
+            Object.values(comps).forEach(v => sportTotal += v);
+            
+            const sportSliceAngle = (sportTotal / total) * 2 * Math.PI;
+            const sportEndAngle = currentAngle + sportSliceAngle;
+
+            // --- ÉTAGE 1 : SPORT ---
+            // Dessine le sport (ex: Vert pour Foot)
+            svg += createArc(currentAngle, sportEndAngle, r1_in, r1_out, baseColor, 1);
+
+            // --- ÉTAGE 2 : NIVEAUX ---
+            let levelCurrentAngle = currentAngle;
+            const sortedComps = Object.entries(comps).sort((a, b) => b[1] - a[1]);
+
+            sortedComps.forEach(([compName, count], index) => {
+                const levelSliceAngle = (count / sportTotal) * sportSliceAngle;
+                const levelEndAngle = levelCurrentAngle + levelSliceAngle;
+                
+                // Opacité dégressive
+                const opacity = 0.5 + (0.5 * (1 - (index / sortedComps.length)));
+
+                svg += createArc(levelCurrentAngle, levelEndAngle, r2_in, r2_out, baseColor, opacity);
+                
+                levelCurrentAngle = levelEndAngle;
+            });
+
+            currentAngle = sportEndAngle;
+        });
+
+        svg += `</svg>`;
+        return svg;
+    }
+
+    // --- FONCTION PRINCIPALE ---
+    function calculateAndShowStats(e) {
+        if(e) e.preventDefault();
+
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            alert("Connectez-vous pour voir vos statistiques.");
+            return;
+        }
+
+        // 1. Infos User (Header)
+        document.getElementById('statsUserName').textContent = user.displayName || "Photographe";
+        const initial = (user.displayName || "U").charAt(0).toUpperCase();
+        document.getElementById('statsUserInitial').innerHTML = user.photoURL 
+            ? `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+            : initial;
+
+        // Réseaux sociaux
+        const insta = localStorage.getItem('userInsta');
+        const portfolio = localStorage.getItem('userPortfolio');
+        let socialHtml = '';
+        if (insta) socialHtml += `<span><i class="fa-brands fa-instagram"></i> @${insta.replace('@','')}</span>`;
+        if (insta && portfolio) socialHtml += `<span>•</span>`;
+        if (portfolio) socialHtml += `<span><i class="fa-solid fa-globe"></i> Web</span>`;
+        if (!insta && !portfolio) socialHtml = `<span>Saison 2024-2025</span>`;
+        document.getElementById('statsSocials').innerHTML = socialHtml;
+
+        // 2. Initialisation des variables
+        let counts = { asked: 0, received: 0, refused: 0 };
+        let monthsCount = {};
+        let clubsCount = {};
+        
+        // Structure : { football: { "L1": 2, "N3": 5 }, ... }
+        let compBreakdown = { football: {}, basketball: {}, handball: {} };
+        let totalReceived = 0;
+
+        let maxLevelVal = -1;
+        let bestMatchName = "--";
+
+        // 3. Boucle principale sur les favoris
+        Object.keys(matchStatuses).forEach(matchId => {
+            const status = matchStatuses[matchId];
+            if (status === 'asked') counts.asked++;
+            if (status === 'received') counts.received++;
+            if (status === 'refused') counts.refused++;
+            
+            
+            let matchData = allMatches.find(m => getMatchId(m) === matchId);
+
+            if (!matchData && matchArchives[matchId]) {
+                const archive = matchArchives[matchId];
+                // On reconstruit un objet "simulé" compatible avec la suite du code
+                matchData = {
+                    sport: archive.sport,
+                    home: { name: archive.home.name },
+                    away: { name: archive.away.name },
+                    compFormatted: archive.compFormatted,
+                    dateObj: new Date(archive.dateObj) // On reconvertit la string en Date
+                };
+            }
+            
+            // ANALYSE UNIQUEMENT SUR LES ACCRÉDITATIONS REÇUES (RECEIVED)
+            if (matchData && status === 'received') {
+                totalReceived++;
+
+                // A. Data pour Camembert (Sport & Compétition + Age)
+                const s = matchData.sport.toLowerCase();
+                const parts = matchData.compFormatted.split(' - ');
+                
+                let compName = parts[1] || "Autre"; // Ex: "L1"
+                const ageCat = parts[2]; // Ex: "U19"
+
+                // Si catégorie jeune (hors SENIOR), on l'ajoute au nom (ex: "NAT U19")
+                if (ageCat && ageCat !== "SENIOR") {
+                    compName += ` ${ageCat}`;
+                }
+                
+                if (!compBreakdown[s]) compBreakdown[s] = {};
+                compBreakdown[s][compName] = (compBreakdown[s][compName] || 0) + 1;
+
+                // B. Club le plus visité
+                const club = matchData.home.name;
+                clubsCount[club] = (clubsCount[club] || 0) + 1;
+
+                // C. Mois record
+                const d = matchData.dateObj;
+                const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
+                monthsCount[monthKey] = (monthsCount[monthKey] || 0) + 1;
+
+                // D. Meilleur Match
+                const lvl = parts[1] || "AUTRE";
+                const rank = LEVEL_RANK[lvl] || 0;
+                
+                if (rank > maxLevelVal) {
+                    maxLevelVal = rank;
+                    bestMatchName = `${matchData.home.name} vs ${matchData.away.name} <span style="opacity:0.6; font-size:0.9em;">(${lvl})</span>`; 
+                }
+            }
+        });
+
+        // 4. Affichage Chiffres Clés
+        const totalRequests = counts.asked + counts.received + counts.refused;
+        const successRate = totalRequests > 0 ? Math.round((counts.received / totalRequests) * 100) : 0;
+
+        document.getElementById('statRequests').textContent = totalRequests;
+        document.getElementById('statAccreds').textContent = counts.received;
+        document.getElementById('statRate').textContent = `${successRate}%`;
+        
+        const bestMatchEl = document.getElementById('statBestMatch');
+        bestMatchEl.innerHTML = bestMatchName; 
+
+        // 5. Calcul "Mois Record"
+        let bestMonthTxt = "--";
+        let maxMatchesMonth = 0;
+        Object.keys(monthsCount).forEach(key => {
+            if (monthsCount[key] > maxMatchesMonth) {
+                maxMatchesMonth = monthsCount[key];
+                const [year, monthIdx] = key.split('-');
+                const date = new Date(year, monthIdx, 1);
+                const mName = date.toLocaleString('fr-FR', { month: 'long' });
+                bestMonthTxt = `${mName.charAt(0).toUpperCase() + mName.slice(1)} (${maxMatchesMonth})`;
+            }
+        });
+        document.getElementById('statBestMonth').textContent = bestMonthTxt;
+
+        // 6. Calcul "Club Favori" avec compteur
+        let bestClubTxt = "--";
+        let maxMatchesClub = 0;
+        Object.keys(clubsCount).forEach(club => {
+            if (clubsCount[club] > maxMatchesClub) {
+                maxMatchesClub = clubsCount[club];
+                bestClubTxt = club;
+            }
+        });
+
+        if (maxMatchesClub > 0) {
+            if (bestClubTxt.length > 15) bestClubTxt = bestClubTxt.substring(0, 13) + "...";
+            document.getElementById('statFavClub').textContent = `${bestClubTxt} (${maxMatchesClub})`;
+        } else {
+            document.getElementById('statFavClub').textContent = "--";
+        }
+
+        // 7. GÉNÉRATION DU CAMEMBERT (SVG) & LÉGENDE
+        const chartEl = document.getElementById('sportPieChart');
+        const legendEl = document.getElementById('pieLegend');
+        
+        // Injection du SVG
+        chartEl.innerHTML = getPieChartSVG(compBreakdown, SPORT_COLORS);
+
+        // Légende HTML
+        let legendHtml = '';
+
+        if (totalReceived === 0) {
+            legendHtml = '<span style="font-size:11px; color:gray; display:block; text-align:center; margin-top:10px;">Aucune donnée</span>';
+        } else {
+            // A. LÉGENDE SPORTS (Juste les points et smileys, centrés)
+            legendHtml += '<div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px; margin-bottom: 8px;">';
+            
+            ['football', 'basketball', 'handball'].forEach(sport => {
+                if (compBreakdown[sport] && Object.keys(compBreakdown[sport]).length > 0) {
+                    const color = SPORT_COLORS[sport];
+                    const emoji = SPORT_EMOJIS[sport]; 
+
+                    // On affiche uniquement : [Point Couleur] [Smiley]
+                    legendHtml += `
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span style="width: 6px; height: 6px; border-radius: 50%; background: ${color};"></span>
+                            <span style="font-size: 12px; line-height: 1;">${emoji}</span>
+                        </div>
+                    `;
+                }
+            });
+            legendHtml += '</div>';
+
+            // B. Détail des niveaux (Reste inchangé mais plus discret avec la marge réduite)
+            legendHtml += '<div style="height: 1px; background: var(--border-color); margin: 0 10px 6px; opacity: 0.3;"></div>';
+
+            ['football', 'basketball', 'handball'].forEach(sport => {
+                const comps = compBreakdown[sport];
+                if (!comps || Object.keys(comps).length === 0) return;
+
+                const baseColor = SPORT_COLORS[sport];
+                const sortedComps = Object.entries(comps).sort((a,b) => b[1] - a[1]);
+
+                sortedComps.forEach(([compName, count], index) => {
+                    if (index < 2) { 
+                        const percent = (count / totalReceived) * 100;
+                        const opacity = 0.5 + (0.5 * (1 - (index / sortedComps.length)));
+                        
+                        legendHtml += `
+                            <div class="legend-item" style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; padding: 0 10px; color: var(--text-secondary);">
+                                <span style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="legend-color" style="width:5px; height:5px; border-radius:2px; background:${baseColor}; opacity:${opacity}"></span> 
+                                    ${compName}
+                                </span>
+                                <span style="font-weight:600; opacity:0.8;">${Math.round(percent)}%</span>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+        
+        legendEl.innerHTML = legendHtml;
+
+        // Affichage final
+        document.getElementById('settingsModal').classList.add('hidden');
+        statsModal.classList.remove('hidden');
+
+    }
+
+    // --- LISTENER BOUTON ENREGISTRER (IMAGE) ---
+    if (saveStatsBtn) {
+        saveStatsBtn.addEventListener('click', () => {
+            const card = document.querySelector('#statsModal .login-card');
+            const closeBtn = document.getElementById('closeStatsBtn');
+            const btnsWrapper = document.getElementById('statsButtonsWrapper');
+            
+            // On cherche le conteneur des boutons (le div en display:flex) pour le cacher
+            // mais on garde le reste du wrapper (le texte fokalpress.fr) visible
+            const buttonsRow = btnsWrapper.querySelector('div[style*="display: flex"]');
+
+            // 1. On cache les éléments inutiles pour la photo
+            closeBtn.style.display = 'none';
+            if(buttonsRow) buttonsRow.style.display = 'none';
+            
+            // Feedback visuel sur le bouton (avant qu'il disparaisse)
+            const originalBtnText = saveStatsBtn.innerHTML;
+            saveStatsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            // --- FIX COULEURS DE FOND (Mode Sombre/Clair) ---
+            // html2canvas a besoin qu'on force les couleurs calculées
+            const originalCardBg = card.style.background;
+            const originalCardColor = card.style.color;
+            
+            const computedStyle = getComputedStyle(card);
+            const computedBgColor = computedStyle.backgroundColor;
+            const computedTextColor = computedStyle.color;
+
+            // Application des styles forcés
+            card.style.backgroundColor = computedBgColor;
+            card.style.color = computedTextColor;
+
+            // On s'assure que le header reste blanc
+            const headerDiv = card.querySelector('div[style*="linear-gradient"]');
+            if(headerDiv) headerDiv.style.color = 'white';
+
+            // 2. Capture
+            html2canvas(card, {
+                scale: 3, // Qualité maximale (Retina)
+                backgroundColor: computedBgColor, // Fond forcé
+                useCORS: true // Pour charger l'image de profil Google
+            }).then(canvas => {
+                // 3. Téléchargement
+                const link = document.createElement('a');
+                link.download = `FokalPress_Stats_${new Date().toISOString().slice(0,10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                // 4. RESTAURATION DE L'ÉTAT ORIGINAL
+                closeBtn.style.display = 'flex';
+                if(buttonsRow) buttonsRow.style.display = 'flex'; // On remet en flex
+                saveStatsBtn.innerHTML = originalBtnText;
+                
+                // Reset styles CSS
+                card.style.backgroundColor = originalCardBg;
+                card.style.color = originalCardColor;
+                if(headerDiv) headerDiv.style.color = ''; 
+
+            }).catch(err => {
+                console.error("Erreur capture :", err);
+                alert("Erreur lors de la création de l'image.");
+                
+                // Restauration en cas d'erreur
+                closeBtn.style.display = 'flex';
+                if(buttonsRow) buttonsRow.style.display = 'flex';
+                saveStatsBtn.innerHTML = originalBtnText;
+                card.style.backgroundColor = originalCardBg;
+                card.style.color = originalCardColor;
+            });
+        });
+    }
+
+    // Listener Share (Copié Presse-papier) - Inchangé
+    if (shareStatsBtn) {
+        shareStatsBtn.addEventListener('click', () => {
+             // ... Code de copie (inchangé)
+             const text = `Mes stats FokalPress...`; // Ton texte existant
+             navigator.clipboard.writeText(text).then(() => {
+                const original = shareStatsBtn.innerHTML;
+                shareStatsBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copié !`;
+                setTimeout(() => shareStatsBtn.innerHTML = original, 2000);
+            });
+        });
+    }
+
+    // Listeners Ouverture/Fermeture
+    if (openStatsBtn) openStatsBtn.addEventListener('click', calculateAndShowStats);
+    if (closeStatsBtn) closeStatsBtn.addEventListener('click', () => statsModal.classList.add('hidden'));
 });
 
 
@@ -1560,6 +2009,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     // A. Sync Favoris (Priorité Cloud)
                     matchStatuses = userData.favorites || {};
                     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
+
+                    matchArchives = userData.archives || {};
+                    localStorage.setItem('matchArchives', JSON.stringify(matchArchives));
+
                     renderMatches(currentlyFiltered);
 
                     // B. Cache Profil

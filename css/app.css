@@ -763,7 +763,7 @@ body.dark-mode .source-link:hover {
 }
 
 .map-modal.hidden {
-    display: none;
+    display: none !important; /* Ajout de !important pour forcer le masquage */
     opacity: 0;
     pointer-events: none;
 }
@@ -1179,4 +1179,214 @@ body.dark-mode .delete-btn:hover {
 /* Gère l'espacement entre les icônes (Copie / Mail / Lien) */
 .matches-grid.list-view .card .accred-status {
     gap: 12px; /* Espace confortable entre les icônes */
+    
+}
+
+/* --- STYLE STATISTIQUES --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.stat-item {
+    background: var(--bg-color);
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+.stats-badges-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--card-bg); /* Fond carte */
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    border-radius: 12px;
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    background: #EEF2FF;
+    color: #6366F1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-title {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.stat-data {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Dark Mode Adaptation */
+body.dark-mode .stat-item {
+    background: #2C2C2E;
+}
+body.dark-mode .stat-icon {
+    background: #2C2C2E;
+    color: #8B5CF6;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Titre de section */
+.stat-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin: 15px 0 10px;
+    letter-spacing: 0.5px;
+}
+
+/* Conteneur Camembert + Légende */
+.pie-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--bg-color);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+/* app.css */
+
+.pie-chart {
+    width: 80px; /* Un peu plus grand pour bien voir les détails */
+    height: 80px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    /* On enlève la bordure car le SVG gère ses propres marges */
+    border: none; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pie-chart svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    /* Le SVG est déjà circulaire, pas besoin de border-radius ici */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); /* Ombre portée sur le SVG complet */
+}
+
+/* SUPPRIMER L'ANCIEN TROU DU DONUT CSS */
+.pie-chart::after {
+    display: none;
+}
+
+/* Légende */
+.pie-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.legend-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Adaptation Dark Mode */
+body.dark-mode .pie-container {
+    background: #2C2C2E;
+}
+body.dark-mode .pie-chart::after {
+    background: #2C2C2E;
+}
+
+/* --- NOUVEAU LAYOUT STATS (Plus large) --- */
+.stats-content-row {
+    display: flex;
+    gap: 25px; /* Espace entre Camembert et Badges */
+    margin-top: 15px;
+    align-items: center; /* Centrage vertical */
+}
+
+/* Colonne Gauche (Camembert) */
+.stats-left-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre le camembert */
+}
+
+/* Colonne Droite (Badges) */
+.stats-right-col {
+    flex: 1.4; /* Prend un peu plus de place pour le texte */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espace réduit entre les badges */
+}
+
+/* Ajustement des badges pour qu'ils soient moins hauts */
+.stat-badge-row {
+    padding: 8px 12px; /* Moins de padding */
+}
+
+/* Responsive : Sur mobile, on repasse en colonne */
+@media (max-width: 600px) {
+    .stats-content-row {
+        flex-direction: column;
+    }
+    .stats-right-col {
+        width: 100%;
+    }
 }
