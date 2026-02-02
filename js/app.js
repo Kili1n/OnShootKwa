@@ -985,6 +985,34 @@ function updateFilterSlider() {
 
 // Listeners
     document.addEventListener('DOMContentLoaded', () => {
+
+        // --- GESTION HISTORIQUE ---
+    const historyModal = document.getElementById('historyModal');
+    const openHistoryBtn = document.getElementById('openHistoryBtn');
+    const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+
+    if (openHistoryBtn) {
+        openHistoryBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Ferme les paramètres
+            document.getElementById('settingsModal').classList.add('hidden');
+            // Ouvre l'historique
+            historyModal.classList.remove('hidden');
+            // Charge les données
+            renderHistory();
+        });
+    }
+
+    if (closeHistoryBtn) {
+        closeHistoryBtn.addEventListener('click', () => {
+            historyModal.classList.add('hidden');
+        });
+    }
+
+    // Fermeture clic extérieur
+    historyModal.addEventListener('click', (e) => {
+        if (e.target === historyModal) historyModal.classList.add('hidden');
+    });
     localStorage.removeItem('hasShownLoginHint');
     loadMatches();
     
@@ -2576,5 +2604,73 @@ function updateLoginUI(isLogged, photoURL) {
             btn.title = "Se connecter";
             btn.innerHTML = '<i class="fa-regular fa-user"></i>'; 
         }
+    });
+}
+
+function renderHistory() {
+    const historyGrid = document.getElementById('historyGrid');
+    historyGrid.innerHTML = '';
+
+    // 1. Conversion de l'objet archives en tableau
+    // matchArchives est déjà chargé globalement depuis Firebase/LocalStorage
+    let historyList = Object.values(matchArchives);
+
+    // 2. Si vide
+    if (historyList.length === 0) {
+        historyGrid.innerHTML = `
+            <div class="empty-history">
+                <i class="fa-solid fa-box-open"></i>
+                <p>Aucun match archivé pour le moment.<br>Les matchs passent en historique une fois l'accréditation validée.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // 3. Tri par date décroissante (Le plus récent en haut)
+    historyList.sort((a, b) => new Date(b.dateObj) - new Date(a.dateObj));
+
+    // 4. Génération des cartes simplifiées
+    historyList.forEach(m => {
+        // Reconstruction des données nécessaires
+        // Attention : m.dateObj dans l'archive est souvent une String, il faut reconvertir
+        const d = new Date(m.dateObj);
+        const dateDisplay = d.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' });
+        const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
+        
+        // Logos
+        const homeLogo = getLogoUrl(m.home.name);
+        const awayLogo = getLogoUrl(m.away.name);
+        const emoji = SPORT_EMOJIS[m.sport.toLowerCase()] || "🏟️";
+
+        const card = document.createElement('article');
+        card.className = 'card history-card';
+        
+        card.innerHTML = `
+            <div class="match-header">
+                <div class="team">
+                    <img src="${homeLogo}" class="team-logo" onerror="this.src='https://placehold.co/42x42/png?text=H'">
+                    <span class="team-name">${m.home.name}</span>
+                </div>
+                <div class="match-center">
+                    <div class="match-time">${time}</div>
+                    <div class="vs">VS</div>
+                </div>
+                <div class="team">
+                    <img src="${awayLogo}" class="team-logo" onerror="this.src='https://placehold.co/42x42/png?text=A'">
+                    <span class="team-name">${m.away.name}</span>
+                </div>
+            </div>
+            
+            <div class="match-meta" style="border-top: 1px solid var(--border-color); margin-top: 10px; padding-top: 10px;">
+                <span class="badge badge-long"><span>${emoji}</span> ${m.compFormatted}</span>
+                <span class="date-time">${dateDisplay}</span>
+            </div>
+
+            <div class="history-badge">
+                <i class="fa-solid fa-circle-check"></i> Couvert / Validé
+            </div>
+        `;
+
+        historyGrid.appendChild(card);
     });
 }

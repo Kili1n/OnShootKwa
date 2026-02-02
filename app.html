@@ -306,6 +306,10 @@
                 <i class="fa-solid fa-chart-pie"></i> Voir mes statistiques
             </button>
 
+            <button id="openHistoryBtn" class="login-submit-btn" style="margin-top: 10px; background: #FF9500; color: white;">
+                <i class="fa-solid fa-clock-rotate-left"></i> Mon Historique
+            </button>
+
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -317,6 +321,24 @@
                     <i class="fa-solid fa-trash"></i> Supprimer mon compte
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div id="historyModal" class="map-modal hidden">
+        <div class="login-card" style="max-width: 1000px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; background: var(--bg-color);">
+            
+            <div style="padding: 20px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div class="login-header" style="margin: 0; text-align: left;">
+                    <h2 style="font-size: 20px; margin-bottom: 4px;">Mon Historique</h2>
+                    <p style="font-size: 13px;">Retrouvez tous les matchs pour lesquels vous avez obtenu une accréditation.</p>
+                </div>
+                <button class="close-map" id="closeHistoryBtn" style="position: static; margin-left: 15px;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div style="flex: 1; overflow-y: auto; padding: 20px;">
+                <div class="matches-grid" id="historyGrid"></div>
+            </div>
+
         </div>
     </div>
 

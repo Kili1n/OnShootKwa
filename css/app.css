@@ -1604,3 +1604,109 @@ body.dark-mode .stat-count-badge {
         transform: scale(1) translateY(0);
     }
 }
+
+/* --- STYLE HISTORIQUE --- */
+
+/* Carte simplifiée pour l'historique */
+.card.history-card {
+    border-left: 4px solid #34C759; /* Barre verte pour indiquer "Validé" */
+    opacity: 0.9;
+}
+
+.card.history-card:hover {
+    transform: none; /* Pas d'effet de levée */
+    opacity: 1;
+    border-color: #34C759;
+}
+
+/* Badge spécifique "Accrédité" */
+.history-badge {
+    background: #E8F5E9;
+    color: #34C759;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    align-self: flex-start; /* Aligner à gauche */
+}
+
+/* Dark mode pour l'historique */
+body.dark-mode .history-badge {
+    background: rgba(52, 199, 89, 0.2);
+}
+
+/* Centre le message vide */
+.empty-history {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.empty-history i {
+    font-size: 40px;
+    opacity: 0.3;
+}
+
+/* --- CORRECTION STYLE CLOSE MAP --- */
+.close-map {
+    position: absolute;
+    top: 12px;  /* Réduit de 20px à 12px pour mieux coller au coin sur mobile */
+    right: 12px;
+    z-index: 1000;
+    background: var(--card-bg); /* Utilise le fond de carte pour s'intégrer */
+    color: var(--text-primary);
+    border: 1px solid var(--border-color); /* Ajout d'une bordure subtile comme les autres boutons */
+    width: 36px; /* Réduit de 40px à 36px (taille standard des boutons icon-btn) */
+    height: 36px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm); /* Ombre standard */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.close-map:hover {
+    transform: scale(1.1);
+    background: var(--bg-color);
+}
+
+/* --- CORRECTION STYLE LOGIN CARD (Harmonisation) --- */
+.login-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 380px;
+    padding: 24px; /* Réduit de 30px à 24px pour gagner de la place sur mobile */
+    border-radius: var(--radius); /* Utilise 12px au lieu de 20px pour être cohérent */
+    box-shadow: var(--shadow-sm); /* Remplace la grosse ombre par l'ombre standard */
+    position: relative;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Ajustement spécifique pour que le bouton ne chevauche pas le texte sur mobile */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 20px;
+        width: 90%; /* S'assure qu'il ne colle pas aux bords de l'écran */
+    }
+    
+    .close-map {
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+}
