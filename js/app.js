@@ -861,6 +861,7 @@ function renderMatches(data) {
         const coordsArg = m.locationCoords ? JSON.stringify(m.locationCoords) : 'null';
         
         const distText = m.isCalculating ? '<i class="fa-solid fa-spinner fa-spin"></i>' : (m.distance > 0 ? `${m.distance} km` : '-- km');
+        const compShort = getShortComp(m.compFormatted, m.sport);
 
         // --- CORRECTION DES LIENS GOOGLE MAPS ---
         let mapsUrl = "#";
@@ -873,8 +874,7 @@ function renderMatches(data) {
                 mapsUrl = `https://www.google.com/maps/search/?api=1&query=${m.locationCoords.lat},${m.locationCoords.lon}`;
             }
         }
-        
-        const compShort = getShortComp(m.compFormatted, m.sport);
+        card.setAttribute('onclick', `toggleMobileCard(event, '${matchId}')`);
 
         card.innerHTML = `
             <button class="fav-btn ${statusClass}" 
@@ -931,8 +931,22 @@ function renderMatches(data) {
         `;
 
         grid.appendChild(card);
-
     });
+}
+
+function toggleMobileCard(event, matchId) {
+    // Vérifier si on est sur mobile (<= 768px)
+    if (window.innerWidth > 768) return;
+
+    // Vérifier si on est en vue liste
+    const grid = document.getElementById('grid');
+    if (!grid.classList.contains('list-view')) return;
+
+    const card = document.getElementById(`match-card-${matchId}`);
+    if (card) {
+        // Bascule la classe qui force l'affichage "Grille"
+        card.classList.toggle('mobile-expanded');
+    }
 }
 
 function exportToGoogleCalendar(home, away, dateObj, comp, sport, coords) {
@@ -1703,7 +1717,7 @@ function updateFilterSlider() {
             const fallback = "https://placehold.co/42x42/png?text=?";
 
             // On force l'étalement sur toute la ligne
-            favClubEl.style.display = "flex";
+        favClubEl.style.display = "flex";
             favClubEl.style.alignItems = "center";
             favClubEl.style.width = "100%";
             favClubEl.style.justifyContent = "space-between";

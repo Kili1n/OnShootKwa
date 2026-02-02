@@ -1470,260 +1470,137 @@ body.dark-mode .stat-count-badge {
     flex: 1;
 }
 
-/* --- EFFET POP-UP SUR CLIC (VUE LISTE) --- */
-/* --- OVERLAY & RESET STYLE GRILLE POUR LA VUE LISTE --- */
-
-/* Le fond sombre derrière la carte */
-.card-overlay-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(5px);
-    z-index: 1999;
-    display: none; /* Caché par défaut */
-    animation: fadeIn 0.2s ease-out;
-}
-
-body.overlay-open {
-    overflow: hidden; /* Empêche le scroll derrière */
-}
-
-body.overlay-open .card-overlay-backdrop {
-    display: block;
-}
-
-/* LA CARTE ACTIVE : On force le look Grille avec !important */
-.matches-grid.list-view .card.active-focus {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 2000 !important;
-    width: 350px !important; /* Largeur d'une carte standard */
+/* --- VUE MOBILE EXPANSÉE (TOGGLE) --- */
     
-    /* Reset Layout Grille */
-    flex-direction: column !important;
-    padding: 16px !important;
-    gap: 12px !important;
-    background: var(--card-bg) !important;
-    height: auto !important;
-    cursor: default !important;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-}
+    /* Quand la carte a la classe .mobile-expanded, elle reprend le look "Grille" */
+    .matches-grid.list-view .card.mobile-expanded {
+        flex-direction: column !important;
+        align-items: stretch !important; /* Prend toute la largeur */
+        gap: 12px !important;
+        padding: 16px !important;
+        background-color: var(--card-bg) !important;
+        /* Petit effet d'élévation pour montrer qu'elle est ouverte */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        border-color: var(--accent) !important;
+        z-index: 10;
+        position: relative;
 
-/* Reset de tous les éléments internes vers le style Grille */
-.matches-grid.list-view .card.active-focus .match-header {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-}
-
-.matches-grid.list-view .card.active-focus .team {
-    flex-direction: column !important;
-    width: 42% !important;
-    align-items: center !important;
-}
-
-.matches-grid.list-view .card.active-focus .team:first-child { flex-direction: column !important; }
-
-.matches-grid.list-view .card.active-focus .team-logo {
-    width: 42px !important;
-    height: 42px !important;
-}
-
-.matches-grid.list-view .card.active-focus .team-name {
-    text-align: center !important;
-    -webkit-line-clamp: 2 !important;
-    height: 28px !important;
-    width: 100% !important;
-    max-width: none !important;
-    display: -webkit-box !important;
-}
-
-.matches-grid.list-view .card.active-focus .match-center {
-    flex-direction: column !important;
-    min-width: auto !important;
-}
-
-.matches-grid.list-view .card.active-focus .match-time {
-    background: none !important;
-    padding: 0 !important;
-    font-size: 14px !important;
-}
-
-.matches-grid.list-view .card.active-focus .vs { display: block !important; }
-
-.matches-grid.list-view .card.active-focus .match-meta {
-    flex-direction: row !important;
-    border-top: 1px solid var(--border-color) !important;
-    padding-top: 10px !important;
-    align-items: center !important;
-    width: 100% !important;
-}
-
-.matches-grid.list-view .card.active-focus .transport-block {
-    background: #FAFAFA !important;
-    padding: 8px 12px !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    border: none !important;
-}
-
-.matches-grid.list-view .card.active-focus .accred-footer {
-    border-top: 1px solid var(--border-color) !important;
-    padding-top: 10px !important;
-    width: 100% !important;
-    justify-content: space-between !important;
-    max-width: none !important;
-}
-
-.matches-grid.list-view .card.active-focus .accred-text {
-    display: block !important;
-}
-
-.matches-grid.list-view .card.active-focus .accred-email {
-    display: block !important;
-}
-
-.matches-grid.list-view .card.active-focus .fav-btn {
-    position: absolute !important;
-    top: 12px !important;
-    right: 12px !important;
-}
-
-.matches-grid.list-view .card.active-focus .calendar-btn {
-    display: flex !important;
-}
-
-/* Fix Dark Mode pour le transport-block réinitialisé */
-body.dark-mode .matches-grid.list-view .card.active-focus .transport-block {
-    background: var(--tag-bg) !important;
-}
-
-/* Bouton de fermeture pour l'overlay */
-.close-overlay-btn {
-    display: none; /* Caché par défaut */
-    position: absolute;
-    top: -12px;
-    right: -12px;
-    width: 30px;
-    height: 30px;
-    background: var(--text-primary);
-    color: var(--card-bg);
-    border-radius: 50%;
-    border: 2px solid var(--card-bg);
-    cursor: pointer;
-    z-index: 2001;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease;
-}
-
-.close-overlay-btn:hover {
-    transform: scale(1.1);
-}
-
-/* On l'affiche uniquement quand la carte est active */
-.card.active-focus .close-overlay-btn {
-    display: flex;
-}
-
-/* Ajustement pour ne pas qu'il soit coupé sur petit écran */
-@media (max-width: 480px) {
-    .close-overlay-btn {
-        top: 8px;
-        right: 8px;
+        animation: cardExpandPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+        /* L'animation part du centre haut de la carte */
+        transform-origin: center top !important;
+        /* S'assurer que l'accélération matérielle est utilisée pour la fluidité */
+        will-change: transform, opacity;
     }
-}
 
-/* --- RESET COMPLET POUR L'OVERLAY --- */
+    /* 1. Header : On remet espace entre équipes et score */
+    .matches-grid.list-view .card.mobile-expanded .match-header {
+        justify-content: space-between !important;
+        width: 100% !important;
+        margin-bottom: 0 !important;
+    }
 
-/* Fond sombre derrière la carte */
-.card-overlay-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(5px);
-    z-index: 1999;
-    display: none;
-    animation: fadeIn 0.2s ease-out;
-}
+    /* 2. Équipes : Retour en colonne (Logo au-dessus du nom) */
+    .matches-grid.list-view .card.mobile-expanded .team {
+        flex-direction: column !important;
+        width: 40% !important;
+    }
+    .matches-grid.list-view .card.mobile-expanded .team:first-child {
+        flex-direction: column !important; /* Annule le row-reverse */
+    }
 
-body.overlay-open { overflow: hidden; }
-body.overlay-open .card-overlay-backdrop { display: block; }
+    /* Réafficher le nom des équipes */
+    .matches-grid.list-view .card.mobile-expanded .team-name {
+        display: -webkit-box !important; /* Pour le clamp */
+        -webkit-line-clamp: 2 !important;
+        text-align: center !important;
+        font-size: 13px !important;
+        margin-top: 4px;
+        height: auto !important;
+    }
 
-/* LA CARTE ACTIVE : On force le look Grille */
-.matches-grid.list-view .card.active-focus {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 2000 !important;
-    width: 350px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    padding: 16px !important;
-    gap: 12px !important;
-    background: var(--card-bg) !important;
-    height: auto !important;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-}
+    /* Logos un peu plus grands comme en vue grille */
+    .matches-grid.list-view .card.mobile-expanded .team-logo {
+        width: 42px !important;
+        height: 42px !important;
+    }
 
-/* Réinitialisation des éléments internes */
-.matches-grid.list-view .card.active-focus .match-header {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-}
+    /* Score / Heure et VS */
+    .matches-grid.list-view .card.mobile-expanded .match-center {
+        flex-direction: column !important;
+    }
+    .matches-grid.list-view .card.mobile-expanded .match-time {
+        background: none !important; /* Enlève le badge gris */
+        padding: 0 !important;
+        font-size: 14px !important;
+    }
+    .matches-grid.list-view .card.mobile-expanded .vs {
+        display: block !important;
+    }
 
-.matches-grid.list-view .card.active-focus .team {
-    flex-direction: column !important;
-    width: 42% !important;
-}
+    /* 3. Métadonnées : Badges et Dates */
+    .matches-grid.list-view .card.mobile-expanded .match-meta {
+        flex-direction: row !important;
+        border-top: 1px solid var(--border-color) !important;
+        padding-top: 10px !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
 
-.matches-grid.list-view .card.active-focus .team-name {
-    text-align: center !important;
-    height: 28px !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-}
+    /* Bascule Badge Court -> Long */
+    .matches-grid.list-view .card.mobile-expanded .badge-short { display: none !important; }
+    .matches-grid.list-view .card.mobile-expanded .badge-long { display: flex !important; }
 
-.matches-grid.list-view .card.active-focus .match-center {
-    flex-direction: column !important;
-}
+    /* Bascule Date Courte -> Longue */
+    .matches-grid.list-view .card.mobile-expanded .date-short { display: none !important; }
+    .matches-grid.list-view .card.mobile-expanded .date-long { display: block !important; }
 
-.matches-grid.list-view .card.active-focus .vs { display: block !important; }
+    /* 4. Transports & Source : Réafficher */
+    .matches-grid.list-view .card.mobile-expanded .transport-block {
+        display: flex !important;
+        width: 100% !important;
+    }
 
-.matches-grid.list-view .card.active-focus .match-meta {
-    flex-direction: row !important;
-    border-top: 1px solid var(--border-color) !important;
-    padding-top: 10px !important;
-}
+    .matches-grid.list-view .card.mobile-expanded .source-link {
+        display: flex !important;
+    }
 
-.matches-grid.list-view .card.active-focus .transport-block {
-    background: #FAFAFA !important;
-    padding: 8px 12px !important;
-    display: flex !important;
-}
+    /* 5. Footer Accréditation : Réafficher le texte */
+    .matches-grid.list-view .card.mobile-expanded .accred-footer {
+        justify-content: space-between !important;
+        border-top: 1px solid var(--border-color) !important;
+        padding-top: 10px !important;
+    }
+    
+    .matches-grid.list-view .card.mobile-expanded .accred-text {
+        display: block !important;
+    }
+    
+    .matches-grid.list-view .card.mobile-expanded .accred-email {
+        display: flex !important; /* Ou block */
+    }
 
-.matches-grid.list-view .card.active-focus .accred-footer {
-    border-top: 1px solid var(--border-color) !important;
-    padding-top: 10px !important;
-    display: flex !important;
-}
+    /* Remettre le bouton favori en haut à droite */
+    .matches-grid.list-view .card.mobile-expanded .fav-btn {
+        position: absolute !important;
+        top: 12px !important;
+        right: 12px !important;
+        margin: 0 !important;
+    }
 
-.matches-grid.list-view .card.active-focus .accred-text {
-    display: block !important; /* On réaffiche les textes cachés en liste */
-}
-
-.matches-grid.list-view .card.active-focus .fav-btn {
-    position: absolute !important;
-    top: 12px !important;
-    right: 12px !important;
-}
-
-body.dark-mode .matches-grid.list-view .card.active-focus .transport-block {
-    background: var(--tag-bg) !important;
+    /* --- DÉFINITION DE L'ANIMATION D'APPARITION --- */
+@keyframes cardExpandPop {
+    0% {
+        opacity: 0;
+        /* La carte commence légèrement plus petite et décalée vers le bas */
+        transform: scale(0.96) translateY(15px);
+    }
+    60% {
+        /* Léger dépassement pour l'effet de rebond */
+        transform: scale(1.01) translateY(-2px);
+    }
+    100% {
+        opacity: 1;
+        /* Position et taille finales normales */
+        transform: scale(1) translateY(0);
+    }
 }
