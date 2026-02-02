@@ -171,6 +171,7 @@ const CUSTOM_LOGOS = {
     "ST MAUR LUSITANOS": "https://upload.wikimedia.org/wikipedia/fr/thumb/8/89/Logo_US_Lusitanos_Saint-Maur_2018.svg/2048px-Logo_US_Lusitanos_Saint-Maur_2018.svg.png",
     "ANDREZIEUX-BOUTHEON": "https://upload.wikimedia.org/wikipedia/fr/thumb/d/d1/Logo_Andr%C3%A9zieux-Bouth%C3%A9on_FC_2019.svg/960px-Logo_Andr%C3%A9zieux-Bouth%C3%A9on_FC_2019.svg.png",
     "ST ETIENNE": "https://upload.wikimedia.org/wikipedia/fr/thumb/3/3e/AS_Saint-Etienne-logo_2022.svg/1643px-AS_Saint-Etienne-logo_2022.svg.png",
+    "AS SAINT ETIENNE": "https://upload.wikimedia.org/wikipedia/fr/thumb/3/3e/AS_Saint-Etienne-logo_2022.svg/1643px-AS_Saint-Etienne-logo_2022.svg.png",
     "SAINT QUENTIN": "https://upload.wikimedia.org/wikipedia/fr/thumb/8/82/Logo_Saint-Quentin_Basket-Ball_-_2019.svg/1730px-Logo_Saint-Quentin_Basket-Ball_-_2019.svg.png",
     "CHANTILLY US": "https://upload.wikimedia.org/wikipedia/fr/thumb/b/b2/Logo_US_Chantilly.svg/1200px-Logo_US_Chantilly.svg.png",
     "FC BORGO": "https://upload.wikimedia.org/wikipedia/fr/thumb/a/ab/Logo_FC_Borgo_-_2020.svg/1059px-Logo_FC_Borgo_-_2020.svg.png",
@@ -200,10 +201,25 @@ const CUSTOM_LOGOS = {
     "AIX PROVENCE UNIVERSITE CLUB": "https://lnh.fr/medias/sports_teams/aix__logo__2025-2026.png",
     "NIMES USAM GARD": "https://upload.wikimedia.org/wikipedia/fr/thumb/5/5c/USAM_N%C3%AEmes_Gard_logo.svg/500px-USAM_N%C3%AEmes_Gard_logo.svg.png",
     "RODEZ AVEYRON": "https://upload.wikimedia.org/wikipedia/fr/thumb/6/6a/Logo_Rodez_AF_2017.svg/500px-Logo_Rodez_AF_2017.svg.png",
-    "BASKET CLUB MARITIME GRAVELINES": "https://upload.wikimedia.org/wikipedia/fr/5/56/Logo_BCM_Gravelines_Dunkerque_GL_-_2013.svg",
+    "GRAVELINES": "https://upload.wikimedia.org/wikipedia/fr/5/56/Logo_BCM_Gravelines_Dunkerque_GL_-_2013.svg",
     "STE GENEVIEVE FC": "https://upload.wikimedia.org/wikipedia/fr/thumb/8/83/Logo_Sainte_Genevi%C3%A8ve_Football_Club_-_2022.svg/960px-Logo_Sainte_Genevi%C3%A8ve_Football_Club_-_2022.svg.png?20240924030233",
     "NIMES OL": "https://1000logos.net/wp-content/uploads/2020/09/Nimes-Olympique-Logo.png",
-    "DRAGUIGNAN VAR HANDBALL": "https://dvhb83.fr/wp-content/uploads/2022/12/logo_dvhb_head.png"
+    "DRAGUIGNAN VAR HANDBALL": "https://dvhb83.fr/wp-content/uploads/2022/12/logo_dvhb_head.png",
+    "CHERBOURG" : "https://backend.jscherbourg.fr/storage/clubs/from_drupal/jscherbourglogoprincipal-copie.png",
+    "HYERES" : "https://upload.wikimedia.org/wikipedia/fr/archive/0/00/20190519234206%21Logo_Hy%C3%A8res_FC_2017.svg",
+    "ASTDV" : "https://upload.wikimedia.org/wikipedia/fr/7/76/Logo_ASTDV.png",
+    "MONDEVILLE" : "https://upload.wikimedia.org/wikipedia/fr/c/c8/LOGO_USOM.png",
+    "LYON" : "https://media.ol.fr/uploads/assets/asvel_logo_feminin_64771f904a.png",
+    "REST BRETAGNE HANDBALL" : "https://upload.wikimedia.org/wikipedia/fr/thumb/2/26/BBH_Logo_2021.png/250px-BBH_Logo_2021.png",
+    "MONTFERMEIL" : "https://fc-montfermeil.com/cdn/shop/files/Logo_Fc_Montfermeil_93_e4a24c6b-4fe7-4446-b74c-83ec707824bc.png?v=1690919901",
+    "HAGUENAU" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRutGtAF-YvE8MDwREqAFFpeRA1glnCLX-rdw&ss",
+    "COLMAR" : "https://upload.wikimedia.org/wikipedia/fr/e/eb/Logo_SR_Colmar_-_2016.svg",
+    "RC GRASSE" : "https://upload.wikimedia.org/wikipedia/fr/f/f8/Logo_RC_Pays_Grasse_2022.svg",
+    "ELAN CHALON" : "https://www.elanchalon.com/wp-content/uploads/2022/02/Logo_elanchalon.png",
+    "PLAN DE CUQUES" : "https://handball-plandecuques.fr/wp-content/uploads/2026/01/logo-hbpc.png",
+    "ALLIANCE SPORT ALSACE" : "https://upload.wikimedia.org/wikipedia/fr/2/21/Logo_Alliance_Sport_Alsace_-_2021.svg",
+    "CAMBRAI" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzuMOhNxOtY1CU1mpBHb0_lUQOJ9WBSZJpWQ&s",
+    "FC ROUSSET" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1zV15zAx-CUF__uE9dRKJHDQpaHKzZrBcew&s"
 };
 
 const STADIUM_COORDS = {
@@ -225,7 +241,7 @@ const STADIUM_COORDS = {
     "LOSC": { lat: 50.574, lon: 3.208 },
     "MANTOIS 78 FC": { lat: 48.979, lon: 1.706 },
     "MONTROUGE FC 92": { lat: 48.814, lon: 2.316 },
-    "NANTERRE 92": { lat: 48.895, lon: 2.217 },
+    "NANTERRE": { lat: 48.895, lon: 2.217 },
     "NEUILLY MARNE SFC": { lat: 48.882, lon: 2.535 },
     "PARIS BASKETBALL": { lat: 48.899, lon: 2.361 },
     "PARIS FC": { lat: 48.819, lon: 2.348 },
@@ -237,7 +253,7 @@ const STADIUM_COORDS = {
     "RACING CLUB FRANCE": { lat: 48.929, lon: 2.249 },
     "SAINT DENIS RC": { lat: 48.934, lon: 2.349 },
     "SAINT QUENTIN": { lat: 49.849, lon: 3.280 },
-    "SAINT QUENTIN": { lat: 49.849, lon: 3.280 },
+    "SQBB": { lat: 49.849, lon: 3.280 },
     "ST QUENTIN O.": { lat: 49.858, lon: 3.275 },
     "STADE DE REIMS": { lat: 49.293, lon: 4.053 },
     "STADE FRANCAIS BASKET": { lat: 48.844, lon: 2.254 },
@@ -270,7 +286,8 @@ const STADIUM_COORDS = {
     "BEAUVAIS OISE": { lat: 49.4344, lon: 2.1121 }, 
     "LE MANS FC": { lat: 47.9576, lon: 0.2244 }, 
     "AMIENS SCF": { lat: 49.8936, lon: 2.2633 },
-    "MAINVILLIERS" : { lat: 48.4545, lon: 1.4524 }
+    "MAINVILLIERS" : { lat: 48.4545, lon: 1.4524 },
+    "BOBIGNY" : { lat: 48.8955, lon: 2.2034 }
 };
 
 const WEATHER_ICONS = {
