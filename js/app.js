@@ -931,6 +931,7 @@ function renderMatches(data) {
         `;
 
         grid.appendChild(card);
+
     });
 }
 
@@ -1607,42 +1608,50 @@ function updateFilterSlider() {
                 const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
                 monthsCount[monthKey] = (monthsCount[monthKey] || 0) + 1;
 
-// D. Meilleur Match (Avec gestion de priorité : Homme > Femme > Jeune)
+                // D. Meilleur Match (Logic corrigée)
                 const lvl = parts[1] || "AUTRE";
-                let rank = LEVEL_RANK[lvl] || 0; // Ex: L1 = 10
+                let rank = LEVEL_RANK[lvl] || 0;
                 
-                // --- AJOUT DU SYSTEME DE BONUS ---
-                // On ajoute des décimales pour départager le même niveau
-                // Senior Homme (+0.5) > Senior Femme (+0.3) > Jeunes (+0.1)
-                
-                const cat = (parts[2] || "").toUpperCase(); // Ex: "SENIOR", "U21", "SENIOR F"
-                
+                const cat = (parts[2] || "").toUpperCase();
                 if (cat === "SENIOR" || cat === "S" || cat === "") {
-                    // Priorité Max : Senior Homme (ou non spécifié)
                     rank += 0.5;
                 } else if (cat.includes("F") || cat.includes("FEM")) {
-                    // Priorité 2 : Senior Femme
                     rank += 0.3;
                 } else {
-                    // Priorité 3 : Jeunes (U21, U19, Espoirs...)
                     rank += 0.1;
                 }
-                // ---------------------------------
 
                 if (rank > maxLevelVal) {
                     maxLevelVal = rank;
                     
-                    // Formatage propre du titre
-                    // Si c'est L1 Senior -> "L1"
-                    // Si c'est L1 U21 -> "L1 (U21)"
                     let displayLvl = lvl;
                     if (cat && cat !== "SENIOR" && cat !== "S") {
-                        // On nettoie un peu (ex: "SENIOR F" -> "F")
                         const shortCat = cat.replace("SENIOR ", "").replace("ESPOIRS", "U21"); 
                         displayLvl += ` ${shortCat}`;
                     }
 
-                    bestMatchName = `${matchData.home.name} vs ${matchData.away.name} <span style="opacity:0.6; font-size:0.9em;">(${displayLvl})</span>`; 
+                    // --- RÉCUPÉRATION DES LOGOS ---
+                    const homeLogo = getLogoUrl(matchData.home.name);
+                    const awayLogo = getLogoUrl(matchData.away.name);
+                    const fallback = "https://placehold.co/42x42/png?text=?";
+
+                    // Construction du HTML
+                    bestMatchName = `
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="${homeLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
+                                <span style="font-weight: 800; opacity: 0.15; font-size: 9px; letter-spacing: 1px;">VS</span>
+                                <img src="${awayLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                <span style="opacity: 0.3; font-weight: 300;">—</span>
+                                <span class="stat-level-badge">
+                                    ${displayLvl}
+                                </span>
+                            </div>
+                        </div>
+                    `;
                 }
             }
         });
@@ -1656,7 +1665,12 @@ function updateFilterSlider() {
         document.getElementById('statRate').textContent = `${successRate}%`;
         
         const bestMatchEl = document.getElementById('statBestMatch');
-        bestMatchEl.innerHTML = bestMatchName; 
+        // On force le mode flex pour que le "space-between" fonctionne sur toute la ligne
+        bestMatchEl.style.display = "flex";
+        bestMatchEl.style.width = "100%";
+        bestMatchEl.style.whiteSpace = "normal"; 
+        bestMatchEl.style.overflow = "visible";
+        bestMatchEl.innerHTML = bestMatchName;
 
         // 5. Calcul "Mois Record"
         let bestMonthTxt = "--";
@@ -1672,7 +1686,7 @@ function updateFilterSlider() {
         });
         document.getElementById('statBestMonth').textContent = bestMonthTxt;
 
-        // 6. Calcul "Club Favori" avec compteur
+        // 6. Calcul "Club Favori" avec LOGO et étalement
         let bestClubTxt = "--";
         let maxMatchesClub = 0;
         Object.keys(clubsCount).forEach(club => {
@@ -1682,11 +1696,36 @@ function updateFilterSlider() {
             }
         });
 
+        const favClubEl = document.getElementById('statFavClub');
+        
         if (maxMatchesClub > 0) {
-            if (bestClubTxt.length > 15) bestClubTxt = bestClubTxt.substring(0, 13) + "...";
-            document.getElementById('statFavClub').textContent = `${bestClubTxt} (${maxMatchesClub})`;
+            const clubLogo = getLogoUrl(bestClubTxt);
+            const fallback = "https://placehold.co/42x42/png?text=?";
+
+            // On force l'étalement sur toute la ligne
+            favClubEl.style.display = "flex";
+            favClubEl.style.alignItems = "center";
+            favClubEl.style.width = "100%";
+            favClubEl.style.justifyContent = "space-between";
+
+            favClubEl.innerHTML = `
+                <div class="stat-info-main">
+                    <img src="${clubLogo || fallback}" 
+                        style="width: 28px; height: 28px; object-fit: contain; flex-shrink: 0;" 
+                        onerror="this.src='${fallback}'">
+                    <span class="stat-club-name" title="${bestClubTxt}">
+                        ${bestClubTxt}
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                    <span style="opacity: 0.2; font-weight: 300;">—</span>
+                    <span class="stat-count-badge">
+                        ${maxMatchesClub}
+                    </span>
+                </div>
+            `;
         } else {
-            document.getElementById('statFavClub').textContent = "--";
+            favClubEl.textContent = "--";
         }
 
         // 7. GÉNÉRATION DU CAMEMBERT (SVG) & LÉGENDE

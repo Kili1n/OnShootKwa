@@ -1390,3 +1390,340 @@ body.dark-mode .pie-chart::after {
         width: 100%;
     }
 }
+
+/* --- EFFET DE BRILLANCE STATS --- */
+/* Badge pour le niveau du meilleur match dans les stats */
+.stat-level-badge {
+    background-color: var(--tag-bg); /* Gris clair adaptatif */
+    color: var(--text-primary);      /* Texte principal */
+    padding: 2px 8px;                /* Espacement interne */
+    border-radius: 6px;              /* Bords arrondis */
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;           /* Pour que le padding s'applique bien */
+    border: 1px solid var(--border-color); /* Optionnel : fine bordure pour le relief */
+}
+
+/* Adaptation spécifique au mode sombre */
+body.dark-mode .stat-level-badge {
+    background-color: #2C2C2E;       /* Gris plus foncé en mode sombre */
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Style pour le badge du nombre de visites dans les stats */
+.stat-count-badge {
+    background-color: var(--tag-bg); /* Gris clair adaptatif */
+    color: var(--text-primary);      /* Texte principal */
+    padding: 2px 8px;                /* Espacement interne */
+    border-radius: 6px;              /* Bords arrondis */
+    font-size: 14px;                 /* Légèrement plus grand pour le chiffre */
+    font-weight: 800;
+    display: inline-block;
+    border: 1px solid var(--border-color);
+    min-width: 28px;                 /* Assure une forme consistante */
+    text-align: center;
+}
+
+/* Mode sombre */
+body.dark-mode .stat-count-badge {
+    background-color: #2C2C2E;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Force l'alignement vertical parfait dans les lignes de stats */
+.stat-badge-row {
+    display: flex;
+    align-items: center; /* Centre verticalement tous les enfants directs */
+    gap: 15px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    border-radius: 12px;
+    min-height: 54px; /* Assure une hauteur constante */
+}
+
+
+/* Style pour tronquer le nom du club avec '...' */
+.stat-club-name {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    
+    /* Tronquage magique */
+    white-space: nowrap;      /* Empêche le retour à la ligne */
+    overflow: hidden;         /* Cache ce qui dépasse */
+    text-overflow: ellipsis;  /* Affiche les '...' */
+    
+    max-width: 140px;         /* Ajustez selon la largeur souhaitée */
+}
+
+/* On s'assure que le conteneur flex ne s'écrase pas */
+.stat-info-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden; /* Important pour que l'enfant puisse tronquer */
+    flex: 1;
+}
+
+/* --- EFFET POP-UP SUR CLIC (VUE LISTE) --- */
+/* --- OVERLAY & RESET STYLE GRILLE POUR LA VUE LISTE --- */
+
+/* Le fond sombre derrière la carte */
+.card-overlay-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    z-index: 1999;
+    display: none; /* Caché par défaut */
+    animation: fadeIn 0.2s ease-out;
+}
+
+body.overlay-open {
+    overflow: hidden; /* Empêche le scroll derrière */
+}
+
+body.overlay-open .card-overlay-backdrop {
+    display: block;
+}
+
+/* LA CARTE ACTIVE : On force le look Grille avec !important */
+.matches-grid.list-view .card.active-focus {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2000 !important;
+    width: 350px !important; /* Largeur d'une carte standard */
+    
+    /* Reset Layout Grille */
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    background: var(--card-bg) !important;
+    height: auto !important;
+    cursor: default !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
+}
+
+/* Reset de tous les éléments internes vers le style Grille */
+.matches-grid.list-view .card.active-focus .match-header {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.matches-grid.list-view .card.active-focus .team {
+    flex-direction: column !important;
+    width: 42% !important;
+    align-items: center !important;
+}
+
+.matches-grid.list-view .card.active-focus .team:first-child { flex-direction: column !important; }
+
+.matches-grid.list-view .card.active-focus .team-logo {
+    width: 42px !important;
+    height: 42px !important;
+}
+
+.matches-grid.list-view .card.active-focus .team-name {
+    text-align: center !important;
+    -webkit-line-clamp: 2 !important;
+    height: 28px !important;
+    width: 100% !important;
+    max-width: none !important;
+    display: -webkit-box !important;
+}
+
+.matches-grid.list-view .card.active-focus .match-center {
+    flex-direction: column !important;
+    min-width: auto !important;
+}
+
+.matches-grid.list-view .card.active-focus .match-time {
+    background: none !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+}
+
+.matches-grid.list-view .card.active-focus .vs { display: block !important; }
+
+.matches-grid.list-view .card.active-focus .match-meta {
+    flex-direction: row !important;
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 10px !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.matches-grid.list-view .card.active-focus .transport-block {
+    background: #FAFAFA !important;
+    padding: 8px 12px !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    border: none !important;
+}
+
+.matches-grid.list-view .card.active-focus .accred-footer {
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 10px !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+    max-width: none !important;
+}
+
+.matches-grid.list-view .card.active-focus .accred-text {
+    display: block !important;
+}
+
+.matches-grid.list-view .card.active-focus .accred-email {
+    display: block !important;
+}
+
+.matches-grid.list-view .card.active-focus .fav-btn {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+}
+
+.matches-grid.list-view .card.active-focus .calendar-btn {
+    display: flex !important;
+}
+
+/* Fix Dark Mode pour le transport-block réinitialisé */
+body.dark-mode .matches-grid.list-view .card.active-focus .transport-block {
+    background: var(--tag-bg) !important;
+}
+
+/* Bouton de fermeture pour l'overlay */
+.close-overlay-btn {
+    display: none; /* Caché par défaut */
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 30px;
+    height: 30px;
+    background: var(--text-primary);
+    color: var(--card-bg);
+    border-radius: 50%;
+    border: 2px solid var(--card-bg);
+    cursor: pointer;
+    z-index: 2001;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+
+.close-overlay-btn:hover {
+    transform: scale(1.1);
+}
+
+/* On l'affiche uniquement quand la carte est active */
+.card.active-focus .close-overlay-btn {
+    display: flex;
+}
+
+/* Ajustement pour ne pas qu'il soit coupé sur petit écran */
+@media (max-width: 480px) {
+    .close-overlay-btn {
+        top: 8px;
+        right: 8px;
+    }
+}
+
+/* --- RESET COMPLET POUR L'OVERLAY --- */
+
+/* Fond sombre derrière la carte */
+.card-overlay-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    z-index: 1999;
+    display: none;
+    animation: fadeIn 0.2s ease-out;
+}
+
+body.overlay-open { overflow: hidden; }
+body.overlay-open .card-overlay-backdrop { display: block; }
+
+/* LA CARTE ACTIVE : On force le look Grille */
+.matches-grid.list-view .card.active-focus {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2000 !important;
+    width: 350px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    background: var(--card-bg) !important;
+    height: auto !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
+}
+
+/* Réinitialisation des éléments internes */
+.matches-grid.list-view .card.active-focus .match-header {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+}
+
+.matches-grid.list-view .card.active-focus .team {
+    flex-direction: column !important;
+    width: 42% !important;
+}
+
+.matches-grid.list-view .card.active-focus .team-name {
+    text-align: center !important;
+    height: 28px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+}
+
+.matches-grid.list-view .card.active-focus .match-center {
+    flex-direction: column !important;
+}
+
+.matches-grid.list-view .card.active-focus .vs { display: block !important; }
+
+.matches-grid.list-view .card.active-focus .match-meta {
+    flex-direction: row !important;
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 10px !important;
+}
+
+.matches-grid.list-view .card.active-focus .transport-block {
+    background: #FAFAFA !important;
+    padding: 8px 12px !important;
+    display: flex !important;
+}
+
+.matches-grid.list-view .card.active-focus .accred-footer {
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 10px !important;
+    display: flex !important;
+}
+
+.matches-grid.list-view .card.active-focus .accred-text {
+    display: block !important; /* On réaffiche les textes cachés en liste */
+}
+
+.matches-grid.list-view .card.active-focus .fav-btn {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+}
+
+body.dark-mode .matches-grid.list-view .card.active-focus .transport-block {
+    background: var(--tag-bg) !important;
+}
