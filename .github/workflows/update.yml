@@ -37,7 +37,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Mise à jour automatique des matchs (Bot GitHub)"
-          file_pattern: 'matchs.json'
+          file_pattern: 'data/matchs.json'
           # Force le push si nécessaire pour éviter l'erreur "rejected"
           push_options: '--force'
           # S'assure de faire un pull avant si quelqu'un a modifié le dépôt entre temps
