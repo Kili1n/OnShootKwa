@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page non trouvée | Fokal Press</title>
+    <meta name="robots" content="noindex, nofollow"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #121212;
+            --accent: #0071E3;
+            --accent-glow: rgba(0, 113, 227, 0.5);
+            --text-main: #ffffff;
+            --text-muted: #a1a1a6;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER (Identique à l'accueil) --- */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 16px 0;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; }
+
+        /* --- MAIN 404 CONTENT --- */
+        .error-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glow-effect {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 500px; height: 500px; background: var(--accent);
+            filter: blur(150px); opacity: 0.15; pointer-events: none; z-index: -1;
+        }
+
+        h1 {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0;
+            background: linear-gradient(135deg, #fff 0%, #86868b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 { font-size: 2rem; margin-bottom: 20px; color: var(--text-main); }
+        p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+        /* --- BUTTONS --- */
+        .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 50px;
+            font-weight: 600; font-size: 1rem; text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .btn-primary {
+            background: var(--accent); color: white; border: none;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .btn-primary:hover { transform: scale(1.04); box-shadow: 0 0 30px var(--accent-glow); }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05); color: white;
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 30px 0; text-align: center;
+            border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-content">
+            <a href="index.html" class="logo">
+                <div style="
+                    position: relative; width: 28px; height: 38px; background: #ffffff;
+                    border-radius: 4px; display: flex; flex-direction: column; align-items: center;
+                    justify-content: flex-start; margin-right: 10px; overflow: hidden;
+                    transform: rotate(-8deg);">
+                    <div style="width: 8px; height: 3px; background: #e0e0e0; border-radius: 2px; margin-top: 3px;"></div>
+                    <div style="width: 100%; height: 6px; background: var(--accent); margin-top: 3px;"></div>
+                    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; width: 100%;">
+                        <i class="fa-solid fa-camera" style="color: #333; font-size: 12px;"></i>
+                    </div>
+                </div>
+                FokalPress
+            </a>
+            <a href="app.html" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">
+                Accéder à l'App
+            </a>
+        </div>
+    </header>
+
+    <section class="error-section">
+        <div class="glow-effect"></div>
+        <div class="content">
+            <i class="fa-solid fa-camera-rotate" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 20px; opacity: 0.5;"></i>
+            <h1>404</h1>
+            <h2>Oups, vous êtes hors cadre !</h2>
+            <p>
+                Le sujet a bougé ou la page a été supprimée. <br>
+                Revenez sur le terrain avant de rater le coup d'envoi.
+            </p>
+            
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> Retour à l'accueil
+                </a>
+                <a href="app.html" class="btn btn-primary">
+                    <i class="fa-solid fa-rocket"></i> Lancer le Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Fokal Press. Image non trouvée.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
