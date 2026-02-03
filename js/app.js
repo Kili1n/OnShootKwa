@@ -926,13 +926,13 @@ function renderMatches(data) {
                         <div class="mode"><i class="fa-solid fa-train-subway"></i> ${m.times.public || '--'}'</div>
                     </div>
                 </div>
-                <a href="${mapsUrl}" target="_blank" class="maps-arrow ${!m.locationCoords ? 'disabled' : ''}" title="Voir l'itinéraire sur Google Maps">
+                <a href="${mapsUrl}" target="_blank" rel="nofollow noopener"class="maps-arrow ${!m.locationCoords ? 'disabled' : ''}" title="Voir l'itinéraire sur Google Maps">
                     <i class="fa-solid fa-chevron-right"></i>
                 </a>
             </div>
             <div class="accred-footer">
                 ${getAccreditationHTML(m)}
-                <a href="${m.sourceUrl}" target="_blank" class="source-link" title="Voir la source officielle">
+                <a href="${m.sourceUrl}" target="_blank" rel="nofollow noopener" class="source-link" title="Voir la source officielle">
                     <i class="fa-solid fa-link"></i>
                 </a>
             </div>
