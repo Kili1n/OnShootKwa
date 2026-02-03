@@ -892,7 +892,7 @@ function renderMatches(data) {
             </button>
             <div class="match-header">
                 <div class="team">
-                    <img src="${getLogoUrl(m.home.name)}" class="team-logo" onerror="this.src='https://placehold.co/42x42/png?text=H'">
+                    <img src="${getLogoUrl(m.home.name)}" class="team-logo" onerror="this.onerror=null; this.src='data/default-team.png'">
                     <span class="team-name">${m.home.name}</span>
                 </div>
                 <div class="match-center">
@@ -900,7 +900,7 @@ function renderMatches(data) {
                     <div class="vs">VS</div>
                 </div>
                 <div class="team">
-                    <img src="${getLogoUrl(m.away.name)}" class="team-logo" onerror="this.src='https://placehold.co/42x42/png?text=A'">
+                    <img src="${getLogoUrl(m.away.name)}" class="team-logo" onerror="this.onerror=null; this.src='data/default-team.png'">
                     <span class="team-name">${m.away.name}</span>
                 </div>
             </div>
@@ -2657,7 +2657,7 @@ function renderHistory() {
         card.innerHTML = `
             <div class="match-header">
                 <div class="team">
-                    <img src="${homeLogo}" class="team-logo" onerror="this.src='https://placehold.co/42x42/png?text=H'">
+                    <img src="${homeLogo}" class="team-logo" onerror="this.onerror=null; this.src='data/default-team.png'">
                     <span class="team-name">${m.home.name}</span>
                 </div>
                 <div class="match-center">
@@ -2665,7 +2665,7 @@ function renderHistory() {
                     <div class="vs">VS</div>
                 </div>
                 <div class="team">
-                    <img src="${awayLogo}" class="team-logo" onerror="this.src='https://placehold.co/42x42/png?text=A'">
+                    <img src="${awayLogo}" class="team-logo" onerror="this.onerror=null; this.src='data/default-team.png''">
                     <span class="team-name">${m.away.name}</span>
                 </div>
             </div>
