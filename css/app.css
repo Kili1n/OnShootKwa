@@ -1912,15 +1912,6 @@ body.dark-mode .result-item:hover {
 }
 
 /* --- BARRE D'ACTION HISTORIQUE --- */
-.history-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
 .action-btn {
     background-color: var(--tag-bg);
     color: var(--text-primary);
@@ -2074,4 +2065,90 @@ body.dark-mode .action-btn:hover {
     border-radius: 12px;
     border: 1px dashed var(--border-color); /* Bordure pointillée pour différencier */
     margin-bottom: 15px;
+}
+
+/* --- FIX MOBILE POUR LE HEADER DE L'HISTORIQUE --- */
+/* --- MOBILE : BOUTONS HISTORIQUE ICONES SEULEMENT --- */
+@media (max-width: 768px) {
+    /* 1. On cible les boutons dans la barre d'actions */
+    #historyModal .history-actions button {
+        font-size: 0 !important; /* Cache le texte */
+        padding: 12px 15px;      /* Ajuste le padding pour un aspect carré/bouton */
+        display: flex;           /* Assure le centrage */
+        justify-content: center;
+        align-items: center;
+        gap: 0;                  /* Enlève l'espace prévu pour le texte */
+    }
+
+    /* 2. On rend l'icône visible et un peu plus grande */
+    #historyModal .history-actions button i {
+        font-size: 1.2rem !important; /* Taille de l'icône visible */
+        margin: 0 !important;         /* Enlève les marges parasites */
+    }
+}
+/* --- BOUTONS D'ACTION (Style Minimaliste - Sans Bordure) --- */
+.history-btn {
+    /* 1. RESET TOTAL : On tue toutes les bordures par défaut */
+    background: transparent !important; /* Pas de fond gris/blanc */
+    border: none !important;            /* TUE LA BORDURE (Rouge ou Grise) */
+    outline: none !important;           /* Pas de contour bleu au clic */
+    box-shadow: none !important;        /* Pas d'ombre */
+    
+    /* 2. Mise en page */
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Évite les décalages */
+    
+    /* 3. Animation et Couleur de base */
+    transition: transform 0.2s ease, color 0.2s ease;
+    color: var(--text-muted, #999); /* Gris par défaut */
+}
+
+/* --- ÉTATS AU SURVOL (HOVER) --- */
+
+/* On s'assure que RIEN ne réapparait au survol ou au focus */
+.history-btn:hover, 
+.history-btn:focus, 
+.history-btn:active {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Couleur spécifique : Éditer (Crayon) */
+.history-btn.edit-btn:hover {
+    color: var(--accent, #0071E3); /* Bleu */
+    transform: scale(1.15);
+}
+
+/* Couleur spécifique : Supprimer (Poubelle) */
+.history-btn.delete-btn:hover {
+    color: #FF3B30; /* Rouge */
+    transform: scale(1.15);
+}
+
+.history-btn.delete-btn {
+    border: none;
+}
+
+@media (max-width: 768px) {
+    /* Force l'espacement sur les cartes d'historique mobile */
+    .history-card {
+        padding-top: 30px !important; 
+    }
+    
+    .history-card .history-actions {
+        top: 6px;
+        right: 6px;
+    }
+    
+    /* Réduit la taille des logos sur mobile pour gagner de la place */
+    .history-card .team-logo {
+        width: 32px !important;
+        height: 32px !important;
+    }
 }

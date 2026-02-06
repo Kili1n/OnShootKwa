@@ -130,9 +130,11 @@ function openGmailCompose(email, homeTeam, awayTeam, matchDate, sport, compet) {
     // 2. Construction de la phrase de présentation du travail
     let workSentence = "";
 
+    // app.js ligne 160 environ
     if (storedInsta && storedPortfolio) {
-        workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon portfolio : ${storedPortfolio} ainsi que sur mon compte Instagram : ${storedInsta}`;
+        workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon portfolio : ${storedPortfolio} ainsi que sur mon compte Instagram : @${storedInsta}`;
     } else if (storedInsta) {
+        // Si storedInsta est déjà propre (ex: "l.kilian6"), le @ s'affichera correctement
         workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon compte Instagram : @${storedInsta}`;
     } else if (storedPortfolio) {
         workSentence = `Vous pouvez avoir un aperçu de mon travail sur mon portfolio : ${storedPortfolio}`;
@@ -616,6 +618,13 @@ async function loadMatches() {
             const d = new Date(m.isoDate);
             // Formatage de l'heure (ex: 19h00)
             const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }).replace(':', 'h');
+            // On force le format : "sam. 7 févr. 2026" puis on enlève les points pour faire "sam 7 févr 2026"
+            const shortDate = d.toLocaleDateString('fr-FR', { 
+                weekday: 'short', 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric' 
+            }).replace(/\./g, ''); // Enlève les points (ex: "sam." -> "sam")
                             
         return {
                 sport: m.sport,
@@ -624,7 +633,7 @@ async function loadMatches() {
                 compFormatted: formatCompetition(m.competition, m.sport),
                 home: { name: m.home }, 
                 away: { name: m.away },
-                dateDisplay: m.date,
+                dateDisplay: shortDate,
                 dateShort: d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }), 
                 dateObj: d,
                 time: time,
@@ -697,7 +706,6 @@ function populateCompFilter(filteredMatches) {
     const uniqueComps = [];
     const seen = new Set();
     
-    // 1. Récupération des compétitions uniques
     filteredMatches.forEach(m => {
         if (!seen.has(m.compFormatted)) {
             seen.add(m.compFormatted);
@@ -705,15 +713,13 @@ function populateCompFilter(filteredMatches) {
         }
     });
 
-    // 2. Tri : Alphabétique mais "AUTRE" est forcé à la fin
     uniqueComps.sort((a, b) => {
-        if (a.name === "AUTRE") return 1;  // Pousse "AUTRE" vers le bas
-        if (b.name === "AUTRE") return -1; // Garde les autres au-dessus
-        return a.name.localeCompare(b.name); // Tri alphabétique standard
+        if (a.name === "AUTRE") return 1;
+        if (b.name === "AUTRE") return -1;
+        return a.name.localeCompare(b.name);
     }).forEach(c => {
         
-        // 3. Gestion des émojis (avec 'let' pour éviter l'erreur)
-        let emoji = SPORT_EMOJIS[c.sport] || "🏟️";
+       let emoji = SPORT_EMOJIS[c.sport] || "🏟️";
         
         if (c.name === "AUTRE") {
             emoji = "🔖"; 
@@ -721,13 +727,14 @@ function populateCompFilter(filteredMatches) {
 
         const opt = document.createElement('option');
         opt.value = c.name;
-        opt.textContent = `${emoji} ${c.name}`;
+        // On supprime le texte du sport (ex: "FOOT - ") du nom affiché
+        const displayName = c.name.replace(/^(FOOT|BASKET|HAND) - /, ''); 
+        opt.textContent = `${emoji} ${displayName}`;
         
         if (c.name === savedValue) opt.selected = true;
         select.appendChild(opt);
     });
 
-    // Sécurité : si le filtre sélectionné n'existe plus dans la nouvelle liste, on repasse à "all"
     if (!seen.has(savedValue)) currentFilters.comp = "all";
 }
 
@@ -877,18 +884,24 @@ function renderMatches(data) {
         const distText = m.isCalculating ? '<i class="fa-solid fa-spinner fa-spin"></i>' : (m.distance > 0 ? `${m.distance} km` : '-- km');
         const compShort = getShortComp(m.compFormatted, m.sport);
 
-        // --- CORRECTION DES LIENS GOOGLE MAPS ---
         let mapsUrl = "#";
         if (m.locationCoords) {
             if (userPosition) {
-                // Lien d'itinéraire (Direction)
                 mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userPosition.lat},${userPosition.lon}&destination=${m.locationCoords.lat},${m.locationCoords.lon}&travelmode=driving`;
             } else {
-                // Lien de localisation simple
                 mapsUrl = `https://www.google.com/maps/search/?api=1&query=${m.locationCoords.lat},${m.locationCoords.lon}`;
             }
         }
         card.setAttribute('onclick', `toggleMobileCard(event, '${matchId}')`);
+
+        // --- LOGIQUE GENRE POUR LA CARTE ---
+        // Détection Féminin
+        const isWomen = m.compFormatted.includes("SENIOR F") || m.compFormatted.includes(" SF") || m.compFormatted.includes(" F ") || m.compFormatted.endsWith(" F");
+        
+        // Icône Rose si femme, sinon vide (pas d'icône homme)
+        const genderIcon = isWomen 
+            ? `<i class="fa-solid fa-venus" title="Féminin" style="color: #FF2D55; margin-left: 10px; font-size: 14px;"></i>` 
+            : ``; 
 
         card.innerHTML = `
             <button class="fav-btn ${statusClass}" 
@@ -910,9 +923,12 @@ function renderMatches(data) {
                     <span class="team-name">${m.away.name}</span>
                 </div>
             </div>
+            
             <div class="match-meta">
-                <span class="badge badge-long"><span>${emoji}</span> ${m.compFormatted}</span>
-                <span class="badge badge-short">${compShort}</span>
+                <div style="display:flex; align-items:center;">
+                    <span class="badge badge-long"><span>${emoji}</span> ${m.compFormatted}</span>
+                    <span class="badge badge-short">${compShort}</span>
+                    ${genderIcon} </div>
                 <div class="date-group" style="display: flex; align-items: center; gap: 8px;">
                     <span class="date-time">${m.dateDisplay}</span>
                     <button class="calendar-btn" 
@@ -923,6 +939,7 @@ function renderMatches(data) {
                     </button>
                 </div>
             </div>
+
             <div class="transport-block">
                 <div class="transport-info">
                     <div class="distance">${distText}</div>
@@ -1576,6 +1593,7 @@ function updateFilterSlider() {
 
     // --- FONCTION PRINCIPALE ---
 // --- FONCTION PRINCIPALE ---
+// --- FONCTION PRINCIPALE STATISTIQUES CORRIGÉE ---
     async function calculateAndShowStats(e) {
         if(e) e.preventDefault();
 
@@ -1585,161 +1603,141 @@ function updateFilterSlider() {
             return;
         }
 
-        // --- CORRECTION DÉBUT : Récupération de la photo depuis Firestore ---
-        // On définit la photo par défaut (Google)
+        // --- 1. Récupération de la photo (inchangé) ---
         let finalPhotoURL = user.photoURL;
-
         try {
-            // On va chercher la donnée à jour dans la base de données
             const userDoc = await db.collection('users').doc(user.uid).get();
             if (userDoc.exists) {
                 const userData = userDoc.data();
-                // Si une photo est enregistrée en base (ex: celle d'Instagram), on la prend
-                if (userData.photoURL) {
-                    finalPhotoURL = userData.photoURL;
-                }
+                if (userData.photoURL) finalPhotoURL = userData.photoURL;
             }
-        } catch (err) {
-            console.warn("Impossible de récupérer la photo à jour :", err);
-        }
-        // --- CORRECTION FIN ---
+        } catch (err) { console.warn("Erreur photo stats:", err); }
 
-        // 1. Infos User (Header)
+        // --- 2. Mise à jour UI User (inchangé) ---
         const userNameEl = document.getElementById('statsUserName');
-        if (userNameEl) {
-            userNameEl.textContent = user.displayName || "Photographe";
-        }
+        if (userNameEl) userNameEl.textContent = user.displayName || "Photographe";
         
         const initial = (user.displayName || "U").charAt(0).toUpperCase();
-        
-        // UTILISATION DE finalPhotoURL AU LIEU DE user.photoURL
         document.getElementById('statsUserInitial').innerHTML = finalPhotoURL 
             ? `<img src="${finalPhotoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
             : initial;
 
-        // Réseaux sociaux
         const insta = localStorage.getItem('userInsta');
         const portfolio = localStorage.getItem('userPortfolio');
         let socialHtml = '';
         if (insta) socialHtml += `<span><i class="fa-brands fa-instagram"></i> @${insta.replace('@','')}</span>`;
-        if (insta && portfolio) socialHtml += `<span>•</span>`;
-        if (portfolio) socialHtml += `<span><i class="fa-solid fa-globe"></i> Web</span>`;
+        if (portfolio && !insta) socialHtml += `<span><i class="fa-solid fa-globe"></i> Web</span>`;
         if (!insta && !portfolio) socialHtml = `<span>Saison 2024-2025</span>`;
         document.getElementById('statsSocials').innerHTML = socialHtml;
 
-        // 2. Initialisation des variables
+        // --- 3. Initialisation des compteurs ---
         let counts = { asked: 0, received: 0, refused: 0 };
         let monthsCount = {};
         let clubsCount = {};
-        
-        // Structure : { football: { "L1": 2, "N3": 5 }, ... }
         let compBreakdown = { football: {}, basketball: {}, handball: {} };
-        let totalReceived = 0;
-
+        
         let maxLevelVal = -1;
         let bestMatchName = "--";
 
-        // 3. Boucle principale sur les favoris
-        Object.keys(matchStatuses).forEach(matchId => {
-            const status = matchStatuses[matchId];
+        // --- 4. ÉTAPE A : Compter "Demandés" et "Refusés" depuis matchStatuses ---
+        // On garde matchStatuses pour ce qui est "en cours" ou "refusé", car ce n'est pas dans les archives.
+        Object.values(matchStatuses).forEach(status => {
             if (status === 'asked') counts.asked++;
-            if (status === 'received') counts.received++;
             if (status === 'refused') counts.refused++;
-            
-            
-            let matchData = allMatches.find(m => getMatchId(m) === matchId);
+            // Note : On ne compte pas 'received' ici pour éviter les doublons, on le fera via les archives.
+        });
 
-            if (!matchData && matchArchives[matchId]) {
-                const archive = matchArchives[matchId];
-                
-                // On utilise ?. (optionnel) et || (ou) pour éviter le crash si une info manque
-                matchData = {
-                    sport: archive.sport || 'autre',
-                    home: { name: archive.home?.name || "Club Inconnu" }, 
-                    away: { name: archive.away?.name || "Club Inconnu" }, 
-                    compFormatted: archive.compFormatted || "AUTRE",
-                    dateObj: new Date(archive.dateObj || Date.now())
-                };
+        // --- 5. ÉTAPE B : Analyser TOUT l'historique (Flux + Manuel) depuis matchArchives ---
+        // C'est ici que la correction opère : on parcourt les archives au lieu des statuts pour les stats de couverture.
+        const allArchives = Object.values(matchArchives);
+        counts.received = allArchives.length; // Le nombre total de matchs couverts
+
+        allArchives.forEach(matchData => {
+            // Sécurité sur l'objet date (parfois string dans les archives)
+            const d = new Date(matchData.dateObj);
+            
+            // A. Data pour Camembert (Sport & Compétition + Age)
+            const s = (matchData.sport || "autre").toLowerCase();
+            
+            // Sécurité si le format n'est pas "SPORT - L1 - AGE"
+            const compStr = matchData.compFormatted || "AUTRE - AUTRE - SENIOR";
+            const parts = compStr.split(' - ');
+            
+            let compName = parts[1] || "Autre"; // Ex: "L1"
+            const ageCat = parts[2]; // Ex: "U19"
+
+            // Si catégorie jeune (hors SENIOR), on l'ajoute au nom (ex: "NAT U19")
+            if (ageCat && !ageCat.includes("SENIOR") && !ageCat.includes("S")) {
+                compName += ` ${ageCat}`;
             }
             
-            // ANALYSE UNIQUEMENT SUR LES ACCRÉDITATIONS REÇUES (RECEIVED)
-            if (matchData && status === 'received') {
-                totalReceived++;
+            // Initialisation si sport inconnu
+            if (!compBreakdown[s]) compBreakdown[s] = {};
+            
+            compBreakdown[s][compName] = (compBreakdown[s][compName] || 0) + 1;
 
-                // A. Data pour Camembert (Sport & Compétition + Age)
-                const s = matchData.sport.toLowerCase();
-                const parts = matchData.compFormatted.split(' - ');
-                
-                let compName = parts[1] || "Autre"; // Ex: "L1"
-                const ageCat = parts[2]; // Ex: "U19"
+            // B. Club le plus visité
+            const club = matchData.home?.name || "Inconnu";
+            clubsCount[club] = (clubsCount[club] || 0) + 1;
 
-                // Si catégorie jeune (hors SENIOR), on l'ajoute au nom (ex: "NAT U19")
-                if (ageCat && ageCat !== "SENIOR") {
-                    compName += ` ${ageCat}`;
-                }
-                
-                if (!compBreakdown[s]) compBreakdown[s] = {};
-                compBreakdown[s][compName] = (compBreakdown[s][compName] || 0) + 1;
-
-                // B. Club le plus visité
-                const club = matchData.home.name;
-                clubsCount[club] = (clubsCount[club] || 0) + 1;
-
-                // C. Mois record
-                const d = matchData.dateObj;
+            // C. Mois record (Si la date est valide)
+            if (!isNaN(d.getTime())) {
                 const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
                 monthsCount[monthKey] = (monthsCount[monthKey] || 0) + 1;
+            }
 
-                // D. Meilleur Match (Logic corrigée)
-                const lvl = parts[1] || "AUTRE";
-                let rank = LEVEL_RANK[lvl] || 0;
+            // D. Meilleur Match (Logique de classement)
+            const lvl = parts[1] || "AUTRE";
+            let rank = LEVEL_RANK[lvl] || 0;
+            
+            const cat = (parts[2] || "").toUpperCase();
+            if (cat === "SENIOR" || cat === "S" || cat === "") {
+                rank += 0.5;
+            } else if (cat.includes("F") || cat.includes("FEM")) {
+                rank += 0.3;
+            } else {
+                rank += 0.1;
+            }
+
+            if (rank > maxLevelVal) {
+                maxLevelVal = rank;
                 
-                const cat = (parts[2] || "").toUpperCase();
-                if (cat === "SENIOR" || cat === "S" || cat === "") {
-                    rank += 0.5;
-                } else if (cat.includes("F") || cat.includes("FEM")) {
-                    rank += 0.3;
-                } else {
-                    rank += 0.1;
+                let displayLvl = lvl;
+                if (cat && !cat.includes("SENIOR") && cat !== "S") {
+                    const shortCat = cat.replace("ESPOIRS", "U21"); 
+                    displayLvl += ` ${shortCat}`;
                 }
 
-                if (rank > maxLevelVal) {
-                    maxLevelVal = rank;
-                    
-                    let displayLvl = lvl;
-                    if (cat && cat !== "SENIOR" && cat !== "S") {
-                        const shortCat = cat.replace("SENIOR ", "").replace("ESPOIRS", "U21"); 
-                        displayLvl += ` ${shortCat}`;
-                    }
+                // Récupération des logos (soit depuis l'archive manuelle, soit le cache)
+                const homeLogo = matchData.home.logo || getLogoUrl(matchData.home.name);
+                const awayLogo = matchData.away.logo || getLogoUrl(matchData.away.name);
+                const fallback = "https://placehold.co/42x42/png?text=?";
 
-                    // --- RÉCUPÉRATION DES LOGOS ---
-                    const homeLogo = getLogoUrl(matchData.home.name);
-                    const awayLogo = getLogoUrl(matchData.away.name);
-                    const fallback = "https://placehold.co/42x42/png?text=?";
-
-                    // Construction du HTML
-                    bestMatchName = `
-                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <img src="${homeLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
-                                <span style="font-weight: 800; opacity: 0.15; font-size: 9px; letter-spacing: 1px;">VS</span>
-                                <img src="${awayLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
-                            </div>
-                            
-                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                                <span style="opacity: 0.3; font-weight: 300;">—</span>
-                                <span class="stat-level-badge">
-                                    ${displayLvl}
-                                </span>
-                            </div>
+                bestMatchName = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="${homeLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
+                            <span style="font-weight: 800; opacity: 0.15; font-size: 9px; letter-spacing: 1px;">VS</span>
+                            <img src="${awayLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
                         </div>
-                    `;
-                }
+                        
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <span style="opacity: 0.3; font-weight: 300;">—</span>
+                            <span class="stat-level-badge">
+                                ${displayLvl}
+                            </span>
+                        </div>
+                    </div>
+                `;
             }
         });
 
-        // 4. Affichage Chiffres Clés
-        const totalRequests = counts.asked + counts.received + counts.refused;
+        // --- 6. Affichage Chiffres Clés ---
+        // Total = Demandés (en cours) + Refusés + Archives (Reçus + Manuels)
+        const totalRequests = counts.asked + counts.refused + counts.received; 
+        
+        // Taux de réussite : On ne compte que ce qui a été demandé via l'app (pas les manuels qui faussent le % car 100% succès)
+        // OU on inclut tout. Ici je choisis d'inclure tout pour valoriser l'utilisateur.
         const successRate = totalRequests > 0 ? Math.round((counts.received / totalRequests) * 100) : 0;
 
         document.getElementById('statRequests').textContent = totalRequests;
@@ -1747,14 +1745,12 @@ function updateFilterSlider() {
         document.getElementById('statRate').textContent = `${successRate}%`;
         
         const bestMatchEl = document.getElementById('statBestMatch');
-        // On force le mode flex pour que le "space-between" fonctionne sur toute la ligne
         bestMatchEl.style.display = "flex";
         bestMatchEl.style.width = "100%";
         bestMatchEl.style.whiteSpace = "normal"; 
-        bestMatchEl.style.overflow = "visible";
         bestMatchEl.innerHTML = bestMatchName;
 
-        // 5. Calcul "Mois Record"
+        // --- 7. Calcul "Mois Record" ---
         let bestMonthTxt = "--";
         let maxMatchesMonth = 0;
         Object.keys(monthsCount).forEach(key => {
@@ -1768,23 +1764,28 @@ function updateFilterSlider() {
         });
         document.getElementById('statBestMonth').textContent = bestMonthTxt;
 
-        // 6. Calcul "Club Favori" avec LOGO et étalement
+        // --- 8. Calcul "Club Favori" ---
         let bestClubTxt = "--";
         let maxMatchesClub = 0;
-        Object.keys(clubsCount).forEach(club => {
-            if (clubsCount[club] > maxMatchesClub) {
-                maxMatchesClub = clubsCount[club];
-                bestClubTxt = club;
+        Object.keys(clubsCount).forEach(clubName => {
+            if (clubsCount[clubName] > maxMatchesClub) {
+                maxMatchesClub = clubsCount[clubName];
+                bestClubTxt = clubName;
             }
         });
 
         const favClubEl = document.getElementById('statFavClub');
-        
         if (maxMatchesClub > 0) {
-            const clubLogo = getLogoUrl(bestClubTxt);
+            // On essaie de trouver le logo dans les archives si c'est un club manuel avec logo perso
+            let foundLogo = getLogoUrl(bestClubTxt);
+            // Si pas de logo auto, on cherche dans les archives si un match manuel contient ce logo
+            if (!foundLogo) {
+                const archiveMatch = allArchives.find(m => m.home.name === bestClubTxt && m.home.logo);
+                if (archiveMatch) foundLogo = archiveMatch.home.logo;
+            }
+            
             const fallback = "https://placehold.co/42x42/png?text=?";
 
-            // On force l'étalement sur toute la ligne
             favClubEl.style.display = "flex";
             favClubEl.style.alignItems = "center";
             favClubEl.style.width = "100%";
@@ -1792,7 +1793,7 @@ function updateFilterSlider() {
 
             favClubEl.innerHTML = `
                 <div class="stat-info-main">
-                    <img src="${clubLogo || fallback}" 
+                    <img src="${foundLogo || fallback}" 
                         style="width: 28px; height: 28px; object-fit: contain; flex-shrink: 0;" 
                         onerror="this.src='${fallback}'">
                     <span class="stat-club-name" title="${bestClubTxt}">
@@ -1810,70 +1811,56 @@ function updateFilterSlider() {
             favClubEl.textContent = "--";
         }
 
-        // 7. GÉNÉRATION DU CAMEMBERT (SVG) & LÉGENDE
+        // --- 9. Génération Camembert & Légende (Inchangé) ---
         const chartEl = document.getElementById('sportPieChart');
         const legendEl = document.getElementById('pieLegend');
         
-        // Injection du SVG
         chartEl.innerHTML = getPieChartSVG(compBreakdown, SPORT_COLORS);
 
-        // Légende HTML
         let legendHtml = '';
-
-        if (totalReceived === 0) {
+        if (counts.received === 0) {
             legendHtml = '<span style="font-size:11px; color:gray; display:block; text-align:center; margin-top:10px;">Aucune donnée</span>';
         } else {
-            // A. LÉGENDE SPORTS (Juste les points et smileys, centrés)
             legendHtml += '<div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px; margin-bottom: 8px;">';
-            
             ['football', 'basketball', 'handball'].forEach(sport => {
                 if (compBreakdown[sport] && Object.keys(compBreakdown[sport]).length > 0) {
                     const color = SPORT_COLORS[sport];
                     const emoji = SPORT_EMOJIS[sport]; 
-
-                    // On affiche uniquement : [Point Couleur] [Smiley]
                     legendHtml += `
                         <div style="display: flex; align-items: center; gap: 5px;">
                             <span style="width: 6px; height: 6px; border-radius: 50%; background: ${color};"></span>
                             <span style="font-size: 12px; line-height: 1;">${emoji}</span>
-                        </div>
-                    `;
+                        </div>`;
                 }
             });
             legendHtml += '</div>';
-
-            // B. Détail des niveaux (Reste inchangé mais plus discret avec la marge réduite)
             legendHtml += '<div style="height: 1px; background: var(--border-color); margin: 0 10px 6px; opacity: 0.3;"></div>';
 
             ['football', 'basketball', 'handball'].forEach(sport => {
                 const comps = compBreakdown[sport];
                 if (!comps || Object.keys(comps).length === 0) return;
-
                 const baseColor = SPORT_COLORS[sport];
                 const sortedComps = Object.entries(comps).sort((a,b) => b[1] - a[1]);
 
-                sortedComps.forEach(([compName, count], index) => {
+                sortedComps.forEach(([cName, count], index) => {
                     if (index < 2) { 
-                        const percent = (count / totalReceived) * 100;
+                        const percent = (count / counts.received) * 100;
                         const opacity = 0.5 + (0.5 * (1 - (index / sortedComps.length)));
-                        
                         legendHtml += `
                             <div class="legend-item" style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; padding: 0 10px; color: var(--text-secondary);">
                                 <span style="display: flex; align-items: center; gap: 6px;">
                                     <span class="legend-color" style="width:5px; height:5px; border-radius:2px; background:${baseColor}; opacity:${opacity}"></span> 
-                                    ${compName}
+                                    ${cName}
                                 </span>
                                 <span style="font-weight:600; opacity:0.8;">${Math.round(percent)}%</span>
-                            </div>
-                        `;
+                            </div>`;
                     }
                 });
             });
         }
-        
         legendEl.innerHTML = legendHtml;
 
-        // Affichage final
+        // --- 10. Affichage Final ---
         document.getElementById('settingsModal').classList.add('hidden');
         statsModal.classList.remove('hidden');
     }
@@ -2240,8 +2227,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderMatches(currentlyFiltered);
 
                     // C. Cache Profil
-                    if (userData.instagram) localStorage.setItem('userInsta', userData.instagram);
-                    if (userData.portfolio) localStorage.setItem('userPortfolio', userData.portfolio);
+                    localStorage.setItem('userInsta', userData.instagram || "");
+                    localStorage.setItem('userPortfolio', userData.portfolio || "");
 
                     // D. Update UI
                     updateLoginUI(true, userData.photoURL || user.photoURL);
@@ -2350,7 +2337,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = settingsForm.querySelector('button');
             const originalText = "Enregistrer les modifications";
             
-            const newInsta = document.getElementById('settingsInsta').value.trim();
+            // MODIFICATION ICI
+            const rawInsta = document.getElementById('settingsInsta').value.trim();
+            const newInsta = cleanInstagramInput(rawInsta); // On nettoie avant d'enregistrer
+
             const newPortfolio = document.getElementById('settingsPortfolio').value.trim();
 
             // 1. État de chargement
@@ -2370,6 +2360,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateData.photoURL = picUrl;
                         document.querySelectorAll('.login-trigger img').forEach(img => img.src = picUrl);
                     }
+                }else {
+                    const user = firebase.auth().currentUser;
+                    updateData.photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName)}`;
+                    
+                    // On nettoie explicitement le localStorage
+                    localStorage.removeItem('userInsta');
                 }
                 await db.collection('users').doc(user.uid).update(updateData);
 
@@ -2532,8 +2528,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = auth.currentUser;
             if(!user) return;
 
-            const insta = document.getElementById('profileInsta').value.trim();
-            const portfolio = document.getElementById('profilePortfolio').value.trim();
+            // MODIFICATION ICI
+            const rawInsta = document.getElementById('profileInsta').value.trim();
+            const insta = cleanInstagramInput(rawInsta); // On nettoie ici aussi
             const errorMsg = document.getElementById('formError');
             const submitBtn = profileForm.querySelector('button');
             const originalText = "Valider mon profil";
@@ -2742,14 +2739,19 @@ function renderHistory() {
 
     if (historyList.length === 0) {
         historyGrid.innerHTML = `
-            <div class="empty-history">
-                <i class="fa-solid fa-box-open"></i>
-                <p>Aucun match archivé.</p>
+            <div class="empty-history" style="text-align: center; padding: 60px 20px;">
+                <i class="fa-solid fa-camera-retro" style="font-size: 2.5rem; margin-bottom: 20px; color: var(--border-color);"></i>
+                <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">
+                    Aucun match couvert pour le moment.
+                </p>
+                <p style="font-size: 0.95rem; color: var(--text-secondary); max-width: 320px; margin: 0 auto; line-height: 1.6; opacity: 0.8;">
+                    Parcourez les prochains matchs et <b>ajoutez vos accréditations validées</b> pour construire votre historique de saison.
+                </p>
             </div>`;
         return;
     }
-
-    // 2. Tri
+    
+    // 2. Tri par date (plus récent en premier)
     historyList.sort((a, b) => {
         const dateA = (a.dateObj === "UNKNOWN") ? 0 : new Date(a.dateObj).getTime();
         const dateB = (b.dateObj === "UNKNOWN") ? 0 : new Date(b.dateObj).getTime();
@@ -2781,11 +2783,12 @@ function renderHistory() {
 
         const card = document.createElement('article');
         card.className = 'card history-card';
-        
-        // --- CHANGEMENT ICI : Structure HTML mise à jour ---
+        card.style.position = 'relative'; 
+
         card.innerHTML = `
-            <button class="history-delete-btn" onclick="askDeleteMatch('${m.id}')" title="Supprimer de l'historique">
-                 <i class="fa-solid fa-trash"></i>
+            <button class="history-btn edit-btn" onclick="editMatch('${m.id}')" title="Modifier" 
+                style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; cursor: pointer; color: var(--text-secondary); font-size: 14px; z-index: 10;">
+                 <i class="fa-solid fa-pen"></i>
             </button>
 
             <div class="match-header">
@@ -2812,7 +2815,6 @@ function renderHistory() {
                 <span><i class="fa-solid fa-circle-check"></i> Couvert ${badgeManual}</span>
             </div>
         `;
-        // ----------------------------------------------------
 
         historyGrid.appendChild(card);
     });
@@ -2822,32 +2824,86 @@ function renderHistory() {
 let manualTeamsData = []; // Stocke {name, sport}
 let manualCompsData = []; // Stocke {name, sport}
 
+// --- AJOUTER CETTE VARIABLE TOUT EN HAUT DU FICHIER ---
+let editingMatchId = null; 
+
+
 function initManualMatchForm() {
-    // 1. Reset des données
-    const uniqueTeams = new Map(); // Nom -> Sport (Set ne suffit pas car on veut filtrer par sport)
+    // 1. Reset Mode Édition
+    editingMatchId = null; 
+    const submitBtn = document.querySelector('#addMatchForm button[type="submit"]');
+    if(submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Ajouter le match';
+
+    const deleteBtn = document.getElementById('manualDeleteBtn');
+    if (deleteBtn) {
+        deleteBtn.style.display = 'none';
+    }
+
+    // 2. Reset des données
+    const uniqueTeams = new Map(); 
     const uniqueComps = new Map(); 
 
     allMatches.forEach(m => {
-        // Stockage Equipes
         const s = m.sport.toLowerCase();
+        
+        // --- A. GESTION DES ÉQUIPES ---
         if(!uniqueTeams.has(m.home.name)) uniqueTeams.set(m.home.name, s);
         if(!uniqueTeams.has(m.away.name)) uniqueTeams.set(m.away.name, s);
         
-        // Stockage Compétitions
-        const compName = m.compFormatted.split(' - ')[1] || m.compFormatted;
-        if (!uniqueComps.has(compName)) {
-            uniqueComps.set(compName, s);
+        // --- B. GESTION DES COMPÉTITIONS (CORRECTION ICI) ---
+        // Format habituel : "SPORT - NIVEAU - AGE"
+        const parts = m.compFormatted.split(' - ');
+        
+        let displayComp = "";
+        
+        if (parts.length >= 3) {
+            const level = parts[1]; // Ex: "L1", "N3"
+            const age = parts[2];   // Ex: "SENIOR F", "U19", "SENIOR"
+            
+            // NOUVELLE LOGIQUE :
+            // On garde l'âge si ce n'est pas juste "SENIOR" (homme standard).
+            // Si c'est "SENIOR F", on veut afficher "L1 F".
+            
+            // Est-ce une catégorie féminine ?
+            const isWomen = age.includes("F") || age.includes("FEM") || age.includes("FÉM");
+            // Est-ce une catégorie jeune ?
+            const isYouth = age.includes("U") || age.includes("ESPOIRS");
+
+            if (isWomen || isYouth) {
+                // On nettoie "SENIOR" pour ne garder que le "F" si présent
+                let suffix = age.replace("SENIOR", "").replace("Sr", "").trim();
+                
+                // Si le suffixe est vide mais que c'était U19, on garde l'original
+                if (!suffix && isYouth) suffix = age;
+                
+                displayComp = `${level} ${suffix}`.trim();
+            } else {
+                // C'est un Senior Homme standard, on affiche juste le niveau
+                displayComp = level;
+            }
+
+        } else {
+            // Cas de secours
+            displayComp = m.compFormatted.replace(`${m.sport.toUpperCase()} - `, '');
+        }
+
+        // On stocke : Clé unique = "Nom + Sport" pour éviter les mélanges
+        const uniqueKey = `${displayComp}_${s}`;
+        
+        if (!uniqueComps.has(uniqueKey)) {
+            // On stocke l'objet propre pour l'autocomplete
+            uniqueComps.set(uniqueKey, { name: displayComp, sport: s });
         }
     });
 
     // Conversion en tableaux exploitables
     manualTeamsData = Array.from(uniqueTeams, ([name, sport]) => ({ name, sport })).sort((a,b) => a.name.localeCompare(b.name));
-    manualCompsData = Array.from(uniqueComps, ([name, sport]) => ({ name, sport })).sort((a,b) => a.name.localeCompare(b.name));
+    manualCompsData = Array.from(uniqueComps, ([key, val]) => val).sort((a,b) => a.name.localeCompare(b.name));
 
-    // 2. Initialisation initiale des listes avec le sport par défaut (Football)
+    // 3. Initialisation de l'affichage (charge la liste par défaut, souvent Football)
     refreshManualLists();
 
-    // 3. Reset UI (Revenir à l'étape 1)
+    // 4. Reset UI
     document.getElementById('step-1').classList.remove('hidden');
     document.getElementById('step-2').classList.add('hidden');
     document.getElementById('manualHomeLogoDiv').classList.add('hidden');
@@ -2859,6 +2915,8 @@ function initManualMatchForm() {
     document.getElementById('manualAway').value = "";
     document.getElementById('manualHomeLogo').value = "";
     document.getElementById('manualAwayLogo').value = "";
+    document.getElementById('manualDate').value = ""; 
+    document.getElementById('manualTime').value = "";
 }
 
 // --- FONCTION DE FILTRAGE DYNAMIQUE ---
@@ -2970,6 +3028,20 @@ function setupAutocomplete(input, resultsContainer, dataArray, renderer, isObjec
 // --- GESTION DES ÉTAPES ET SOUMISSION ---
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- GESTION CHANGEMENT DE SPORT (DANS LE FORMULAIRE) ---
+    const sportRadios = document.querySelectorAll('input[name="manualSport"]');
+    sportRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            // 1. On vide les champs pour éviter les incohérences (ex: Equipe de Foot dans Basket)
+            document.getElementById('manualComp').value = "";
+            document.getElementById('manualHome').value = "";
+            document.getElementById('manualAway').value = "";
+            
+            // 2. On recharge les listes d'autocomplétion avec le bon sport
+            refreshManualLists();
+        });
+    });
     
     // Bouton "Suivant" (Step 1 -> Step 2 OU Submit direct)
     const nextBtn = document.getElementById('nextStepBtn');
@@ -3094,15 +3166,38 @@ async function handleManualMatchSubmit() {
     const user = firebase.auth().currentUser;
     if (!user) { alert("Erreur auth."); return; }
 
-    // Récupération des données
     const sport = document.querySelector('input[name="manualSport"]:checked').value;
-    const compRaw = document.getElementById('manualComp').value.toUpperCase();
-    const compFormatted = `${sport.toUpperCase()} - ${compRaw} - SENIOR`;
+    
+    // --- CORRECTION ANALYSE DU TEXTE ---
+    let compRaw = document.getElementById('manualComp').value.trim(); // ex: "L1 SENIOR F"
+    
+    let age = "SENIOR";
+    let level = compRaw;
+
+    const upperComp = compRaw.toUpperCase();
+
+    // 1. Détection Féminin (SENIOR F ou juste F à la fin)
+    if (upperComp.includes("SENIOR F") || upperComp.includes("SF") || (upperComp.endsWith(" F") && !upperComp.includes("U"))) {
+        age = "SENIOR F";
+        // On nettoie le niveau pour ne garder que "L1"
+        level = compRaw.replace(/SENIOR F/i, '').replace(/ SF/i, '').replace(/ F$/i, '').trim();
+    }
+    // 2. Détection Jeunes (U19, U17...)
+    else {
+        const ageMatch = compRaw.match(/(U\d+|ESPOIRS|PRO A|PRO B)/i);
+        if (ageMatch) {
+             age = ageMatch[0].toUpperCase();
+             // Si c'est "NAT U19", level devient "NAT"
+             level = compRaw.replace(ageMatch[0], '').trim();
+        }
+    }
+    
+    // On reformate : "HAND - L1 - SENIOR F"
+    const compFormatted = `${sport.toUpperCase()} - ${level.toUpperCase()} - ${age}`;
+    // -----------------------------------
     
     const homeName = document.getElementById('manualHome').value.trim();
     const awayName = document.getElementById('manualAway').value.trim();
-    
-    // Logos optionnels (s'ils ont été remplis à l'étape 2)
     const homeLogo = document.getElementById('manualHomeLogo').value.trim();
     const awayLogo = document.getElementById('manualAwayLogo').value.trim();
 
@@ -3119,7 +3214,8 @@ async function handleManualMatchSubmit() {
         dateObjString = d.toISOString();
     }
 
-    const matchId = `manual_${Date.now()}`;
+    const matchId = editingMatchId ? editingMatchId : `manual_${Date.now()}`;
+    
     const matchSnapshot = {
         sport: sport,
         compFormatted: compFormatted,
@@ -3137,14 +3233,16 @@ async function handleManualMatchSubmit() {
         updateData[`archives.${matchId}`] = matchSnapshot;
         await db.collection('users').doc(user.uid).update(updateData);
 
-        // Reset et fermeture
         document.getElementById('addMatchModal').classList.add('hidden');
         document.getElementById('addMatchForm').reset();
+        
+        editingMatchId = null;
         renderHistory();
-        alert("Match ajouté !");
+        
+
     } catch (e) {
         console.error(e);
-        alert("Erreur sauvegarde.");
+        alert("Erreur lors de la sauvegarde.");
     }
 }
 
@@ -3389,4 +3487,109 @@ async function fetchInstaProfilePic(username) {
         console.error("Erreur technique Instagram :", error);
         return null;
     }
+}
+
+/**
+ * Extrait le pseudo d'une URL Instagram ou d'une saisie avec @
+ */
+const cleanInstagramInput = (input) => {
+    if (!input) return "";
+    let username = input.trim();
+    // Supprime l'URL complète si présente
+    username = username.replace(/^(https?:\/\/)?(www\.)?instagram\.com\//i, "");
+    // Supprime le slash final si présent
+    username = username.replace(/\/$/, "");
+    // Supprime le @ au début s'il existe pour éviter les doubles @@
+    username = username.replace(/^@/, "");
+    // On garde uniquement le premier segment (cas d'une URL avec paramètres)
+    return username.split('?')[0];
+};
+
+function editMatch(id) {
+    const m = matchArchives[id];
+    if (!m) return;
+
+    // 1. Ouvrir la modale et reset le formulaire
+    initManualMatchForm(); 
+    document.getElementById('addMatchModal').classList.remove('hidden');
+
+    // 2. Passer en mode Édition
+    editingMatchId = id;
+    
+    // On met à jour le texte du bouton final (au cas où on va à l'étape 2)
+    const form = document.getElementById('addMatchForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if(submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Modifier le match';
+
+    // --- CORRECTION : CIBLER L'ÉTAPE 1 (VISIBLE) ---
+    let deleteBtn = document.getElementById('manualDeleteBtn');
+    
+    // On cible le bouton "Suivant" qui est dans l'étape 1
+    const nextBtn = document.getElementById('nextStepBtn');
+
+    // A. Création du bouton s'il n'existe pas
+    if (!deleteBtn) {
+        deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button'; 
+        deleteBtn.id = 'manualDeleteBtn';
+        deleteBtn.className = 'login-btn'; 
+        
+        // Styles Rouge
+        deleteBtn.style.backgroundColor = '#FF3B30';
+        deleteBtn.style.borderColor = '#FF3B30';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.marginTop = '10px';
+        deleteBtn.style.width = '100%';
+        deleteBtn.style.fontWeight = '600';
+    }
+
+    // B. INSERTION DANS L'ÉTAPE 1
+    // On insère le bouton rouge juste après le bouton "Suivant"
+    if (nextBtn && nextBtn.parentNode) {
+        nextBtn.parentNode.insertBefore(deleteBtn, nextBtn.nextSibling);
+    } 
+
+    // C. Configuration
+    deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Supprimer ce match';
+    deleteBtn.style.display = 'block'; 
+    
+    deleteBtn.onclick = () => {
+        document.getElementById('addMatchModal').classList.add('hidden');
+        askDeleteMatch(id);
+    };
+    // ---------------------------------------------------------
+
+    // 3. Remplir les champs existants
+    const radios = document.querySelectorAll('input[name="manualSport"]');
+    radios.forEach(r => {
+        if (r.value === m.sport) r.checked = true;
+    });
+    refreshManualLists(); 
+
+    // Récupération de la compétition
+    const compParts = m.compFormatted.split(' - ');
+    let displayComp = compParts[1] || m.compFormatted; 
+    const suffix = compParts[2];
+
+    if (suffix && suffix !== "SENIOR") {
+        displayComp += ` ${suffix}`;
+    }
+    
+    document.getElementById('manualComp').value = displayComp;
+    document.getElementById('manualHome').value = m.home.name;
+    document.getElementById('manualAway').value = m.away.name;
+    
+    if (m.home.logo) document.getElementById('manualHomeLogo').value = m.home.logo;
+    if (m.away.logo) document.getElementById('manualAwayLogo').value = m.away.logo;
+
+    if (m.dateObj && m.dateObj !== "UNKNOWN") {
+        const d = new Date(m.dateObj);
+        document.getElementById('manualDate').value = d.toISOString().split('T')[0];
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        document.getElementById('manualTime').value = `${hh}:${mm}`;
+    }
+
+    if(m.home.logo) document.getElementById('manualHomeLogoDiv').classList.remove('hidden');
+    if(m.away.logo) document.getElementById('manualAwayLogoDiv').classList.remove('hidden');
 }
