@@ -2648,13 +2648,21 @@ function renderHistory() {
     // 2. Tri par date
     historyList.sort((a, b) => new Date(b.dateObj) - new Date(a.dateObj));
 
-    // 3. Génération avec "Réparation Automatique"
+    // 3. Génération avec Filtrage
     historyList.forEach(m => {
         
-        // --- BLINDAGE ROBUSTE (Comme dans les Stats) ---
-        // On crée des variables sécurisées. Si l'info manque, on met un texte par défaut.
+        // A. Définition des noms avec sécurité (Fallback)
+        // Si m.home.name n'existe pas, on met "Équipe Inconnue"
         const homeName = m.home?.name || "Équipe Inconnue";
         const awayName = m.away?.name || "Équipe Inconnue";
+        
+        // --- B. LE FILTRE QUE VOUS AVEZ DEMANDÉ ---
+        // Si le nom contient le mot clé "Inconnue", on arrête tout pour ce match (on ne l'affiche pas).
+        if (homeName.includes("Inconnue") || awayName.includes("Inconnue")) {
+            return; 
+        }
+        // ------------------------------------------
+
         const sport = m.sport || "autre";
         const comp = m.compFormatted || "Compétition Inconnue";
         
@@ -2668,7 +2676,6 @@ function renderHistory() {
                 time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
             } catch (e) { console.warn("Date invalide", m); }
         }
-        // -----------------------------------------------
 
         const homeLogo = getLogoUrl(homeName);
         const awayLogo = getLogoUrl(awayName);
