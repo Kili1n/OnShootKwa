@@ -1575,7 +1575,8 @@ function updateFilterSlider() {
     }
 
     // --- FONCTION PRINCIPALE ---
-    function calculateAndShowStats(e) {
+// --- FONCTION PRINCIPALE ---
+    async function calculateAndShowStats(e) {
         if(e) e.preventDefault();
 
         const user = firebase.auth().currentUser;
@@ -1584,11 +1585,36 @@ function updateFilterSlider() {
             return;
         }
 
+        // --- CORRECTION DÉBUT : Récupération de la photo depuis Firestore ---
+        // On définit la photo par défaut (Google)
+        let finalPhotoURL = user.photoURL;
+
+        try {
+            // On va chercher la donnée à jour dans la base de données
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                // Si une photo est enregistrée en base (ex: celle d'Instagram), on la prend
+                if (userData.photoURL) {
+                    finalPhotoURL = userData.photoURL;
+                }
+            }
+        } catch (err) {
+            console.warn("Impossible de récupérer la photo à jour :", err);
+        }
+        // --- CORRECTION FIN ---
+
         // 1. Infos User (Header)
-        document.getElementById('statsUserName').textContent = user.displayName || "Photographe";
+        const userNameEl = document.getElementById('statsUserName');
+        if (userNameEl) {
+            userNameEl.textContent = user.displayName || "Photographe";
+        }
+        
         const initial = (user.displayName || "U").charAt(0).toUpperCase();
-        document.getElementById('statsUserInitial').innerHTML = user.photoURL 
-            ? `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+        
+        // UTILISATION DE finalPhotoURL AU LIEU DE user.photoURL
+        document.getElementById('statsUserInitial').innerHTML = finalPhotoURL 
+            ? `<img src="${finalPhotoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
             : initial;
 
         // Réseaux sociaux
@@ -1629,8 +1655,8 @@ function updateFilterSlider() {
                 // On utilise ?. (optionnel) et || (ou) pour éviter le crash si une info manque
                 matchData = {
                     sport: archive.sport || 'autre',
-                    home: { name: archive.home?.name || "Club Inconnu" }, // Sécurité ici
-                    away: { name: archive.away?.name || "Club Inconnu" }, // Et ici
+                    home: { name: archive.home?.name || "Club Inconnu" }, 
+                    away: { name: archive.away?.name || "Club Inconnu" }, 
                     compFormatted: archive.compFormatted || "AUTRE",
                     dateObj: new Date(archive.dateObj || Date.now())
                 };
@@ -1759,7 +1785,7 @@ function updateFilterSlider() {
             const fallback = "https://placehold.co/42x42/png?text=?";
 
             // On force l'étalement sur toute la ligne
-        favClubEl.style.display = "flex";
+            favClubEl.style.display = "flex";
             favClubEl.style.alignItems = "center";
             favClubEl.style.width = "100%";
             favClubEl.style.justifyContent = "space-between";
@@ -1850,7 +1876,6 @@ function updateFilterSlider() {
         // Affichage final
         document.getElementById('settingsModal').classList.add('hidden');
         statsModal.classList.remove('hidden');
-
     }
 
     // --- LISTENER BOUTON ENREGISTRER (IMAGE) ---
@@ -2156,7 +2181,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === favHintModal) closeFavHint();
     });
 
+    // --- LOGIQUE TUTORIEL ---
+    const closeTutoBtn = document.getElementById('closeTutoBtn');
+    if (closeTutoBtn) {
+        closeTutoBtn.addEventListener('click', async () => {
+            // 1. Fermer visuellement
+            document.getElementById('tutorialModal').classList.add('hidden');
+            
+            // 2. Sauvegarder dans Firebase que c'est vu
+            const user = firebase.auth().currentUser;
+            if (user) {
+                try {
+                    await db.collection('users').doc(user.uid).set(
+                        { hasSeenTutorial: true }, 
+                        { merge: true }
+                    );
+                } catch (e) {
+                    console.error("Erreur save tuto", e);
+                }
+            }
+        });
+    }
     // --- 1. ÉCOUTEUR D'ÉTAT AUTHENTIFICATION (Chargement initial) ---
+// --- 1. ÉCOUTEUR D'ÉTAT AUTHENTIFICATION (Chargement initial) ---
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             console.log("Utilisateur connecté :", user.email);
@@ -2171,30 +2218,50 @@ document.addEventListener('DOMContentLoaded', () => {
                     matchStatuses = userData.favorites || {};
                     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
 
+                    // --- B. Sync Historique (Priorité Cloud + Local existant si vide) ---
+                    // On s'assure de ne pas mélanger avec des données résiduelles
                     const cloudArchives = userData.archives || {};
-                    matchArchives = { ...matchArchives, ...cloudArchives };
+                    
+                    // On écrase matchArchives avec les données du cloud pour cet utilisateur
+                    // (ou on fusionne si tu veux garder le fonctionnement actuel, mais le cloud doit primer)
+                    matchArchives = { ...cloudArchives }; 
+                    
                     localStorage.setItem('matchArchives', JSON.stringify(matchArchives));
 
+                    // Mise à jour visuelle si la modale historique est ouverte
                     const historyModal = document.getElementById('historyModal');
                     if (historyModal && !historyModal.classList.contains('hidden')) {
                         renderHistory();
                     }
-                    
+
+                    // ... (Reste du code de gestion photo, etc. inchangé) ...
+                    // [Code photo Instagram / Google inchangé ici]
 
                     renderMatches(currentlyFiltered);
 
-                    // B. Cache Profil
+                    // C. Cache Profil
                     if (userData.instagram) localStorage.setItem('userInsta', userData.instagram);
                     if (userData.portfolio) localStorage.setItem('userPortfolio', userData.portfolio);
 
-                    // C. Update UI
+                    // D. Update UI
                     updateLoginUI(true, userData.photoURL || user.photoURL);
                     loginModal.classList.add('hidden');
 
+                    if (!userData.hasSeenTutorial) {
+                        setTimeout(() => {
+                            const tutoModal = document.getElementById('tutorialModal');
+                            if(tutoModal) tutoModal.classList.remove('hidden');
+                        }, 1000);
+                    }
+
                 } else {
                     // Nouveau compte (Pas encore en base)
+                    // On nettoie tout par sécurité pour partir sur une base vierge
                     matchStatuses = {};
+                    matchArchives = {}; // <--- Important
                     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
+                    localStorage.setItem('matchArchives', JSON.stringify(matchArchives)); // <--- Important
+                    
                     renderMatches(currentlyFiltered);
 
                     // Ouvrir modale profil pour finir l'inscription
@@ -2206,16 +2273,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("Erreur chargement données:", error);
             }
         } else {
-            // Déconnexion
+            // ---------------------------------------------------------
+            // PARTIE DÉCONNEXION (C'est ici que la correction opère)
+            // ---------------------------------------------------------
             console.log("Utilisateur déconnecté");
             updateLoginUI(false);
             
-            // Nettoyage
+            // 1. Nettoyage des FAVORIS
             matchStatuses = {}; 
             localStorage.removeItem('matchStatuses');
+
+            // 2. Nettoyage de l'HISTORIQUE (CORRECTION ICI)
+            matchArchives = {}; // On vide la variable en mémoire
+            localStorage.removeItem('matchArchives'); // On vide le stockage local
+            
+            // 3. Nettoyage du PROFIL
             localStorage.removeItem('userInsta');
             localStorage.removeItem('userPortfolio');
             
+            // 4. Reset visuel
+            // On vide aussi la grille d'historique au cas où elle est ouverte
+            const historyGrid = document.getElementById('historyGrid');
+            if(historyGrid) historyGrid.innerHTML = '';
+
             renderMatches(currentlyFiltered);
         }
         renderMatches(currentlyFiltered);
@@ -2278,10 +2358,20 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerText = "Enregistrement...";
 
             try {
-                await db.collection('users').doc(user.uid).update({
+                const updateData = {
                     instagram: newInsta,
                     portfolio: newPortfolio
-                });
+                };
+
+                // --- AJOUT : Si l'Insta change ou est présent, on tente de maj la photo ---
+                if (newInsta) {
+                    const picUrl = await fetchInstaProfilePic(newInsta);
+                    if (picUrl) {
+                        updateData.photoURL = picUrl;
+                        document.querySelectorAll('.login-trigger img').forEach(img => img.src = picUrl);
+                    }
+                }
+                await db.collection('users').doc(user.uid).update(updateData);
 
                 // 2. SUCCÈS : Bouton Vert + Message
                 btn.style.backgroundColor = "#34C759";
@@ -2460,11 +2550,23 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerText = "Enregistrement...";
 
             try {
+
+                let finalPhotoURL = user.photoURL; // Par défaut : photo Google
+    
+                if (insta) {
+                    const instaPic = await fetchInstaProfilePic(insta);
+                    if (instaPic) {
+                        finalPhotoURL = instaPic;
+                    }
+                }
+                if (!finalPhotoURL) {
+                    finalPhotoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName)}&background=random&color=fff&size=128`;
+                }   
                 await db.collection('users').doc(user.uid).set({
                     uid: user.uid,
                     displayName: user.displayName,
                     email: user.email,
-                    photoURL: user.photoURL,
+                    photoURL: finalPhotoURL,
                     instagram: insta,
                     portfolio: portfolio,
                     favorites: {},
@@ -3209,4 +3311,82 @@ function exportHistoryToCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+// --- FONCTION NAVIGATION TUTO ---
+window.nextTutoStep = function() {
+    const step1 = document.getElementById('tutoStep1');
+    const step2 = document.getElementById('tutoStep2');
+    const dot1 = document.getElementById('dot1');
+    const dot2 = document.getElementById('dot2');
+
+    if(step1 && step2) {
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+        
+        // Mise à jour des points
+        if(dot1) dot1.style.background = 'var(--border-color)';
+        if(dot2) dot2.style.background = 'var(--accent)';
+    }
+};
+
+// PLAN B : UTILISER LA RECHERCHE (Fonctionne à 100% si l'API est active)
+async function fetchInstaProfilePic(username) {
+    if (!username) return null;
+    
+    // Nettoyage du pseudo
+    const cleanUser = username.replace('@', '').trim();
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'x-rapidapi-key': 'cc89b1eb44mshde21357fdba7aafp191632jsncd0b3b0b5d6d',
+            'x-rapidapi-host': 'instagram120.p.rapidapi.com',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: cleanUser
+        })
+    };
+
+    try {
+        // 1. ENDPOINT CORRIGÉ : /userInfo
+        const response = await fetch('https://instagram120.p.rapidapi.com/api/instagram/userInfo', options);
+
+        if (!response.ok) {
+            console.warn(`Erreur API Instagram (${response.status})`);
+            return null;
+        }
+
+        const data = await response.json();
+        console.log("Données Instagram reçues :", data);
+
+        // 2. CHEMIN D'ACCÈS CORRIGÉ : result[0].user.hd_profile_pic_url_info
+        let imageUrl = null;
+
+        if (data.result && data.result.length > 0) {
+            const userObj = data.result[0].user;
+            
+            if (userObj && userObj.hd_profile_pic_url_info) {
+                // Souvent 'hd_profile_pic_url_info' est un objet qui contient une propriété 'url'
+                if (userObj.hd_profile_pic_url_info.url) {
+                    imageUrl = userObj.hd_profile_pic_url_info.url;
+                } 
+                // Par sécurité, si c'est directement une chaîne de caractères
+                else if (typeof userObj.hd_profile_pic_url_info === 'string') {
+                    imageUrl = userObj.hd_profile_pic_url_info;
+                }
+            }
+        }
+
+        if (imageUrl) {
+            return `https://wsrv.nl/?url=${encodeURIComponent(imageUrl)}`;
+        }
+
+        return null;
+
+    } catch (error) {
+        console.error("Erreur technique Instagram :", error);
+        return null;
+    }
 }
