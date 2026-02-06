@@ -2531,6 +2531,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // MODIFICATION ICI
             const rawInsta = document.getElementById('profileInsta').value.trim();
             const insta = cleanInstagramInput(rawInsta); // On nettoie ici aussi
+            const portfolio = document.getElementById('profilePortfolio').value.trim(); 
             const errorMsg = document.getElementById('formError');
             const submitBtn = profileForm.querySelector('button');
             const originalText = "Valider mon profil";
