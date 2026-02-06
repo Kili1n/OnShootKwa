@@ -2170,8 +2170,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     matchStatuses = userData.favorites || {};
                     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
 
-                    matchArchives = userData.archives || {};
+                    const cloudArchives = userData.archives || {};
+                    matchArchives = { ...matchArchives, ...cloudArchives };
                     localStorage.setItem('matchArchives', JSON.stringify(matchArchives));
+
+                    const historyModal = document.getElementById('historyModal');
+                    if (historyModal && !historyModal.classList.contains('hidden')) {
+                        renderHistory();
+                    }
+                    
 
                     renderMatches(currentlyFiltered);
 
