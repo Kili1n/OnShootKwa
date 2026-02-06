@@ -702,6 +702,94 @@
             </div>
         </div>
     </div>
+    <div id="tutorialModal" class="modal hidden" style="z-index: 10000;">
+    <div class="login-card" style="max-width: 450px; text-align: center; position: relative; min-height: 400px; display: flex; flex-direction: column; justify-content: center;">
+        
+        <div style="position: absolute; top: 20px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px;">
+            <div id="dot1" style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent);"></div>
+            <div id="dot2" style="width: 8px; height: 8px; border-radius: 50%; background: var(--border-color);"></div>
+        </div>
+
+        <div id="tutoStep1">
+            <div style="margin-bottom: 20px; margin-top: 20px;">
+                <i class="fa-solid fa-graduation-cap" style="font-size: 3rem; color: var(--accent);"></i>
+            </div>
+            <h2 style="margin-bottom: 10px;">Suivez votre saison</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9rem;">
+                Comprendre le cycle des statuts est la clé pour débloquer vos statistiques.
+            </p>
+
+            <div style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div style="opacity:0.5; font-size: 0.8rem;">Clics :</div>
+                    <i class="fa-regular fa-star"></i>
+                    <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+                    <i class="fa-solid fa-paper-plane" style="color:#FF9500;"></i>
+                    <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+                    <i class="fa-solid fa-circle-check" style="color:#34C759;"></i>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-main); margin: 0;">
+                    Cliquez sur l'étoile pour passer de <strong>"Envie"</strong> à <strong>"Validé"</strong>.
+                </p>
+            </div>
+
+            <div style="text-align: left; background: rgba(52, 199, 89, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 20px; border-left: 3px solid #34C759;">
+                <p style="font-size: 0.8rem; margin: 0;">
+                    <i class="fa-solid fa-chart-pie" style="margin-right:5px;"></i>
+                    Seuls les matchs <strong>Verts (Reçus)</strong> comptent pour vos stats.
+                </p>
+            </div>
+
+            <button onclick="nextTutoStep()" class="google-btn" style="background-color: var(--text-primary); color: var(--bg-color); border: none; width: 100%; justify-content: center;">
+                Suivant <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+            </button>
+        </div>
+
+        <div id="tutoStep2" style="display: none;">
+            <div style="margin-bottom: 20px; margin-top: 20px;">
+                <i class="fa-solid fa-bolt" style="font-size: 3rem; color: #FF9500;"></i>
+            </div>
+            <h2 style="margin-bottom: 10px;">Gagnez du temps</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.9rem;">
+                Fini les copier-coller, simplifiez vos demandes.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; text-align: left;">
+                
+                <div style="display: flex; align-items: center; gap: 15px; background: var(--bg-secondary); padding: 10px; border-radius: 8px;">
+                    <div style="background: var(--card-bg); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-envelope" style="color: #ea4335;"></i>
+                    </div>
+                    <div>
+                        <strong style="font-size: 0.9rem;">Mail pré-rempli</strong>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">
+                            Cliquez sur l'enveloppe rouge pour générer votre mail de demande accréditation.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; background: var(--bg-secondary); padding: 10px; border-radius: 8px;">
+                    <div style="background: var(--card-bg); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-calendar-plus" style="color: #34C759;"></i>
+                    </div>
+                    <div>
+                        <strong style="font-size: 0.9rem;">Google Agenda</strong>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">
+                            Ajoutez le match (lieu, heure, équipes) à votre calendrier en un clic.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button id="closeTutoBtn" class="google-btn" style="background-color: var(--accent); color: white; border: none; width: 100%; justify-content: center;">
+                C'est compris, à moi de jouer !
+            </button>
+        </div>
+
+    </div>
+    </div>
+    
     <script src="js/config.js"></script> 
     <script src="js/app.js"></script> 
 </body>
