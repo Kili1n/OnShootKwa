@@ -145,13 +145,13 @@ function openGmailCompose(email, homeTeam, awayTeam, matchDate, sport, compet) {
     const subject = `Demande d'accréditation : ${homeTeam} vs ${awayTeam} (${matchDate})`;
     
     // 3. Corps du mail
-    const body = `Bonjour,\n\n` +
-        `Je me permets de vous contacter en tant que photographe afin de solliciter une accréditation pour le match ${homeTeam} vs ${awayTeam} (${compet}) prévu le ${matchDate}.\n\n` +
-        `Passionné par le ${sport}, cette rencontre serait pour moi l'opportunité d'enrichir mon portfolio. En contrepartie, je pourrais, si vous le souhaitez, mettre à votre disposition les clichés réalisés pour vos supports de communication.\n\n` +
+    const body = `Madame, Monsieur,\n\n` +
+        `Photographe de sport indépendant, je vous sollicite afin d'obtenir une accréditation pour la rencontre de ${compet} opposant ${homeTeam} au ${awayTeam}, prévu le ${matchDate}.\n\n` +
+        'Mon objectif est de couvrir cette rencontre pour alimenter mon portfolio. En remerciement, je m engage à vous transmettre une sélection de mes images après le match, que vous pourrez utiliser librement pour votre communication.\n\n' +
         `${workSentence}\n\n` +
-        `Je reste à votre entière disposition pour toute information complémentaire.\n\n` +
-        `Cordialement,\n\n` +
-        `${userName}\n` +
+        `Dans l'attente de votre retour, je vous souhaite une excellente journée.\n\n` +
+        `Bien à vous,\n\n` +
+        `${userName}\n`;
         `---\n` +
         `Demande préparée via fokalpress.fr - Outil de planification pour photographes de sport.`;
     
