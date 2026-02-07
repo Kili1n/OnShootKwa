@@ -2108,8 +2108,15 @@ body.dark-mode .action-btn:hover {
     color: var(--text-muted, #999); /* Gris par défaut */
 }
 
-fa-circle-xmark:before {
-    color: red;
+/* Couleur pour le statut "Refusé" (Croix) */
+.status-refused {
+    color: #FF3B30 !important;       /* Rouge vif */
+    border-color: #FF3B30 !important; /* Bordure rouge */
+    background-color: rgba(255, 59, 48, 0.1); /* Fond rouge très léger (optionnel) */
+}
+
+.status-refused i {
+    color: #FF3B30 !important; /* Force l'icône en rouge */
 }
 
 /* On s'assure que RIEN ne réapparait au survol ou au focus */
