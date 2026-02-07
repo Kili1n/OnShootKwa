@@ -2108,7 +2108,9 @@ body.dark-mode .action-btn:hover {
     color: var(--text-muted, #999); /* Gris par défaut */
 }
 
-/* --- ÉTATS AU SURVOL (HOVER) --- */
+fa-circle-xmark:before {
+    color: red;
+}
 
 /* On s'assure que RIEN ne réapparait au survol ou au focus */
 .history-btn:hover, 

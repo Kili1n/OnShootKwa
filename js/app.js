@@ -1618,8 +1618,10 @@ function updateFilterSlider() {
         if (userNameEl) userNameEl.textContent = user.displayName || "Photographe";
         
         const initial = (user.displayName || "U").charAt(0).toUpperCase();
-        document.getElementById('statsUserInitial').innerHTML = finalPhotoURL 
-            ? `<img src="${finalPhotoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+        const proxyUrl = finalPhotoURL ? `https://wsrv.nl/?url=${encodeURIComponent(finalPhotoURL)}&output=png` : null;
+
+        document.getElementById('statsUserInitial').innerHTML = proxyUrl 
+            ? `<img src="${proxyUrl}" crossorigin="anonymous" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
             : initial;
 
         const insta = localStorage.getItem('userInsta');
@@ -1868,6 +1870,13 @@ function updateFilterSlider() {
     // --- LISTENER BOUTON ENREGISTRER (IMAGE) ---
     if (saveStatsBtn) {
         saveStatsBtn.addEventListener('click', () => {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            if (isIOS && navigator.share) {
+                alert("Sur iPhone, veuillez utiliser le bouton 'Partager' puis choisir 'Enregistrer l'image'.");
+                // Optionnel : déclencher le clic sur le bouton partage automatiquement
+                document.getElementById('shareStatsBtn').click();
+                return;
+            }
             const card = document.querySelector('#statsModal .login-card');
             const closeBtn = document.getElementById('closeStatsBtn');
             const btnsWrapper = document.getElementById('statsButtonsWrapper');
@@ -1903,7 +1912,7 @@ function updateFilterSlider() {
 
             // 2. Capture
             html2canvas(card, {
-                scale: 3, // Qualité maximale (Retina)
+                scale: window.innerWidth < 768 ? 2 : 3, // Qualité maximale (Retina)
                 backgroundColor: computedBgColor, // Fond forcé
                 useCORS: true // Pour charger l'image de profil Google
             }).then(canvas => {
