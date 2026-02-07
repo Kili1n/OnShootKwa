@@ -1098,7 +1098,11 @@ function updateFilterSlider() {
         });
     });
 
-    document.getElementById('siteLogo').addEventListener('click', resetFilters);
+    // On cible uniquement le texte pour le reset, car le logo est maintenant un lien <a>
+    const siteTitleBtn = document.getElementById('siteTitle');
+    if(siteTitleBtn) {
+        siteTitleBtn.addEventListener('click', resetFilters);
+    }
     document.getElementById('weekFilter').addEventListener('change', e => { currentFilters.week = e.target.value; applyFilters(); });
     document.getElementById('compFilter').addEventListener('change', e => { currentFilters.comp = e.target.value; applyFilters(); });
     document.getElementById('sortFilter').addEventListener('change', e => { currentFilters.sortBy = e.target.value; applyFilters(); });
