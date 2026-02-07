@@ -1,3 +1,32 @@
+// Ajoute ceci tout en haut de app.js ou dans ton fichier CSS
+const styleSheet = document.createElement("style");
+styleSheet.innerText = `
+  .top-match-container { position: relative; cursor: pointer; }
+  .top-match-arrow { margin-left: 8px; color: var(--text-secondary); transition: transform 0.2s; }
+  .top-match-arrow.open { transform: rotate(180deg); }
+.top-match-dropdown {
+      position: absolute; top: 100%; right: 0; 
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 9999; /* Toujours au dessus */
+      min-width: 250px; 
+      display: none; 
+      
+      /* --- CORRECTIONS SCROLL --- */
+      max-height: 250px;           /* Limite la hauteur */
+      overflow-y: auto;            /* Active le scroll vertical */
+      overscroll-behavior: contain; /* EMPÊCHE de scroller le fond quand on arrive au bout */
+  }
+  .top-match-dropdown.show { display: block; }
+  .top-match-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-bottom: 1px solid var(--border-color);
+      cursor: pointer; transition: background 0.1s;
+  }
+  .top-match-item:hover { background: var(--bg-secondary); }
+  .top-match-item:last-child { border-bottom: none; }
+`;
+document.head.appendChild(styleSheet);
 const GEOAPIFY_KEY = "61ca90447ebd483ab2f002050433fa42"; 
 const SPORT_EMOJIS = { "football": "⚽", "basketball": "🏀", "handball": "🤾"};
 
@@ -1596,8 +1625,6 @@ function updateFilterSlider() {
     }
 
     // --- FONCTION PRINCIPALE ---
-// --- FONCTION PRINCIPALE ---
-// --- FONCTION PRINCIPALE STATISTIQUES CORRIGÉE ---
     async function calculateAndShowStats(e) {
         if(e) e.preventDefault();
 
@@ -1651,6 +1678,7 @@ function updateFilterSlider() {
         let counts = { asked: 0, received: 0, refused: 0 };
         let monthsCount = {};
         let clubsCount = {};
+        let topMatchesCandidates = [];
         let compBreakdown = { football: {}, basketball: {}, handball: {} };
         
         let maxLevelVal = -1;
@@ -1704,51 +1732,150 @@ function updateFilterSlider() {
             }
 
             // D. Meilleur Match (Logique de classement)
+            // Recalcul des parts pour le ranking
             const lvl = parts[1] || "AUTRE";
-            let rank = LEVEL_RANK[lvl] || 0;
-            
             const cat = (parts[2] || "").toUpperCase();
-            if (cat === "SENIOR" || cat === "S" || cat === "") {
-                rank += 0.5;
-            } else if (cat.includes("F") || cat.includes("FEM")) {
-                rank += 0.3;
-            } else {
-                rank += 0.1;
+
+            let rank = LEVEL_RANK[lvl] || 0;
+            // Bonus points pour affiner le classement
+            if (cat === "SENIOR" || cat === "S" || cat === "") rank += 0.5;
+            else if (cat.includes("F") || cat.includes("FEM")) rank += 0.3;
+            else rank += 0.1;
+
+            matchData._rankScore = rank;
+            topMatchesCandidates.push(matchData);
+        });
+        topMatchesCandidates.sort((a, b) => {
+            // 1. D'abord par niveau (Score)
+            if (b._rankScore !== a._rankScore) {
+                return b._rankScore - a._rankScore;
             }
-
-            if (rank > maxLevelVal) {
-                maxLevelVal = rank;
-                
-                let displayLvl = lvl;
-                if (cat && !cat.includes("SENIOR") && cat !== "S") {
-                    const shortCat = cat.replace("ESPOIRS", "U21"); 
-                    displayLvl += ` ${shortCat}`;
-                }
-
-                // Récupération des logos (soit depuis l'archive manuelle, soit le cache)
-                const homeLogo = matchData.home.logo || getLogoUrl(matchData.home.name);
-                const awayLogo = matchData.away.logo || getLogoUrl(matchData.away.name);
-                const fallback = "https://placehold.co/42x42/png?text=?";
-
-                bestMatchName = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="${homeLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
-                            <span style="font-weight: 800; opacity: 0.15; font-size: 9px; letter-spacing: 1px;">VS</span>
-                            <img src="${awayLogo || fallback}" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='${fallback}'">
-                        </div>
-                        
-                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                            <span style="opacity: 0.3; font-weight: 300;">—</span>
-                            <span class="stat-level-badge">
-                                ${displayLvl}
-                            </span>
-                        </div>
-                    </div>
-                `;
-            }
+            // 2. Ensuite par date (Le plus récent en haut)
+            return new Date(b.dateObj) - new Date(a.dateObj);
         });
 
+        const bestMatchEl = document.getElementById('statBestMatch');
+        bestMatchEl.style.display = "flex";
+        bestMatchEl.style.width = "100%";
+        bestMatchEl.style.position = "relative"; // Pour le dropdown
+        
+        // Fonction helper pour générer le HTML d'un match (Logo vs Logo + Niveau)
+        const generateMatchHTML = (m) => {
+            const homeLogo = m.home.logo || getLogoUrl(m.home.name) || "https://placehold.co/42x42/png?text=?";
+            const awayLogo = m.away.logo || getLogoUrl(m.away.name) || "https://placehold.co/42x42/png?text=?";
+            
+            const parts = (m.compFormatted || "").split(' - ');
+            let displayLvl = parts[1] || "MATCH";
+            // Ajout catégorie jeune si besoin
+            if (parts[2] && !parts[2].includes("SENIOR") && parts[2] !== "S") {
+                displayLvl += ` ${parts[2].replace("ESPOIRS", "U21")}`;
+            }
+
+            // Emoji sport
+            const sportEmoji = SPORT_EMOJIS[(m.sport || "").toLowerCase()] || "";
+
+            return `
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="${homeLogo}" style="width: 28px; height: 28px; object-fit: contain;">
+                        <span style="font-size: 9px; opacity: 0.5;">VS</span>
+                        <img src="${awayLogo}" style="width: 28px; height: 28px; object-fit: contain;">
+                    </div>
+                    <div style="font-size: 11px; font-weight: 600; color: var(--text-primary); text-align:right;">
+                        ${sportEmoji} ${displayLvl}
+                    </div>
+                </div>
+            `;
+        };
+
+            if (topMatchesCandidates.length > 0) {
+            // Le "Top 1" est le premier de la liste triée
+            let currentTopMatch = topMatchesCandidates[0];
+
+            // On autorise le dépassement pour voir le menu
+            // On autorise le dépassement sur l'élément ET son parent pour voir le menu
+            bestMatchEl.style.overflow = "visible"; 
+            if (bestMatchEl.parentElement) {
+                bestMatchEl.parentElement.style.overflow = "visible"; 
+            }
+
+            // Si on a au moins un match, on affiche le menu pour pouvoir changer
+            // (Même s'il n'y en a qu'un, ça garde la mise en page, ou mettez > 1 pour cacher la flèche)
+            if (topMatchesCandidates.length > 0) {
+                
+                // HTML principal (Conteneur + Flèche + Dropdown vide pour l'instant)
+                bestMatchEl.innerHTML = `
+                    <div id="selectedTopMatch" style="flex: 1; cursor: pointer;">
+                        ${generateMatchHTML(currentTopMatch)}
+                    </div>
+                    <div id="topMatchArrow" class="top-match-arrow" style="padding: 0 10px;">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div id="topMatchDropdown" class="top-match-dropdown"></div>
+                `;
+
+                // Récupération des éléments
+                const arrow = document.getElementById('topMatchArrow');
+                const dropdown = document.getElementById('topMatchDropdown');
+                const selectedContainer = document.getElementById('selectedTopMatch');
+                const mainContainer = bestMatchEl; // Le parent
+
+                // Remplissage du menu avec TOUS les matchs triés
+                topMatchesCandidates.forEach((match) => {
+                    const item = document.createElement('div');
+                    item.className = 'top-match-item';
+                    
+                    // On ajoute une classe si c'est le match actuellement sélectionné (optionnel pour le style)
+                    if (match === currentTopMatch) item.style.background = "var(--bg-secondary)";
+
+                    item.innerHTML = generateMatchHTML(match);
+                    
+                    // Au clic sur un item du menu
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation(); 
+                        
+                        // 1. Mettre à jour l'affichage principal
+                        selectedContainer.innerHTML = generateMatchHTML(match);
+                        
+                        // 2. Fermer le menu
+                        dropdown.classList.remove('show');
+                        arrow.classList.remove('open');
+                        bestMatchEl.style.zIndex = ""; // Reset z-index
+                    });
+                    
+                    dropdown.appendChild(item);
+                });
+
+                // Fonction d'ouverture/fermeture
+                const toggleMenu = (e) => {
+                    e.stopPropagation();
+                    const isOpen = dropdown.classList.contains('show');
+                    
+                    if (isOpen) {
+                        dropdown.classList.remove('show');
+                        arrow.classList.remove('open');
+                        bestMatchEl.style.zIndex = "";
+                    } else {
+                        dropdown.classList.add('show');
+                        arrow.classList.add('open');
+                        bestMatchEl.style.zIndex = "100"; // Passe au premier plan
+                    }
+                };
+
+                // On active le menu au clic sur la flèche OU sur le match lui-même
+                arrow.addEventListener('click', toggleMenu);
+                selectedContainer.addEventListener('click', toggleMenu);
+
+                // Fermer si on clique ailleurs
+                document.addEventListener('click', () => {
+                    dropdown.classList.remove('show');
+                    arrow.classList.remove('open');
+                    bestMatchEl.style.zIndex = "";
+                });
+            }
+        } else {
+            bestMatchEl.textContent = "--";
+        }
         // --- 6. Affichage Chiffres Clés ---
         // Total = Demandés (en cours) + Refusés + Archives (Reçus + Manuels)
         const totalRequests = counts.asked + counts.refused + counts.received; 
@@ -1761,11 +1888,6 @@ function updateFilterSlider() {
         document.getElementById('statAccreds').textContent = counts.received;
         document.getElementById('statRate').textContent = `${successRate}%`;
         
-        const bestMatchEl = document.getElementById('statBestMatch');
-        bestMatchEl.style.display = "flex";
-        bestMatchEl.style.width = "100%";
-        bestMatchEl.style.whiteSpace = "normal"; 
-        bestMatchEl.innerHTML = bestMatchName;
 
         // --- 7. Calcul "Mois Record" ---
         let bestMonthTxt = "--";
@@ -1893,6 +2015,9 @@ function updateFilterSlider() {
             // 1. Masquage UI pour la photo
             closeBtn.style.display = 'none';
             if(buttonsRow) buttonsRow.style.display = 'none';
+
+            const arrowBtn = document.getElementById('topMatchArrow');
+            if(arrowBtn) arrowBtn.style.display = 'none';
             
             const originalBtnText = saveStatsBtn.innerHTML;
             saveStatsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
@@ -1956,6 +2081,7 @@ function updateFilterSlider() {
             function restoreUI() {
                 closeBtn.style.display = 'flex';
                 if(buttonsRow) buttonsRow.style.display = 'flex';
+                if(arrowBtn) arrowBtn.style.display = 'block';
                 saveStatsBtn.innerHTML = originalBtnText;
                 card.style.backgroundColor = originalCardBg;
                 card.style.color = originalCardColor;

@@ -2161,3 +2161,22 @@ body.dark-mode .action-btn:hover {
         height: 32px !important;
     }
 }
+
+/* Ajoutez ceci à la fin du fichier */
+.top-match-dropdown.show {
+    display: block !important;
+}
+
+.top-match-dropdown {
+      position: absolute; top: 100%; right: 0; 
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      z-index: 9999; /* <--- PASSEZ DE 100 À 9999 ICI */
+      min-width: 250px; /* Un peu plus large pour être sûr */
+      display: none; overflow: hidden;
+      max-height: 250px;       /* Hauteur max avant scroll */
+      overflow-y: auto;        /* Active le scroll vertical */
+  }
+  /* Pour rendre le scroll plus joli (optionnel) */
+  .top-match-dropdown::-webkit-scrollbar { width: 6px; }
+  .top-match-dropdown::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
