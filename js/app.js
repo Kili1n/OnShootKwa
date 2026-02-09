@@ -2399,7 +2399,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // --- 1. ÉCOUTEUR D'ÉTAT AUTHENTIFICATION (Chargement initial) ---
-// --- 1. ÉCOUTEUR D'ÉTAT AUTHENTIFICATION (Chargement initial) ---
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             console.log("Utilisateur connecté :", user.email);
@@ -2409,6 +2408,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (userDoc.exists) {
                     const userData = userDoc.data();
+
+                    const today = new Date().toISOString().slice(0, 10); // Format "YYYY-MM-DD"
+                    const lastSyncDate = localStorage.getItem('last_connection_date');
+
+                    // On met à jour seulement si la date stockée est différente d'aujourd'hui
+                    if (lastSyncDate !== today) {
+                        db.collection('users').doc(user.uid).update({
+                            last_connection: firebase.firestore.FieldValue.serverTimestamp(),
+                            // Optionnel : on peut aussi stocker la version de l'app ou l'OS
+                            // last_device: navigator.userAgent 
+                        }).then(() => {
+                            localStorage.setItem('last_connection_date', today);
+                        }).catch(err => {
+                            console.warn("Pas bloquant : Erreur maj last_connection", err);
+                        });
+                    }
                     
                     // A. Sync Favoris (Priorité Cloud)
                     matchStatuses = userData.favorites || {};
@@ -2454,7 +2469,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Nouveau compte (Pas encore en base)
                     // On nettoie tout par sécurité pour partir sur une base vierge
                     matchStatuses = {};
-                    matchArchives = {}; // <--- Important
+                    matchArchives = {}; 
                     localStorage.setItem('matchStatuses', JSON.stringify(matchStatuses));
                     localStorage.setItem('matchArchives', JSON.stringify(matchArchives)); // <--- Important
                     
@@ -2607,7 +2622,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Déconnexion via le bouton gris
-// Déconnexion via le bouton gris
     if (settingsLogoutBtn) {
         settingsLogoutBtn.addEventListener('click', async () => {
             const originalText = '<i class="fa-solid fa-right-from-bracket"></i> Se déconnecter';
@@ -2780,8 +2794,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     instagram: insta,
                     portfolio: portfolio,
                     favorites: {},
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    last_connection: firebase.firestore.FieldValue.serverTimestamp()
                 });
+
+                const today = new Date().toISOString().slice(0, 10);
+                localStorage.setItem('last_connection_date', today);
                 
                 // 2. SUCCÈS : Bouton Vert
                 submitBtn.style.backgroundColor = "#34C759";
@@ -2829,7 +2847,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fermeture Login
-// Fermeture Login (Bouton Croix)
     if(closeLoginBtn) {
         closeLoginBtn.addEventListener('click', () => {
             const user = auth.currentUser;
