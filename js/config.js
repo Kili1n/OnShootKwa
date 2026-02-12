@@ -27,7 +27,7 @@ const ACCRED_LIST = {
     "PARIS BASKETBALL" : "https://parisbasketball.com/contact/",
     "PARIS SAINT-GERMAIN HANDBALL" : "https://www.instagram.com/psghandassoofficiel/",
     "NANTERRE 92_U21" : "https://www.nanterre92.com/club/club/contact/",
-    "SAINT QUENTIN BASKET" : "contact@sqbb.fr",
+    "SQBB" : "contact@sqbb.fr",
     "RED STAR" : "news@redstar.fr",
     "PARIS 13" : "523264@lpiff.fr",
     "CHAMBLY" : "https://fcchamblyoise.com/contact/",
