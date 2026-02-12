@@ -2084,6 +2084,8 @@ function updateFilterSlider() {
             const computedStyle = getComputedStyle(card);
             const computedBgColor = computedStyle.backgroundColor;
             const computedTextColor = computedStyle.color;
+            const isDark = document.body.classList.contains('dark-mode');
+            const realBgColor = isDark ? '#1C1C1E' : '#FFFFFF';
 
             card.style.backgroundColor = computedBgColor;
             card.style.color = computedTextColor;
@@ -2093,8 +2095,13 @@ function updateFilterSlider() {
             // 2. Capture
             html2canvas(card, {
                 scale: window.innerWidth < 768 ? 2 : 3,
-                backgroundColor: computedBgColor,
-                useCORS: true
+                backgroundColor: realBgColor,
+                useCORS: true,
+                onclone: (clonedDoc) => {
+                const clonedCard = clonedDoc.querySelector('.login-card');
+                clonedCard.style.boxShadow = 'none';
+                clonedCard.style.border = 'none';
+            }
             }).then(canvas => {
                 
                 // --- CORRECTION MOBILE ICI ---

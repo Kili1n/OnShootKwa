@@ -2230,3 +2230,37 @@ body.dark-mode .action-btn:hover {
 .result-item:hover { background: var(--bg-secondary); }
 .result-item:last-child { border-bottom: none; }
 .result-item img { width: 24px; height: 24px; object-fit: contain; }
+
+/* Couleurs spécifiques pour les icônes de records */
+
+/* 1. Top Match (Violet) */
+.stat-badge-row:nth-of-type(4) .stat-icon {
+    background-color: rgba(175, 82, 222, 0.1) !important;
+    color: #AF52DE !important;
+}
+
+/* 2. Mois Record (Orange) */
+.stat-badge-row:nth-of-type(2) .stat-icon {
+    background-color: rgba(255, 149, 0, 0.1) !important;
+    color: #FF9500 !important;
+}
+
+/* 3. Club le plus visité (Vert) */
+.stat-badge-row:nth-of-type(3) .stat-icon {
+    background-color: rgba(52, 199, 89, 0.1) !important;
+    color: #34C759 !important;
+}
+
+/* Adaptation Dark Mode (Couleurs plus vives) */
+body.dark-mode .stat-badge-row:nth-of-type(1) .stat-icon {
+    background-color: rgba(191, 90, 242, 0.2) !important;
+    color: #BF5AF2 !important;
+}
+body.dark-mode .stat-badge-row:nth-of-type(2) .stat-icon {
+    background-color: rgba(255, 159, 10, 0.2) !important;
+    color: #FF9F0A !important;
+}
+body.dark-mode .stat-badge-row:nth-of-type(3) .stat-icon {
+    background-color: rgba(48, 209, 88, 0.2) !important;
+    color: #30D158 !important;
+}
