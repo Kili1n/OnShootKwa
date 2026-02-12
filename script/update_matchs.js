@@ -54,7 +54,13 @@ const FOOTBALL_URLS = [
     'https://epreuves.fff.fr/competition/club/537103-le-mans-fc/equipe/2025_18056_SEF_3/saison',
     'https://epreuves.fff.fr/competition/club/500568-paris-fc/equipe/2025_616_SEF_1/saison',
     'https://epreuves.fff.fr/competition/club/524861-fc-fleury-91/equipe/2025_9753_SEF_1/saison',
-    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain/equipe/2025_364_SEF_1/saison'    
+    'https://epreuves.fff.fr/competition/club/500247-paris-saint-germain/equipe/2025_364_SEF_1/saison',
+    'https://epreuves.fff.fr/competition/club/527078-aubervilliers-c/equipe/2025_11270_SEM_1/saison',
+    'https://epreuves.fff.fr/competition/club/500710-sainte-genevieve-football-club/equipe/2025_675_SEM_2/saison',
+    'https://epreuves.fff.fr/competition/club/518884-linas-montlhery-e-s-a/equipe/2025_6071_SEM_2/saison',
+    'https://epreuves.fff.fr/competition/club/523411-u-s-ivry-football/equipe/2025_8835_SEM_2/equipe',
+    'https://epreuves.fff.fr/competition/club/500217-bretigny-foot-c-s/equipe/2025_343_SEM_2/saison',
+    'https://epreuves.fff.fr/competition/club/518488-st-ouen-l-aumone-as/equipe/2025_5883_SEM_1/saison'    
 ];
 
 const BASKET_URLS = [
@@ -71,7 +77,9 @@ const BASKET_URLS = [
     'https://competitions.ffbb.com/ligues/idf/comites/0092/clubs/idf0092056/equipes/200000005138579',
     'https://competitions.ffbb.com/ligues/cvl/comites/0028/clubs/cvl0028004/equipes/200000005138555',
     'https://competitions.ffbb.com/ligues/idf/comites/0078/clubs/idf0078013/equipes/200000005138581',
-    'https://competitions.ffbb.com/ligues/idf/comites/0075/clubs/idf0075083/equipes/200000005138577'
+    'https://competitions.ffbb.com/ligues/idf/comites/0075/clubs/idf0075083/equipes/200000005138577',
+    'https://competitions.ffbb.com/ligues/nor/comites/0076/clubs/nor0076071/equipes/200000005152395',
+    'https://competitions.ffbb.com/ligues/cvl/comites/0045/clubs/cvl0045058/equipes/200000005152388'
 ];
 
 const HANDBALL_URLS = [
@@ -85,6 +93,7 @@ const HANDBALL_URLS = [
     'https://www.ffhandball.fr/competitions/saison-2025-2026-21/national/proligue-2025-26-28551/equipe-1957557/',
     'https://www.ffhandball.fr/competitions/saison-2025-2026-21/national/proligue-2025-26-28551/equipe-1957560/',
     'https://www.ffhandball.fr/competitions/saison-2025-2026-21/national/proligue-2025-26-28551/equipe-1957558/',
+    'https://www.ffhandball.fr/competitions/saison-2025-2026-21/national/proligue-2025-26-28551/equipe-1957562/',
     'https://www.ffhandball.fr/competitions/saison-2025-2026-21/national/proligue-2025-26-28551/equipe-1957562/'
 ];
 
